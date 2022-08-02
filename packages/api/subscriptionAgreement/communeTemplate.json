@@ -1,0 +1,432 @@
+{
+  "docspring": {
+    "fm_fields": [
+      {
+        "name": "fm_signature",
+        "type": "signature",
+        "required": true,
+        "default_placements": [
+          {
+            "page": 93,
+            "x": 1245,
+            "y": 848.787054263572,
+            "width": 711,
+            "height": 70
+          },
+          {
+            "page": 92,
+            "x": 1251,
+            "y": 882.81643410852,
+            "width": 656,
+            "height": 70
+          }
+        ]
+      }
+    ],
+    "investor_fields": [
+      {
+        "name": "investor_type",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 5,
+            "x": 861,
+            "y": 943.372480620155,
+            "width": 1321,
+            "height": 90
+          }
+        ]
+      },
+      {
+        "name": "member_name",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return form.investor_type === 'Entity'? form.investor_entity_name : `${form.investor_name || ''}`"
+        },
+        "default_placements": [
+          {
+            "page": 5,
+            "x": 863,
+            "y": 1052.37248062015,
+            "width": 1317,
+            "height": 92
+          },
+          {
+            "page": 94,
+            "x": 1466,
+            "y": 904.757674418567,
+            "width": 728,
+            "height": 150
+          }
+        ]
+      },
+      {
+        "name": "investor_name",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return `${form.investor_name || ''}`"
+        },
+        "default_placements": [
+          {
+            "page": 5,
+            "x": 863,
+            "y": 2023.37248062015,
+            "width": 1311,
+            "height": 82
+          },
+          {
+            "page": 94,
+            "x": 1464,
+            "y": 1043.75767441857,
+            "width": 716,
+            "height": 150
+          }
+        ]
+      },
+      {
+        "name": "total_committed_amount",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 5,
+            "x": 863,
+            "y": 1166.37248062015,
+            "width": 1315,
+            "height": 94
+          }
+        ],
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return (form.total_committed_amount).toLocaleString('en-US')"
+        }
+      },
+      {
+        "name": "individual_investor_state",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return form.investor_type === 'Entity'? '' : (form.investor_country === 'United States'? form.investor_state : form.investor_country)"
+        },
+        "default_placements": [
+          {
+            "page": 5,
+            "x": 863,
+            "y": 1332.37248062015,
+            "width": 1313,
+            "height": 139
+          }
+        ]
+      },
+      {
+        "name": "entity_investor_state",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return form.investor_type === 'Entity'? (form.investor_country === 'United States'? form.investor_state : form.investor_country) : ''"
+        },
+        "default_placements": [
+          {
+            "page": 5,
+            "x": 863,
+            "y": 1501.37248062015,
+            "width": 1311,
+            "height": 139
+          }
+        ]
+      },
+      {
+        "name": "accredited_investor_type_individual",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 5,
+            "x": 863,
+            "y": 1667.37248062015,
+            "width": 1311,
+            "height": 106
+          }
+        ]
+      },
+      {
+        "name": "accredited_investor_type_entity",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 5,
+            "x": 863,
+            "y": 1796.37248062015,
+            "width": 1308,
+            "height": 104
+          }
+        ]
+      },
+      {
+        "name": "investment_date",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return (new Date()).toLocaleDateString('en-us', { year: 'numeric', month: 'short', day: 'numeric' });"
+        },
+        "default_placements": [
+          {
+            "page": 92,
+            "x": 1293,
+            "y": 1004.81643410852,
+            "width": 600,
+            "height": 55
+          },
+          {
+            "page": 93,
+            "x": 1304,
+            "y": 1085.78705426357,
+            "width": 600,
+            "height": 55
+          },
+          {
+            "page": 94,
+            "x": 1464,
+            "y": 1300.75767441857,
+            "width": 720,
+            "height": 70
+          }
+        ]
+      },
+      {
+        "name": "investor_title",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return form.investor_type === 'Entity'? form.investor_title : ''"
+        },
+        "default_placements": [
+          {
+            "page": 94,
+            "x": 1466,
+            "y": 1167.75767441857,
+            "width": 716,
+            "height": 150
+          }
+        ]
+      },
+      {
+        "name": "investor_email",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 5,
+            "x": 863,
+            "y": 1925.37248062015,
+            "width": 1304,
+            "height": 74
+          }
+        ]
+      },
+      {
+        "name": "investor_signature",
+        "type": "signature",
+        "default_placements": [
+          {
+            "page": 94,
+            "x": 1315,
+            "y": 769.757674418567,
+            "width": 859,
+            "height": 70
+          }
+        ]
+      },
+      {
+        "name": "agreed_to_terms",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10006;",
+        "default_placements": [
+          {
+            "page": 6,
+            "x": 282,
+            "y": 530.343100775195,
+            "width": 64,
+            "height": 64
+          }
+        ]
+      }
+    ]
+  },
+  "form_structure": {
+    "groups": [
+      {
+        "title": "Investment Amount",
+        "fields": [
+          {
+            "name": "total_committed_amount",
+            "component": "input",
+            "label": "",
+            "required": true,
+            "validationLabel": "Investment Amount",
+            "format": "number",
+            "placeholder": "${minimumInvestment}",
+            "validator": {
+              "parameters": ["form", "form_structure", "field"],
+              "body": "return form?.[field] >= Number(form_structure?.variables?.minimumInvestment?.replace(/[^0-9]/g, ''))",
+              "invalid_msg": "The Investment Amount is lower than the minimum"
+            },
+            "value_formatter": {
+              "parameters": ["form", "field"],
+              "body": "return (form?.[field]).toLocaleString('en-US')"
+            },
+            "value_deformatter": {
+              "parameters": ["value"],
+              "body": "return value.slice(-1) !== '.'? Number(value.replaceAll(',', '')) : value"
+            },
+            "grid_columns": {
+              "xs": 8
+            }
+          },
+          {
+            "name": "minimum_investment",
+            "component": "button",
+            "label": "Minimum Investment",
+            "full_width": true,
+            "on_click": {
+              "body": "handleChange('total_committed_amount', deal.minimum_investment)",
+              "parameters": ["handleChange", "deal"]
+            },
+            "grid_columns": {
+              "xs": 4
+            }
+          }
+        ]
+      },
+      {
+        "title": "Basic Information",
+        "fields": [
+          {
+            "name": "investor_type",
+            "component": "select",
+            "choices": ["Individual", "Entity"],
+            "label": "Investor Type"
+          },
+          {
+            "name": "investor_name",
+            "component": "input",
+            "label": "Investor Name",
+            "required": true,
+            "placeholder": "Enter Name"
+          },
+          {
+            "name": "investor_country",
+            "component": "select",
+            "choices": "${countries}",
+            "label": "Country",
+            "required": true,
+            "placeholder": "Select Country"
+          },
+          {
+            "name": "investor_state",
+            "component": "select",
+            "choices": "${states}",
+            "label": "State",
+            "dependencies": [
+              {
+                "field": "investor_country",
+                "required_value": "United States"
+              }
+            ]
+          },
+          {
+            "name": "investor_entity_name",
+            "component": "input",
+            "label": "Entity Name",
+            "required": true,
+            "placeholder": "Enter Entity Name",
+            "dependencies": [
+              {
+                "field": "investor_type",
+                "required_value": "Entity"
+              }
+            ]
+          },
+          {
+            "name": "investor_title",
+            "component": "input",
+            "label": "Title",
+            "required": true,
+            "placeholder": "Enter Investor Title in Entity",
+            "dependencies": [
+              {
+                "field": "investor_type",
+                "required_value": "Entity"
+              }
+            ]
+          },
+          {
+            "name": "accredited_investor_type_individual",
+            "component": "select",
+            "choices": [
+              "I have individual/ joint net worth in excess of $1m",
+              "I’ve had $200k+ income in each of the two most recent years",
+              "I’ve had $300k+ joint income in each of the two most recent years",
+              "My professional certification qualifies certification",
+              "I am a director or executive officer of the Fund’s",
+              "I am a “knowledgeable employee” of the private"
+            ],
+            "label": "Accredited Investor Type",
+            "dependencies": [
+              {
+                "field": "investor_type",
+                "required_value": "Individual"
+              }
+            ]
+          },
+          {
+            "name": "accredited_investor_type_entity",
+            "component": "select",
+            "choices": ["Accredited Investor", "Qualified Purchaser"],
+            "label": "Entity Investor Type",
+            "dependencies": [
+              {
+                "field": "investor_type",
+                "required_value": "Entity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Documents",
+        "fields": [
+          {
+            "name": "preview_document",
+            "component": "document",
+            "label": "Subscription Agreement Preview",
+            "on_click": {
+              "body": "\n  const document = parameters.getFE(`/api/deal/subscription-agreement/${parameters.deal._id}`).then(document => window.open(document.link, \"_blank\", \"noopener,noreferrer\"))\n",
+              "parameters": ["parameters"]
+            },
+            "grid_columns": {
+              "xs": 12
+            }
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "name": "submit_investment",
+        "component": "button",
+        "label": "Continue",
+        "format": "submit",
+        "full_width": true,
+        "grid_columns": {
+          "xs": 4
+        }
+      }
+    ],
+    "variables": {
+      "countries": null,
+      "states": null,
+      "minimumInvestment": null
+    }
+  }
+}

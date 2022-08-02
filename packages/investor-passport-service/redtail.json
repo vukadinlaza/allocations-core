@@ -1,0 +1,21 @@
+{
+  "phases": {
+    "new": {
+      "CREATED": "onboarding"
+    },
+    "onboarding": {
+      "DONE": "kyc"
+    },
+    "kyc": {
+      "DONE": "review",
+      "FAILED": "failed"
+    },
+    "review": {
+      "DONE": "self-accredited",
+      "REJECT": "rejected"
+    },
+    "self-accredited": {},
+    "failed": {},
+    "rejected": {}
+  }
+}

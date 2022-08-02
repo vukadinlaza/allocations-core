@@ -1,0 +1,119 @@
+org: allocations
+app: product
+service: organization-service
+frameworkVersion: "2"
+variablesResolutionMode: 20210326
+
+plugins:
+  - serverless-plugin-monorepo
+  - serverless-webpack
+  - serverless-prune-plugin
+  - "@allocations/serverless-allocations-redtail"
+
+custom:
+  secrets: ${ssm:/aws/reference/secretsmanager/allocations_build_api/${opt:stage}}
+  redtail:
+    config: ${file(./redtail.json)}
+  prune:
+    automatic: true
+    number: 3
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  memorySize: 512
+  environment:
+    APP_SECRET: ${self:custom.secrets.APP_SECRET}
+    MONGODB_URI: ${self:custom.secrets.MONGODB_URI}
+    DOCSPRING_TOKEN_ID: ${self:custom.secrets.ORGANIZATION_DOCSPRING_TOKEN_ID}
+    DOCSPRING_TOKEN_SECRET: ${self:custom.secrets.ORGANIZATION_DOCSPRING_TOKEN_SECRET}
+
+functions:
+  initialize:
+    handler: service/initialize.handler
+    events:
+      - http:
+          path: initialize
+          method: POST
+
+  # ------------------------------------------------ TRIAL FUNCTIONS ----------------------------------------------------------
+
+  trialComplete:
+    handler: service/trial/trial-complete.handler
+    events:
+      - sns:
+          arn: ${redtail:service_topic}
+          filterPolicy:
+            app: [build]
+            service: [organization-service]
+            event: [trial-complete]
+
+  # ------------------------------------------------ GENERATING-AGREEMENTS FUNCTIONS ----------------------------------------------------------
+
+  uploadAgreement:
+    handler: service/generate-agreements/uploaded.handler
+    events:
+      - s3:
+          bucket: onboarding-documents-${opt:stage, 'dev'}
+          event: s3:ObjectCreated:*
+          existing: true
+
+  # ------------------------------------------------ AGREEMENTS-PENDING FUNCTIONS ----------------------------------------------------------
+
+  checkSigning:
+    handler: service/agreements-pending/check.handler
+    events:
+      - http:
+          path: agreements-pending/check
+          method: POST
+
+  # ------------------------------------------------ OPS-HANDOFF FUNCTIONS ----------------------------------------------------------
+
+  approve:
+    handler: service/ops-handoff/approve.handler
+    events:
+      - http:
+          path: ops-handoff/approve
+          method: POST
+
+  # ------------------------------------------------ KYC-PENDING FUNCTIONS ----------------------------------------------------------
+
+  kycComplete:
+    handler: service/kyc-pending/complete.handler
+    events:
+      - sns:
+          arn: ${redtail:service_topic}
+          filterPolicy:
+            app: [build]
+            service: [passport-service]
+            filterKey: [organization-kyc]
+            event: [kyc-results]
+
+  # ------------------------------------------------ ENTITY-PENDING FUNCTIONS ----------------------------------------------------------
+
+  entityComplete:
+    handler: service/entity-pending/complete.handler
+    events:
+      - sns:
+          arn: ${redtail:service_topic}
+          filterPolicy:
+            app: [build]
+            service: [entity-service]
+            event: [init]
+            phase: [complete]
+
+  # ------------------------------------------------ BANKING-PENDING FUNCTIONS ----------------------------------------------------------
+
+  # ------------------------------------------------ ONBOARDED FUNCTIONS ----------------------------------------------------------
+
+  onboardedComplete:
+    handler: service/onboarded/complete.handler
+    events:
+      - sns:
+          arn: ${redtail:service_topic}
+          filterPolicy:
+            app: [spv]
+            service: [spv-deal-service]
+            event: [init]
+            phase: [closing]

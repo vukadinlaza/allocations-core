@@ -1,0 +1,52 @@
+{
+  "name": "@allocations/investment-service",
+  "version": "0.1.1",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "test": "jest --runInBand",
+    "test:watch": "yarn test --watch",
+    "deploy:dev": "serverless deploy",
+    "clear_jest": "jest --clearCache",
+    "test:start": "jest -i test/service/start.spec.ts -t \"start tests\"",
+    "test:update": "jest -i test/service/update-investment.spec.ts -t \"update tests\"",
+    "test:deal-closed": "jest -i test/service/deal-closed.spec.ts -t \"deal closed tests\"",
+    "test:signed": "jest -i test/service/signed/init.spec.ts -t \"signed tests\""
+  },
+  "dependencies": {
+    "@allocations/core-models": "*",
+    "@allocations/serverless-allocations-redtail": "^2.2.2",
+    "@allocations/service-common": "^0.1.0",
+    "airtable": "^0.11.1",
+    "docspring": "^1.3.2",
+    "form-data": "^4.0.0",
+    "lodash": "^4.17.21",
+    "mongodb": "^4.1.1",
+    "mongoose": "^6.1.4",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "@allocations/service-testing": "^1.0.0",
+    "@types/airtable": "^0.10.1",
+    "@types/aws-lambda": "^8.10.92",
+    "@types/jest": "^27.0.1",
+    "@types/node-fetch": "^2.5.12",
+    "@types/uuid": "^8.3.1",
+    "jest": "^27.4.3",
+    "mongodb-memory-server": "^8.0.4",
+    "msw": "^0.36.3",
+    "runtypes": "^6.5.0",
+    "serverless": "^2.60.1",
+    "serverless-offline": "^8.2.0",
+    "serverless-plugin-datadog": "^3.0.1",
+    "serverless-plugin-monorepo": "^0.10.0",
+    "serverless-prune-plugin": "^1.6.0",
+    "serverless-webpack": "^5.5.5",
+    "ts-jest": "^27.0.5",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.4.2",
+    "webpack": "^5.61.0"
+  },
+  "author": "",
+  "license": "ISC"
+}

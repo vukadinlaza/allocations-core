@@ -1,0 +1,14 @@
+{
+  "phases": {
+    "new": {
+      "CREATED": "organization-pending"
+    },
+    "organization-pending": {
+      "DONE": "formation-pending"
+    },
+    "formation-pending": {
+      "DONE": "complete"
+    },
+    "complete": {}
+  }
+}

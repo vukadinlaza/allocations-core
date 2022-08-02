@@ -1,0 +1,35 @@
+{
+  "phases": {
+    "new": {
+      "CREATED": "generate-agreements"
+    },
+    "trial": {
+      "DONE": "generate-agreements",
+      "LOST": "lost"
+    },
+    "generate-agreements": {
+      "GENERATION_COMPLETE": "agreements-pending"
+    },
+    "agreements-pending": {
+      "DONE": "ops-handoff",
+      "LOST": "lost"
+    },
+    "ops-handoff": {
+      "DONE": "kyc-pending",
+      "LOST": "lost"
+    },
+    "kyc-pending": {
+      "DONE": "entity-pending"
+    },
+    "entity-pending": {
+      "DONE": "onboarded",
+      "LOST": "lost"
+    },
+    "onboarded": {
+      "DONE": "complete",
+      "LOST": "lost"
+    },
+    "complete": {},
+    "lost": {}
+  }
+}

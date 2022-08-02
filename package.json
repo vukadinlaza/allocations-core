@@ -1,0 +1,23 @@
+{
+  "name": "allocations-core",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Allocations/allocations-core.git"
+  },
+  "scripts": {
+    "build:models": "cd packages/core-models && yarn build",
+    "build:api": "cd packages/api && yarn build",
+    "build": "yarn build:models && yarn build:api"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {},
+  "homepage": "https://github.com/Allocations/allocations-core#readme",
+  "workspaces": [
+    "packages/*"
+  ]
+}

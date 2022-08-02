@@ -1,0 +1,19 @@
+{
+  "name": "@allocations/core-models",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^6.1.4",
+    "node-fetch": "2"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
+}

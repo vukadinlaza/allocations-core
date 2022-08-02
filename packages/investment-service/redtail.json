@@ -1,0 +1,27 @@
+{
+  "phases": {
+    "new": {
+      "CREATED": "airtable-sync",
+      "CREATED_WITH_INVITE": "invited"
+    },
+    "invited": {
+      "DONE": "airtable-sync"
+    },
+    "airtable-sync": {
+      "COMPLETE": "signed",
+      "FAILED": "airtable-failed"
+    },
+    "signed": {
+      "DONE": "wired",
+      "RESIGN": "signed"
+    },
+    "wired": {
+      "UNDO": "signed",
+      "DONE": "complete"
+    },
+    "complete": {},
+    "airtable-failed": {
+      "RESYNC": "airtable-sync"
+    }
+  }
+}

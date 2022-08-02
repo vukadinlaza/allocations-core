@@ -1,0 +1,470 @@
+{
+  "docspring": {
+    "fm_fields": [
+      {
+        "name": "fm_signature",
+        "type": "signature",
+        "required": true,
+        "default_placements": [
+          {
+            "page": 136,
+            "x": 1255,
+            "y": 1022.26347826086,
+            "width": 926,
+            "height": 70
+          },
+          {
+            "page": 137,
+            "x": 1257,
+            "y": 1243.26898550726,
+            "width": 924,
+            "height": 70
+          }
+        ]
+      }
+    ],
+    "investor_fields": [
+      {
+        "name": "investor_type",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 4,
+            "x": 865,
+            "y": 1039.53652173913,
+            "width": 1302,
+            "height": 70
+          }
+        ]
+      },
+      {
+        "name": "member_name",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return form.investor_type === 'Entity'? form.investor_entity_name : `${form.investor_name || ''}`"
+        },
+        "default_placements": [
+          {
+            "page": 4,
+            "x": 865,
+            "y": 1149.53652173913,
+            "width": 1302,
+            "height": 127
+          },
+          {
+            "page": 138,
+            "x": 1486,
+            "y": 908.27449275366,
+            "width": 644,
+            "height": 150
+          }
+        ]
+      },
+      {
+        "name": "total_committed_amount",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 4,
+            "x": 865,
+            "y": 1323.53652173913,
+            "width": 1292,
+            "height": 70
+          }
+        ],
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return (form.total_committed_amount).toLocaleString('en-US')"
+        }
+      },
+      {
+        "name": "individual_investor_state",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return form.investor_type === 'Entity'? '' : (form.investor_country === 'United States'? form.investor_state : form.investor_country)"
+        },
+        "default_placements": [
+          {
+            "page": 4,
+            "x": 865,
+            "y": 1472.53652173913,
+            "width": 1294,
+            "height": 159
+          }
+        ]
+      },
+      {
+        "name": "entity_investor_state",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return form.investor_type === 'Entity'? (form.investor_country === 'United States'? form.investor_state : form.investor_country) : ''"
+        },
+        "default_placements": [
+          {
+            "page": 4,
+            "x": 865,
+            "y": 1701.53652173913,
+            "width": 1282,
+            "height": 172
+          }
+        ]
+      },
+      {
+        "name": "accredited_investor_type_individual",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 4,
+            "x": 865,
+            "y": 1918.53652173913,
+            "width": 1294,
+            "height": 102
+          }
+        ]
+      },
+      {
+        "name": "accredited_investor_type_entity",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 4,
+            "x": 865,
+            "y": 2047.53652173913,
+            "width": 1296,
+            "height": 102
+          }
+        ]
+      },
+      {
+        "name": "investor_email",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 4,
+            "x": 865,
+            "y": 2184.53652173913,
+            "width": 1292,
+            "height": 70
+          }
+        ]
+      },
+      {
+        "name": "investor_name",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return `${form.investor_name || ''}`"
+        },
+        "default_placements": [
+          {
+            "page": 4,
+            "x": 865,
+            "y": 2282.53652173913,
+            "width": 1292,
+            "height": 70
+          },
+          {
+            "page": 138,
+            "x": 1400,
+            "y": 1058.27449275366,
+            "width": 728,
+            "height": 150
+          }
+        ]
+      },
+      {
+        "name": "cfius_definition",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 4,
+            "x": 863,
+            "y": 2589.53652173913,
+            "width": 1308,
+            "height": 70
+          }
+        ]
+      },
+      {
+        "name": "investment_date",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return (new Date()).toLocaleDateString('en-us', { year: 'numeric', month: 'short', day: 'numeric' });"
+        },
+        "default_placements": [
+          {
+            "page": 138,
+            "x": 1292,
+            "y": 1197.27449275366,
+            "width": 832,
+            "height": 70
+          },
+          {
+            "page": 136,
+            "x": 1315,
+            "y": 1138.26347826086,
+            "width": 867,
+            "height": 86
+          },
+          {
+            "page": 137,
+            "x": 1288,
+            "y": 1362.26898550726,
+            "width": 900,
+            "height": 82
+          }
+        ]
+      },
+      {
+        "name": "investor_signature",
+        "type": "signature",
+        "default_placements": [
+          {
+            "page": 138,
+            "x": 1370,
+            "y": 798.27449275366,
+            "width": 763,
+            "height": 70
+          }
+        ]
+      },
+      {
+        "name": "agreed_to_terms",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10006;",
+        "default_placements": [
+          {
+            "page": 5,
+            "x": 288,
+            "y": 667.542028985508,
+            "width": 61,
+            "height": 61
+          }
+        ]
+      }
+    ]
+  },
+  "form_structure": {
+    "groups": [
+      {
+        "title": "Investment Amount",
+        "fields": [
+          {
+            "name": "total_committed_amount",
+            "component": "input",
+            "label": "",
+            "required": true,
+            "validation_label": "Investment Amount",
+            "format": "number",
+            "placeholder": "${minimumInvestment}",
+            "grid_columns": {
+              "xs": 8
+            },
+            "validator": {
+              "parameters": ["form", "form_structure", "field"],
+              "body": "return form?.[field] >= Number(form_structure?.variables?.minimumInvestment?.replace(/[^0-9]/g, ''))",
+              "invalid_msg": "The Investment Amount is lower than the minimum"
+            },
+            "value_formatter": {
+              "parameters": ["form", "field"],
+              "body": "return (form?.[field]).toLocaleString('en-US')"
+            },
+            "value_deformatter": {
+              "parameters": ["value"],
+              "body": "return value.slice(-1) !== '.'? Number(value.replaceAll(',', '')) : value"
+            }
+          },
+          {
+            "name": "minimum_investment",
+            "component": "button",
+            "label": "Minimum Investment",
+            "full_width": true,
+            "on_click": {
+              "body": "handleChange('total_committed_amount', deal.minimum_investment)",
+              "parameters": ["handleChange", "deal"]
+            },
+            "grid_columns": {
+              "xs": 4
+            }
+          }
+        ]
+      },
+      {
+        "title": "Basic Information",
+        "fields": [
+          {
+            "name": "investor_type",
+            "component": "select",
+            "choices": ["Individual", "Entity"],
+            "label": "Investor Type"
+          },
+          {
+            "name": "investor_name",
+            "component": "input",
+            "label": "Investor Name",
+            "required": true,
+            "placeholder": "Enter Name"
+          },
+          {
+            "name": "investor_country",
+            "component": "select",
+            "choices": "${countries}",
+            "label": "Country",
+            "required": true,
+            "placeholder": "Select Country"
+          },
+          {
+            "name": "investor_state",
+            "component": "select",
+            "choices": "${states}",
+            "required": true,
+            "label": "State",
+            "dependencies": [
+              {
+                "field": "investor_country",
+                "required_value": "United States"
+              }
+            ]
+          },
+          {
+            "name": "investor_entity_name",
+            "component": "input",
+            "label": "Entity Name",
+            "required": true,
+            "placeholder": "Enter Entity Name",
+            "dependencies": [
+              {
+                "field": "investor_type",
+                "required_value": "Entity"
+              }
+            ]
+          },
+          {
+            "name": "accredited_investor_type_individual",
+            "component": "select",
+            "choices": [
+              "I have individual/ joint net worth in excess of $1m",
+              "I’ve had $$200k+ income in each of the two most recent years",
+              "I’ve had $200k+ income in each of the two most recent years",
+              "I’ve had $300k+ joint income in each of the two most recent years",
+              "My professional certification qualifies certification",
+              "I am a director or executive officer of the Fund’s",
+              "I am a “knowledgeable employee” of the private"
+            ],
+            "label": "Accredited Investor Type",
+            "dependencies": [
+              {
+                "field": "investor_type",
+                "required_value": "Individual"
+              }
+            ]
+          },
+          {
+            "name": "accredited_investor_type_entity",
+            "component": "select",
+            "choices": [
+              "Each equity owner of my entity is an accredited investor",
+              "My entity has total assets in excess of $5m",
+              "I am a “family office” with $5m+ in assets under management",
+              "I am an Investment Advisor",
+              "I am an Exempt Investment Adviser",
+              "I am a private business development company",
+              "I am an investment company or a business development company",
+              "I am a Small Business Investment Company"
+            ],
+            "label": "Accredited Investor Type",
+            "dependencies": [
+              {
+                "field": "investor_type",
+                "required_value": "Entity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "CFIUS Foreign Person Status Representations",
+        "popover": {
+          "title": "CFIUS Foreign Person Status Representations",
+          "content": [
+            {
+              "title": "A “Foreign National”",
+              "text": "(i.e., an individual that is other than a “U.S. national”). For purposes of the CFIUS Regulations, a “U.S. national” is (1) a citizen of the United States or (2) an individual who, although not a citizen of the United States, owes a permanent allegiance to the United States. Note that “green card” holders are not U.S. nationals, but dual citizens (i.e., individuals who are citizens of the United States and another country) are U.S. nationals."
+            },
+            {
+              "title": "A “Foreign Government”",
+              "text": " (i.e., any government or body exercising governmental functions, other than the United States Government or a subnational government of the United States). Note that the term “foreign government” includes, without limitation, national and subnational governments, including their respective departments, agencies and instrumentalities."
+            },
+            {
+              "title": "A “Foreign Entity”",
+              "text": "(i.e., any branch, partnership, group or sub-group, association, estate, trust, corporation, limited liability company or equivalent legal entity or organization that is organized or incorporated under the laws of a foreign (i.e., non-United States) jurisdiction) if either (i) the entity’s “principal place of business” is outside the United States or (ii) the entity’s equity securities are primarily traded on one or more foreign exchanges. Note that: (1) for purposes of this representation, the term “principal place of business” means the primary location where an entity’s management directs, controls, or coordinates the entity’s activities; (2) for entities that are investment funds, the term “principal place of business” is where the fund’s activities and investments are primarily directed, controlled, or coordinated by or on behalf of the general partner, managing member, or equivalent; and (3) if an investment fund has stated to a government authority that its principal place of business, principal office, headquarters, or equivalent is outside the United States, then the location identified in such statement is deemed for purposes of this representation to be the entity’s principal place of business unless the entity can demonstrate that such location has changed to the United States since making such statement."
+            },
+            {
+              "title": "A “Foreign-controlled Entity”",
+              "text": "(i.e., any entity over which control in any form is exercised or exercisable by a foreign national, foreign government or foreign entity). For purposes of the CFIUS Regulations, “control” means the power, direct or indirect, whether exercised or not exercised, to determine, direct or decide important matters affecting an entity, and includes negative control (i.e., the ability to prevent an entity from taking actions with respect to an important matter)."
+            },
+            {
+              "title": "Not a “Foreign Person”",
+              "text": "under any of the above definitions or otherwise as defined under the CFIUS Regulations."
+            }
+          ]
+        },
+        "fields": [
+          {
+            "name": "cfius_definition",
+            "component": "radio",
+            "required": true,
+            "validation_label": "Disclaimer",
+            "choices": [
+              "A 'Foreign National'",
+              "A 'Foreign Government'",
+              "A 'Foreign Entity'",
+              "A 'Foreign-controlled Entity'",
+              "Not a 'Foreign Person'"
+            ],
+            "label": "Accredited Investor Type"
+          }
+        ]
+      },
+      {
+        "title": "Documents",
+        "fields": [
+          {
+            "name": "preview_document",
+            "component": "document",
+            "label": "Subscription Agreement Preview",
+            "on_click": {
+              "body": "\n  const document = parameters.getFE(`/api/deal/subscription-agreement/${parameters.deal._id}`).then(document => window.open(document.link, \"_blank\", \"noopener,noreferrer\"))\n",
+              "parameters": ["parameters"]
+            },
+            "grid_columns": {
+              "xs": 12
+            }
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "name": "submit_investment",
+        "component": "button",
+        "label": "Continue",
+        "format": "submit",
+        "full_width": true,
+        "grid_columns": {
+          "xs": 4
+        }
+      }
+    ],
+    "variables": {
+      "countries": null,
+      "states": null,
+      "minimumInvestment": null
+    }
+  }
+}

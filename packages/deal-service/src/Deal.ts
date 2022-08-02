@@ -1,0 +1,63 @@
+export type Deal = {
+  organization_id: string;
+  user_id: string;
+  slug: string;
+  name: string;
+  accept_crypto: boolean;
+  allocations_reporting_adviser: boolean;
+  angels_deal: boolean;
+  asset_type: string;
+  carry_fee: number;
+  closing_date: Date;
+  custom_investment_agreement: boolean;
+  deal_stage: string;
+  deal_multiple: number;
+  deal_term: string;
+  description: string;
+  docspring_template_id: string;
+  gp_entity: {
+    gp_entity_name: string;
+    need_gp_entity: string;
+  };
+  hubspot_deal_id: number;
+  ica_exemption: {
+    exemption_type: string;
+    investor_type: string;
+  };
+  industry: string;
+  international_company: {
+    status: string;
+    country: string;
+  };
+  investor_countries: [string];
+  management_fee: number;
+  management_fee_frequency: string;
+  manager: {
+    type: string;
+    name: string;
+    entity_representative?: string;
+    email: string;
+    title?: string;
+  };
+  memo: string;
+  minimum_investment: number;
+  nd_virtual_account_number: string;
+  number_of_investments: number;
+  offering_type: string;
+  phase: string;
+  portfolio_company_name: string;
+  portfolio_company_securities: string;
+  public_pitch_deck: boolean;
+  reporting_adviser: string;
+  sectors: [string];
+  series_name?: string;
+  setup_cost: number;
+  side_letters: boolean;
+  sign_deadline: Date;
+  target_raise_goal: number;
+  type: string;
+  type_of_investors: string;
+  wire_deadline: Date;
+  createdAt: Date;
+  updatedAt: Date;
+};

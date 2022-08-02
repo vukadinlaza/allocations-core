@@ -1,0 +1,5 @@
+.env
+.env.copy
+node_modules
+dist
+src/scripts/migrationDocs

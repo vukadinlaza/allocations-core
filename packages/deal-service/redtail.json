@@ -1,0 +1,23 @@
+{
+  "phases": {
+    "new": {
+      "CREATED": "build"
+    },
+    "build": {
+      "DONE": "post-build"
+    },
+    "post-build": {
+      "DONE": "pre-onboarding"
+    },
+    "pre-onboarding": {
+      "DONE": "onboarding"
+    },
+    "onboarding": {
+      "DONE": "closing"
+    },
+    "closing": {
+      "DONE": "post-closing"
+    },
+    "post-closing": {}
+  }
+}

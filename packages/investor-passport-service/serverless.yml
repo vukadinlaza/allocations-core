@@ -1,0 +1,125 @@
+org: allocations
+app: onboarding
+service: passport-service
+frameworkVersion: "2"
+variablesResolutionMode: 20210326
+
+plugins:
+  # - serverless-plugin-datadog
+  - serverless-plugin-log-retention
+  - serverless-plugin-monorepo
+  - serverless-webpack
+  - serverless-offline
+  - serverless-prune-plugin
+  - "@allocations/serverless-allocations-redtail"
+
+custom:
+  secrets: ${ssm:/aws/reference/secretsmanager/allocations-onboarding/${opt:stage}}
+  redtail:
+    config: ${file(./redtail.json)}
+  serverless-offline:
+    httpPort: 8000
+    APP_SECRET: ${APP_SECRET}
+    ALLOCATIONS_INVESTOR_PASSPORT_SERVICE: ${ALLOCATIONS_INVESTOR_PASSPORT_SERVICE}
+  prune:
+    automatic: true
+    number: 3
+  webpack:
+    packager: "yarn"
+    includeModules:
+      forceExclude:
+        - aws-sdk
+        - dd-trace
+        - datadog-lambda-js
+
+provider:
+  name: aws
+  endpointType: private
+  vpcEndpointIds:
+    - vpce-0cc4064fecca36cab
+  vpc:
+    securityGroupIds:
+      - sg-0245432c2213eeeb8
+      - sg-0665e26c1dc22d6dd
+    subnetIds:
+      - subnet-016539b44e6b89113
+      - subnet-01a39dab42b630de6
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  memorySize: 512
+  environment:
+    APP_SECRET: ${self:custom.secrets.APP_SECRET}
+    MONGODB_URI: ${self:custom.secrets.MONGODB_URI}
+    NAME_SCAN_API_KEY: ${self:custom.secrets.NAME_SCAN_API_KEY}
+  apiGateway:
+    resourcePolicy:
+      - Effect: Allow
+        Principal: "*"
+        Action: execute-api:Invoke
+        Resource:
+          - execute-api:/*
+        Condition:
+          StringEquals:
+            aws:SourceVpc: vpc-0d05ab0d45d1ddbd5
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        ["s3:GetObject", "s3:PutObject", "s3:ListBucket", "s3:DeleteObject"]
+      Resource:
+        - "arn:aws:s3:::allocations-onboarding-documents-${opt:stage, 'dev'}/*"
+
+functions:
+  healthCheck:
+    handler: service/health-check.handler
+    events:
+      - http:
+          path: health-check
+          method: GET
+
+  initialize:
+    handler: service/initialize.handler
+    events:
+      - http:
+          path: initialize
+          method: POST
+
+  checkOnboardingStatus:
+    handler: service/onboarding/check.handler
+    events:
+      - http:
+          path: check-onboarding-status
+          method: POST
+
+  upload:
+    handler: service/onboarding/upload.handler
+    events:
+      - s3:
+          bucket: allocations-onboarding-documents-${opt:stage, 'dev'}
+          event: s3:ObjectCreated:*
+          existing: true
+          rules:
+            - prefix: passport
+
+  review:
+    handler: service/review/review.handler
+    events:
+      - http:
+          path: review
+          method: POST
+
+  kycTriggerSNS:
+    handler: service/kyc/trigger.snsHandler
+    events:
+      - sns:
+          arn: ${redtail:service_topic}
+          filterPolicy:
+            app: [onboarding]
+            service: [passport-service]
+            event: [trigger-kyc]
+
+  kycTriggerHTTP:
+    handler: service/kyc/trigger.httpHandler
+    events:
+      - http:
+          path: kyc
+          method: POST

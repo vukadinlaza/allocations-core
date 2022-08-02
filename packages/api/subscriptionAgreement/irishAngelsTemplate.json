@@ -1,0 +1,1050 @@
+{
+  "docspring": {
+    "fm_fields": null,
+    "investor_fields": [
+      {
+        "name": "investor_type",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 32,
+            "x": 709,
+            "y": 673.039999999991,
+            "width": 716,
+            "height": 72
+          }
+        ]
+      },
+      {
+        "name": "investor_name",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return `${form.investor_name || ''}`"
+        },
+        "default_placements": [
+          {
+            "page": 32,
+            "x": 716,
+            "y": 981.039999999991,
+            "width": 710,
+            "height": 65
+          }
+        ]
+      },
+      {
+        "name": "individual_investor_name",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return `${form.investor_type === 'Entity'? '' : form.investor_name}`"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1652,
+            "y": 930.399999999994,
+            "width": 549,
+            "height": 50
+          }
+        ]
+      },
+      {
+        "name": "entity_investor_name",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return `${form.investor_type === 'Entity'? form.investor_name : ''}`"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 368,
+            "y": 1073.39999999999,
+            "width": 843,
+            "height": 70
+          }
+        ]
+      },
+      {
+        "name": "investment_date",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return (new Date()).toLocaleDateString('en-us', { year: 'numeric', month: 'short', day: 'numeric' });"
+        },
+        "default_placements": [
+          {
+            "page": 32,
+            "x": 716,
+            "y": 1088.03999999999,
+            "width": 706,
+            "height": 57
+          },
+          {
+            "page": 50,
+            "x": 290,
+            "y": 392.399999999994,
+            "width": 525,
+            "height": 61
+          }
+        ]
+      },
+      {
+        "name": "investment_date2",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return form.second_signer? (new Date()).toLocaleDateString('en-us', { year: 'numeric', month: 'short', day: 'numeric' }) : '';"
+        },
+        "default_placements": [
+          {
+            "page": 32,
+            "x": 1458,
+            "y": 1088.03999999999,
+            "width": 706,
+            "height": 57
+          }
+        ]
+      },
+      {
+        "name": "member_name",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return form.investor_type === 'Entity'? form.investor_entity_name : `${form.investor_name || ''}`"
+        },
+        "default_placements": [
+          {
+            "page": 32,
+            "x": 721,
+            "y": 1289.03999999999,
+            "width": 702,
+            "height": 57
+          }
+        ]
+      },
+      {
+        "name": "entity_member_name",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return form.investor_type === 'Entity'? form.investor_entity_name : ``"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 294,
+            "y": 970.399999999994,
+            "width": 908,
+            "height": 69
+          }
+        ]
+      },
+      {
+        "name": "investor_title",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 32,
+            "x": 716,
+            "y": 1388.03999999999,
+            "width": 709,
+            "height": 70
+          },
+          {
+            "page": 50,
+            "x": 485,
+            "y": 1293.39999999999,
+            "width": 717,
+            "height": 53
+          }
+        ]
+      },
+      {
+        "name": "state_and_country",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return `${form.investor_country === 'United States'? `${form.investor_state}, ` : ''}${form.investor_country}`"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1057,
+            "y": 486.399999999994,
+            "width": 994,
+            "height": 65
+          }
+        ]
+      },
+      {
+        "name": "total_committed_amount",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1298,
+            "y": 602.399999999994,
+            "width": 759,
+            "height": 53
+          }
+        ],
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return (form.total_committed_amount).toLocaleString('en-US')"
+        }
+      },
+      {
+        "name": "investor_entity_name",
+        "type": "string",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "return form.investor_type === 'Entity'? form.investor_state : ''"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 562,
+            "y": 1186.39999999999,
+            "width": 649,
+            "height": 57
+          }
+        ]
+      },
+      {
+        "name": "ein",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 292,
+            "y": 1410.39999999999,
+            "width": 908,
+            "height": 57
+          }
+        ]
+      },
+      {
+        "name": "investor_signature",
+        "type": "signature",
+        "default_placements": [
+          {
+            "page": 32,
+            "x": 709,
+            "y": 779.039999999991,
+            "width": 714,
+            "height": 168
+          },
+          {
+            "page": 50,
+            "x": 1540,
+            "y": 1071.39999999999,
+            "width": 652,
+            "height": 70
+          }
+        ]
+      },
+      {
+        "name": "ssn",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1779,
+            "y": 1281.39999999999,
+            "width": 393,
+            "height": 65
+          }
+        ]
+      },
+      {
+        "name": "$ed0",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'entity_designation'); const valueN = designation.choices[0]; return form.entity_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 326,
+            "y": 1679.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "$ed1",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'entity_designation'); const valueN = designation.choices[1]; return form.entity_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 316,
+            "y": 1788.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "$ed2",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'entity_designation'); const valueN = designation.choices[2]; return form.entity_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 318,
+            "y": 1895.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "$ed3",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'entity_designation'); const valueN = designation.choices[3]; return form.entity_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 318,
+            "y": 1945.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "$ed4",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'entity_designation'); const valueN = designation.choices[4]; return form.entity_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 321,
+            "y": 2017.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "$ed5",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'entity_designation'); const valueN = designation.choices[5]; return form.entity_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 318,
+            "y": 2075.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "$ed6",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'entity_designation'); const valueN = designation.choices[6]; return form.entity_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 318,
+            "y": 2124.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "$ed7",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'entity_designation'); const valueN = designation.choices[7]; return form.entity_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 316,
+            "y": 2181.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "$ed8",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'entity_designation'); const valueN = designation.choices[0]; return form.entity_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 318,
+            "y": 2246.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "$ed9",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'entity_designation'); const valueN = designation.choices[0]; return form.entity_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 318,
+            "y": 2306.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "$id0",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'individual_designation'); const valueN = designation.choices[0]; return form.individual_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1274,
+            "y": 1699.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "$id1",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'individual_designation'); const valueN = designation.choices[1]; return form.individual_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1276,
+            "y": 1751.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "$id2",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'individual_designation'); const valueN = designation.choices[2]; return form.individual_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1282,
+            "y": 1803.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "$id3",
+        "type": "boolean",
+        "displayType": "check",
+        "checkCharacter": "&#10004;",
+        "value_setter": {
+          "parameters": ["form", "docspring_fields", "form_fields"],
+          "body": "const designation = form_fields.find(field => field.name === 'individual_designation'); const valueN = designation.choices[3]; return form.individual_designation === valueN"
+        },
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1276,
+            "y": 1861.39999999999,
+            "width": 46,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "home_address",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 995,
+            "y": 2366.39999999999,
+            "width": 1168,
+            "height": 57
+          }
+        ]
+      },
+      {
+        "name": "mailing_address",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 301,
+            "y": 2487.39999999999,
+            "width": 1480,
+            "height": 46
+          }
+        ]
+      },
+      {
+        "name": "investor_email",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 582,
+            "y": 2562.39999999999,
+            "width": 717,
+            "height": 50
+          }
+        ]
+      },
+      {
+        "name": "initials",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1787,
+            "y": 2744.39999999999,
+            "width": 137,
+            "height": 80
+          }
+        ]
+      },
+      {
+        "name": "investor_type2",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 32,
+            "x": 1456,
+            "y": 675.039999999991,
+            "width": 711,
+            "height": 65
+          }
+        ]
+      },
+      {
+        "name": "investor_name2",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1652,
+            "y": 983.399999999994,
+            "width": 549,
+            "height": 50
+          },
+          {
+            "page": 32,
+            "x": 1455,
+            "y": 978.039999999991,
+            "width": 710,
+            "height": 65
+          }
+        ]
+      },
+      {
+        "name": "investor_signature2",
+        "type": "signature",
+        "required": false,
+        "dependencies": [
+          {
+            "field": "second_signer",
+            "required_value": true
+          }
+        ],
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1521,
+            "y": 1179.39999999999,
+            "width": 652,
+            "height": 70
+          },
+          {
+            "page": 32,
+            "x": 1456,
+            "y": 783.039999999991,
+            "width": 716,
+            "height": 162
+          }
+        ]
+      },
+      {
+        "name": "investor_email2",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1306,
+            "y": 2562.39999999999,
+            "width": 717,
+            "height": 50
+          }
+        ]
+      },
+      {
+        "name": "ssn2",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1701,
+            "y": 1353.39999999999,
+            "width": 393,
+            "height": 65
+          }
+        ]
+      },
+      {
+        "name": "initials2",
+        "type": "string",
+        "default_placements": [
+          {
+            "page": 50,
+            "x": 1930,
+            "y": 2746.39999999999,
+            "width": 137,
+            "height": 80
+          }
+        ]
+      }
+    ]
+  },
+  "form_structure": {
+    "groups": [
+      {
+        "title": "Investment Amount",
+        "fields": [
+          {
+            "name": "total_committed_amount",
+            "component": "input",
+            "label": "",
+            "required": true,
+            "validation_label": "Investment Amount",
+            "format": "number",
+            "placeholder": "${minimumInvestment}",
+            "validator": {
+              "parameters": ["form", "form_structure", "field"],
+              "body": "return form?.[field] >= Number(form_structure?.variables?.minimumInvestment?.replace(/[^0-9]/g, ''))",
+              "invalid_msg": "The Investment Amount is lower than the minimum"
+            },
+            "value_formatter": {
+              "parameters": ["form", "field"],
+              "body": "return (form?.[field]).toLocaleString('en-US')"
+            },
+            "value_deformatter": {
+              "parameters": ["value"],
+              "body": "return value.slice(-1) !== '.'? Number(value.replaceAll(',', '')) : value"
+            },
+            "grid_columns": {
+              "xs": 8
+            }
+          },
+          {
+            "name": "minimum_investment",
+            "component": "button",
+            "label": "Minimum Investment",
+            "full_width": true,
+            "on_click": {
+              "body": "handleChange('total_committed_amount', deal.minimum_investment)",
+              "parameters": ["handleChange", "deal"]
+            },
+            "grid_columns": {
+              "xs": 4
+            }
+          }
+        ]
+      },
+      {
+        "title": "Basic Information",
+        "fields": [
+          {
+            "name": "investor_type",
+            "component": "select",
+            "choices": ["Individual", "Entity"],
+            "label": "Investor Type"
+          },
+          {
+            "name": "investor_name",
+            "component": "input",
+            "label": "Investor Name",
+            "required": true,
+            "placeholder": "Enter Name"
+          },
+          {
+            "name": "investor_country",
+            "component": "select",
+            "choices": "${countries}",
+            "label": "Country",
+            "required": true,
+            "placeholder": "Select Country"
+          },
+          {
+            "name": "investor_state",
+            "component": "select",
+            "choices": "${states}",
+            "label": "State",
+            "dependencies": [
+              {
+                "field": "investor_country",
+                "required_value": "United States"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Irish Angels",
+        "fields": [
+          {
+            "name": "p1",
+            "component": "typography",
+            "variant": "paragraph3",
+            "content": "Please initial below to certify that you are still an Accredited Investor, per SEC criteria, as detailed in Exhibit D of the IrishAngels Membership Agreement previously executed by you.",
+            "grid_columns": {
+              "xs": 12
+            }
+          },
+          {
+            "name": "initials",
+            "component": "input",
+            "label": "Initials",
+            "required": true,
+            "placeholder": "Enter Initials"
+          },
+          {
+            "name": "ssn",
+            "component": "input",
+            "label": "Social Security Number",
+            "required": true,
+            "placeholder": "Enter Social Security Number",
+            "dependencies": [
+              {
+                "field": "investor_type",
+                "required_value": "Individual"
+              }
+            ],
+            "validator": {
+              "parameters": ["form", "form_structure", "field"],
+              "body": "return String(form?.[field])?.replaceAll('-', '').length === 9",
+              "invalid_msg": "Invalid Social Security Number"
+            },
+            "value_formatter": {
+              "parameters": ["form", "field"],
+              "body": "\n let value = form[field]; value = value.replace(/\\D/g, '');\n  if(value.length <= 3) return value\n  let valueArray = value.split('')\n  if(value.length > 3) valueArray.splice(3, 0, '-')\n  if(value.length > 5) valueArray.splice(6, 0, '-')\n  return valueArray.join('')\n"
+            }
+          },
+          {
+            "name": "individual_designation",
+            "component": "select",
+            "choices": [
+              "Individual",
+              "Joint Tenants with Rights of Survivorship",
+              "Tenants by the Entirety",
+              "Tenants in Common"
+            ],
+            "label": "Individual Designation",
+            "required": true,
+            "placeholder": "Select the appropriate designation",
+            "dependencies": [
+              {
+                "field": "investor_type",
+                "required_value": "Individual"
+              }
+            ]
+          },
+          {
+            "name": "investor_entity_name",
+            "component": "input",
+            "label": "Entity Name",
+            "required": true,
+            "placeholder": "Enter Entity Name",
+            "dependencies": [
+              {
+                "field": "investor_type",
+                "required_value": "Entity"
+              }
+            ]
+          },
+          {
+            "name": "ein",
+            "component": "input",
+            "label": "EIN",
+            "required": true,
+            "placeholder": "EIN (or SSN for Revokable Trusts)",
+            "dependencies": [
+              {
+                "field": "investor_type",
+                "required_value": "Entity"
+              }
+            ]
+          },
+          {
+            "name": "entity_designation",
+            "component": "select",
+            "choices": [
+              "Sole-Member Limited Liability Company (LLC)",
+              "Multi-Member Limited Liability Company (LLC)",
+              "C Corporation",
+              "S Corporation",
+              "General Partnership",
+              "Limited Partnership",
+              "Irrevocable Trust",
+              "Revocable Trust",
+              "IRA Account",
+              "Pension or Profit Sharing Plan"
+            ],
+            "label": "Entity Designation",
+            "required": true,
+            "placeholder": "Select the appropriate designation",
+            "dependencies": [
+              {
+                "field": "investor_type",
+                "required_value": "Entity"
+              }
+            ]
+          },
+          {
+            "name": "investor_title",
+            "component": "input",
+            "label": "Title",
+            "required": true,
+            "placeholder": "Enter Title",
+            "dependencies": [
+              {
+                "field": "investor_type",
+                "required_value": "Entity"
+              }
+            ]
+          },
+          {
+            "name": "home_address",
+            "component": "input",
+            "label": "Home Address",
+            "required": true,
+            "placeholder": "Address, City, State, Zip Code"
+          },
+          {
+            "name": "different_mailing_address",
+            "component": "checkbox",
+            "label": "Different Mailing Address",
+            "grid_columns": {
+              "xs": 12
+            }
+          },
+          {
+            "name": "mailing_address",
+            "component": "input",
+            "label": "Mailing Address",
+            "required": true,
+            "placeholder": "Address, City, State, Zip Code",
+            "dependencies": [
+              {
+                "field": "different_mailing_address",
+                "required_value": true
+              }
+            ]
+          },
+          {
+            "name": "c2",
+            "component": "typography",
+            "variant": "caption",
+            "content": "Required by United States banking laws. This information is transmitted securely and will never be used for any purpose beyond executing your investment.",
+            "grid_columns": {
+              "xs": 12
+            }
+          }
+        ]
+      },
+      {
+        "title": "Second Signer (Optional)",
+        "fields": [
+          {
+            "name": "second_signer",
+            "component": "checkbox",
+            "label": "Select if there is a second signer"
+          },
+          {
+            "name": "investor_type2",
+            "component": "select",
+            "choices": ["Individual", "Entity"],
+            "label": "Second Investor Type",
+            "dependencies": [
+              {
+                "field": "second_signer",
+                "required_value": true
+              }
+            ]
+          },
+          {
+            "name": "investor_name2",
+            "component": "input",
+            "label": "Second Investor Name",
+            "required": true,
+            "placeholder": "Enter Name",
+            "dependencies": [
+              {
+                "field": "second_signer",
+                "required_value": true
+              }
+            ]
+          },
+          {
+            "name": "investor_email2",
+            "component": "input",
+            "format": "email",
+            "label": "Second Investor Email",
+            "required": true,
+            "placeholder": "Enter Email",
+            "dependencies": [
+              {
+                "field": "second_signer",
+                "required_value": true
+              }
+            ]
+          },
+          {
+            "name": "ssn2",
+            "component": "input",
+            "label": "Second Investor Social Security Number",
+            "required": true,
+            "placeholder": "Enter Social Security Number",
+            "dependencies": [
+              {
+                "field": "second_signer",
+                "required_value": true
+              },
+              {
+                "field": "investor_type2",
+                "required_value": "Individual"
+              }
+            ],
+            "validator": {
+              "parameters": ["form", "form_structure", "field"],
+              "body": "return String(form?.[field])?.length === 9",
+              "invalid_msg": "Invalid Social Security Number"
+            },
+            "value_formatter": {
+              "parameters": ["form", "field"],
+              "body": "\n let value = form[field]; value = value.replace(/\\D/g, '');\n  if(value.length <= 3) return value\n  let valueArray = value.split('')\n  if(value.length > 3) valueArray.splice(3, 0, '-')\n  if(value.length > 5) valueArray.splice(6, 0, '-')\n  return valueArray.join('')\n"
+            }
+          },
+          {
+            "name": "initials2",
+            "component": "input",
+            "label": "Second Investor Initials",
+            "required": true,
+            "placeholder": "Enter Initials",
+            "dependencies": [
+              {
+                "field": "second_signer",
+                "required_value": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Documents",
+        "fields": [
+          {
+            "name": "preview_document",
+            "component": "document",
+            "label": "Subscription Agreement Preview",
+            "on_click": {
+              "body": "\n  const document = parameters.getFE(`/api/deal/subscription-agreement/${parameters.deal._id}`).then(document => window.open(document.link, \"_blank\", \"noopener,noreferrer\"))\n",
+              "parameters": ["parameters"]
+            },
+            "grid_columns": {
+              "xs": 12
+            }
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "name": "submit_investment",
+        "component": "button",
+        "label": "Continue",
+        "format": "submit",
+        "full_width": true,
+        "grid_columns": {
+          "xs": 4
+        }
+      }
+    ],
+    "variables": {
+      "countries": null,
+      "states": null,
+      "minimumInvestment": null
+    }
+  }
+}

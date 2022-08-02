@@ -1,0 +1,137 @@
+org: allocations
+app: automations
+service: investment-service
+frameworkVersion: "2"
+plugins:
+  - serverless-plugin-monorepo
+  - serverless-webpack
+  - serverless-offline
+  - serverless-prune-plugin
+  - "@allocations/serverless-allocations-redtail"
+
+custom:
+  redtail:
+    config: ${file(./redtail.json)}
+  prune:
+    automatic: true
+    number: 2
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  memorySize: 512
+  environment:
+    APP_SECRET: ${param:APP_SECRET}
+    MONGO_URL: ${param:MONGO_URL}
+    MONGO_DB: ${param:MONGO_DB}
+    BUILD_API_URL: ${param:BUILD_API_URL}
+    DOCSPRING_API_TOKEN_ID: ${param:DOCSPRING_API_TOKEN_ID}
+    DOCSPRING_API_TOKEN_SECRET: ${param:DOCSPRING_API_TOKEN_SECRET}
+    AIRTABLE_API_KEY: ${param:AIRTABLE_API_KEY}
+    AIRTABLE_DEAL_TRACKER_BASE_ID: ${param:AIRTABLE_DEAL_TRACKER_BASE_ID}
+    AIRTABLE_DEAL_TRACKER_TABLE_ID: ${param:AIRTABLE_DEAL_TRACKER_TABLE_ID, ""}
+    INVESTMENT_API_URL: ${param:INVESTMENT_API_URL}
+    NAME_SCAN_API_KEY: ${param:NAME_SCAN_API_KEY}
+    ALLOCATIONS_TOKEN: ${param:ALLOCATIONS_TOKEN}
+    TREASURY_SERVICE_URL: ${param:TREASURY_SERVICE_URL}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        ["s3:GetObject", "s3:PutObject", "s3:ListBucket", "s3:DeleteObject"]
+      Resource:
+        - "arn:aws:s3:::allocations-investment-documents-${opt:stage, 'dev'}/*"
+
+functions:
+  healthCheck:
+    handler: service/health-check.handler
+    events:
+      - http:
+          method: GET
+          path: health-check
+
+  initialize:
+    handler: service/initialize.handler
+    events:
+      - http:
+          method: POST
+          path: initialize
+
+  wirePendingResign:
+    handler: service/signed/resign.handler
+    events:
+      - http:
+          method: POST
+          path: signed/resign
+
+  updateInvestment:
+    handler: service/update-investment.handler
+    events:
+      - http:
+          method: PUT
+          path: update-investment/{investment_id}
+
+  invite:
+    handler: service/invited/docs-signed.handler
+    events:
+      - http:
+          method: POST
+          path: invite/{investment_id}
+
+  getInvestmentsByDealID:
+    handler: service/investments-by-deal-id.handler
+    events:
+      - http:
+          method: GET
+          path: investments-by-deal-id/{deal_id}
+
+  updateAirtableBlueSkyFees:
+    handler: service/blue-skys/index.handler
+    events:
+      - sns:
+          arn: ${redtail:service_topic}
+          topicName: investments
+          filterPolicy:
+            phase: [signed]
+
+  uploadInvestmentAgreement:
+    handler: service/docspring/investment-agreement-signed.handler
+    events:
+      - sns:
+          arn: ${redtail:service_topic}
+          topicName: investments
+          filterPolicy:
+            phase: [signed]
+
+  updateAirtableInvestmentKYCData:
+    handler: service/name-scan/index.handler
+    events:
+      - sns:
+          arn: ${redtail:service_topic}
+          topicName: investments
+          filterPolicy:
+            phase: [signed]
+
+  investmentDocUpload:
+    handler: service/investment-document-uploaded.handler
+    events:
+      - s3:
+          bucket: allocations-investment-documents-${opt:stage, 'dev'}
+          event: s3:ObjectCreated:*
+          existing: true
+          rules:
+            - prefix: investments/
+
+  getInvestmentAgreementPreview:
+    handler: service/docspring/investment-agreement-preview.handler
+    events:
+      - http:
+          method: POST
+          path: investment-agreement-preview
+
+  resyncWithAirtable:
+    handler: service/airtable-failed/resync.handler
+    events:
+      - http:
+          method: POST
+          path: airtable-sync-failed/resync
