@@ -8,7 +8,7 @@ import { Organization } from "@allocations/core-models";
 const secret = "1234_JEST";
 process.env.APP_SECRET = secret;
 
-describe("Organization V2 Routes", () => {
+describe.skip("Organization V2 Routes", () => {
   beforeAll(async () => {
     return connectMongoose;
   });
