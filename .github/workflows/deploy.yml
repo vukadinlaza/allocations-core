@@ -1,0 +1,31 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: "Define env name"
+        required: true
+        type: choice
+        default: "staging"
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Deploy Pod
+        env:
+          STAGE: ${{ github.event.inputs.stage }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPO: ${{ github.repository }}
+        run: |
+          chmod +x ./.github/scripts/deploy.sh
+          ./.github/scripts/deploy.sh
+        shell: bash
