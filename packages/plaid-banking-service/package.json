@@ -22,7 +22,6 @@
     "@aws-sdk/s3-request-presigner": "^3.33.0",
     "aws-sdk": "^2.998.0",
     "mongodb": "^4.8.1",
-    "mongodb-client-encryption": "^2.1.0",
     "node-fetch": "^2.6.1",
     "plaid": "^10.8.0"
   },
