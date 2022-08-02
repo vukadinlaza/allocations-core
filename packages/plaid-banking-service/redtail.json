@@ -1,0 +1,16 @@
+{
+  "phases": {
+    "new": {
+      "CREATED": "syncing"
+    },
+    "syncing": {
+      "MORE": "syncing",
+      "COMPLETE": "synced"
+    },
+    "synced": {
+      "RESYNC": "syncing",
+      "CLOSE": "closed"
+    },
+    "closed": {}
+  }
+}

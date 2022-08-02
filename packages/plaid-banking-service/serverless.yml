@@ -1,0 +1,52 @@
+org: allocations
+app: product
+service: plaid-banking
+frameworkVersion: "2"
+variablesResolutionMode: 20210326
+
+plugins:
+  - serverless-plugin-monorepo
+  - serverless-webpack
+  - serverless-prune-plugin
+  - "@allocations/serverless-allocations-redtail"
+
+custom:
+  secrets: ${ssm:/aws/reference/secretsmanager/allocations_build_api/${opt:stage}}
+  redtail:
+    config: ${file(./redtail.json)}
+  prune:
+    automatic: true
+    number: 3
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  memorySize: 512
+  environment:
+    APP_SECRET: ${self:custom.secrets.APP_SECRET}
+    MONGODB_URI: ${self:custom.secrets.MONGODB_URI}
+    PLAID_ENVIRONMENT: ${self:custom.secrets.PLAID_ENVIRONMENT}
+    PLAID_CLIENT_ID: ${self:custom.secrets.PLAID_CLIENT_ID}
+    PLAID_SECRET: ${self:custom.secrets.PLAID_SECRET}
+
+functions:
+  initialize:
+    handler: service/initialize.handler
+    events:
+      - http:
+          path: initialize
+          method: POST
+
+  webhookHandler:
+    handler: service/synced/webhook.handler
+    events:
+      - http:
+          path: webhook/{id}
+          method: POST
+
+  sync:
+    handler: service/synced/resync.handler
+    timeout: 300
+    events:
+      - schedule: rate(12 hours)
