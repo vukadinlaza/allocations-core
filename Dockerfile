@@ -13,8 +13,6 @@ RUN cd packages/api && yarn build
 FROM gcr.io/distroless/nodejs:16 as runner
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/packages/api/dist ./dist
-COPY --from=deps /app/packages/api/public ./public
-COPY --from=deps /app/packages/api/docs ./docs
 # also copy all neccesary packages and their respective package.json
 COPY --from=deps /app/packages/core-models/dist ./packages/core-models/dist
 COPY --from=deps /app/packages/core-models/package.json ./packages/core-models/package.json
