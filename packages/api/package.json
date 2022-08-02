@@ -68,7 +68,6 @@
     "express-pino-logger": "^7.0.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.4",
-    "mongodb-client-encryption": "^2.1.0",
     "mongoose": "^6.1.4",
     "node-fetch": "2",
     "pdf-lib": "^1.17.1",
