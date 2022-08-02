@@ -1,2 +1,2 @@
 done
-kubectl rollout undo deployment/allocations.core -n $STAGE
+kubectl rollout undo deployment/allocations-core -n $STAGE

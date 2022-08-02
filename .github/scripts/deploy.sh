@@ -4,7 +4,7 @@ done
 sha=$(git rev-parse main)
 ECR_REGISTRY=046746691294.dkr.ecr.us-east-1.amazonaws.com
 #find or create repository in ECR and set as ECR_REPOSITORY https://us-east-1.console.aws.amazon.com/ecr/repositories?region=us-east-1:
-ECR_REPOSITORY=allocations.core
+ECR_REPOSITORY=allocations-core
 export IMAGE=$ECR_REGISTRY/$ECR_REPOSITORY:$sha
 
 if [ $type = "next" ]
