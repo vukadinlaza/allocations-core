@@ -1,6 +1,6 @@
 org: allocations
-app: automations
-service: investment-service
+app: core
+service: investment-v2
 frameworkVersion: "2"
 plugins:
   - serverless-plugin-monorepo
@@ -34,7 +34,6 @@ provider:
     INVESTMENT_API_URL: ${param:INVESTMENT_API_URL}
     NAME_SCAN_API_KEY: ${param:NAME_SCAN_API_KEY}
     ALLOCATIONS_TOKEN: ${param:ALLOCATIONS_TOKEN}
-    TREASURY_SERVICE_URL: ${param:TREASURY_SERVICE_URL}
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -43,47 +42,12 @@ provider:
         - "arn:aws:s3:::allocations-investment-documents-${opt:stage, 'dev'}/*"
 
 functions:
-  healthCheck:
-    handler: service/health-check.handler
-    events:
-      - http:
-          method: GET
-          path: health-check
-
   initialize:
     handler: service/initialize.handler
     events:
       - http:
           method: POST
           path: initialize
-
-  wirePendingResign:
-    handler: service/signed/resign.handler
-    events:
-      - http:
-          method: POST
-          path: signed/resign
-
-  updateInvestment:
-    handler: service/update-investment.handler
-    events:
-      - http:
-          method: PUT
-          path: update-investment/{investment_id}
-
-  invite:
-    handler: service/invited/docs-signed.handler
-    events:
-      - http:
-          method: POST
-          path: invite/{investment_id}
-
-  getInvestmentsByDealID:
-    handler: service/investments-by-deal-id.handler
-    events:
-      - http:
-          method: GET
-          path: investments-by-deal-id/{deal_id}
 
   updateAirtableBlueSkyFees:
     handler: service/blue-skys/index.handler
@@ -112,8 +76,15 @@ functions:
           filterPolicy:
             phase: [signed]
 
-  investmentDocUpload:
-    handler: service/investment-document-uploaded.handler
+  resyncWithAirtable:
+    handler: service/airtable-failed/resync.handler
+    events:
+      - http:
+          method: POST
+          path: airtable-sync-failed/resync
+
+  uploadAgreement:
+    handler: service/generate-agreements/uploaded.handler
     events:
       - s3:
           bucket: allocations-investment-documents-${opt:stage, 'dev'}
@@ -121,17 +92,29 @@ functions:
           existing: true
           rules:
             - prefix: investments/
+            - suffix: subscription-agreement.pdf
 
-  getInvestmentAgreementPreview:
-    handler: service/docspring/investment-agreement-preview.handler
+  agreementsCheck:
+    handler: service/agreements-pending/check.handler
     events:
       - http:
           method: POST
-          path: investment-agreement-preview
+          path: agreements-pending/check
 
-  resyncWithAirtable:
-    handler: service/airtable-failed/resync.handler
+  edit:
+    handler: service/edit.handler
     events:
       - http:
           method: POST
-          path: airtable-sync-failed/resync
+          path: edit
+
+  kycComplete:
+    handler: service/kyc-pending/complete.handler
+    events:
+      - sns:
+          arn: ${redtail:service_topic}
+          filterPolicy:
+            app: [core]
+            service: [investment-v2]
+            filterKey: [investment-kyc]
+            event: [kyc-results]

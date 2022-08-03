@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface Investment extends Document {
   _id: Types.ObjectId;
+  deal_id: Types.ObjectId;
   user_id: Types.ObjectId;
   passport_id?: Types.ObjectId;
   phase: string;
@@ -55,8 +56,13 @@ const transactionSchema: Schema = new mongoose.Schema({
   },
 });
 
-const InvestmentSchema: Schema = new mongoose.Schema(
+const schema = new mongoose.Schema(
   {
+    deal_id: {
+      type: Schema.Types.ObjectId,
+      ref: "Deal",
+      required: true,
+    },
     user_id: {
       type: Schema.Types.ObjectId,
       defatult: null,
@@ -133,10 +139,14 @@ const InvestmentSchema: Schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const Investment = mongoose.model<Investment>(
-  "Investment",
-  InvestmentSchema
-);
+schema.virtual("deal", {
+  ref: "Deal",
+  localField: "deal_id",
+  foreignField: "_id",
+  justOne: true,
+});
+
+export const Investment = mongoose.model<Investment>("Investment", schema);
 
 export const Transaction = mongoose.model<Transaction>(
   "Transaction",

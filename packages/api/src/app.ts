@@ -10,15 +10,17 @@ import entityRoutes from "./routes/v1/entities";
 import taskRoutes from "./routes/v1/tasks";
 import fileUpload from "express-fileupload";
 import subscriptionAgreements from "./routes/v1/subscriptionAgreements";
-import organizationRoutesv2 from "./routes/v2/organizations";
-import organizationModerators from "./routes/v2/organization-moderators";
-import organizationAgreements from "./routes/v2/organization-agreements";
-import organizationFundManagers from "./routes/v2/organization-fund-managers";
 import investments from "./routes/v1/investments";
 import investmentDocuments from "./routes/v1/investment-documents";
 import investorPassports from "./routes/v1/investor-passports";
 import passportUsers from "./routes/v1/passport-users";
 import plaidRoutes from "./routes/v1/plaid";
+import organizationRoutesv2 from "./routes/v2/organizations";
+import organizationModerators from "./routes/v2/organization-moderators";
+import organizationAgreements from "./routes/v2/organization-agreements";
+import organizationFundManagers from "./routes/v2/organization-fund-managers";
+import investmentsV2 from "./routes/v2/investments";
+import investmentAgreements from "./routes/v2/investment-agreements";
 
 const app = express();
 
@@ -50,6 +52,8 @@ app.use("/api/v2/organizations", organizationRoutesv2);
 app.use("/api/v2/organization-fund-managers", organizationFundManagers);
 app.use("/api/v2/organization-agreements", organizationAgreements);
 app.use("/api/v2/organization-moderators", organizationModerators);
+app.use("/api/v2/investments", investmentsV2);
+app.use("/api/v2/investment-agreements", investmentAgreements);
 
 app.use(errorMiddleware());
 

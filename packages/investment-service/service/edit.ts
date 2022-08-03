@@ -13,23 +13,24 @@ export const handler = async (event: LambdaEvent): Promise<LambdaResponse> => {
   try {
     await connectMongoose();
     const { body } = parseRequest(event);
-
     const investment = await Investment.findOne({
       _id: body.id,
-      phase: "signed",
+      phase: ["signed", "agreements-pending"],
     });
 
     if (!investment) {
       return sendError({
-        error: new Error(`Unable to resign investment with id ${body.id}`),
-        status: "400",
+        status: "404",
+        error: new Error(
+          "Investment in phase signed or agreements-pending not found"
+        ),
       });
     }
 
     await triggerTransition({
-      id: investment._id.toString(),
-      action: "RESIGN",
-      phase: "signed",
+      id: body.id,
+      action: "EDIT",
+      phase: investment.phase,
     });
 
     return send({ acknowledged: true });

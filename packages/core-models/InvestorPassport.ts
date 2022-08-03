@@ -63,6 +63,13 @@ const schema: Schema = new mongoose.Schema(
 
 schema.index({ name: 1 });
 
+schema.virtual("tax_information", {
+  ref: "TaxInformation",
+  localField: "_id",
+  foreignField: "passport_id",
+  justOne: true,
+});
+
 export const InvestorPassport = mongoose.model<InvestorPassport>(
   "InvestorPassport",
   schema

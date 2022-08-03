@@ -1,25 +1,33 @@
 {
   "phases": {
-    "new": {
-      "CREATED": "airtable-sync",
-      "CREATED_WITH_INVITE": "invited"
-    },
     "invited": {
-      "DONE": "airtable-sync"
+      "CREATED": "generate-agreements"
+    },
+    "generate-agreements": {
+      "GENERATION_COMPLETE": "agreements-pending"
+    },
+    "agreements-pending": {
+      "SIGNED": "airtable-sync",
+      "EDIT": "generate-agreements"
     },
     "airtable-sync": {
-      "COMPLETE": "signed",
+      "COMPLETE": "kyc-pending",
       "FAILED": "airtable-failed"
+    },
+    "kyc-pending": {
+      "PASSED": "signed",
+      "FAILED": "failed"
     },
     "signed": {
       "DONE": "wired",
-      "RESIGN": "signed"
+      "EDIT": "generate-agreements"
     },
     "wired": {
       "UNDO": "signed",
       "DONE": "complete"
     },
     "complete": {},
+    "failed": {},
     "airtable-failed": {
       "RESYNC": "airtable-sync"
     }
