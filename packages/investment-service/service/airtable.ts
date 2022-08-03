@@ -103,9 +103,7 @@ const findUserRecordId = async (user_id: string): Promise<RecordId> => {
 export const createInvestment = async (
   investment: Investment
 ): Promise<DealTrackerInvestment> => {
-  const deal_record_id = await findDealRecordId(
-    investment.metadata.get("deal_id")
-  );
+  const deal_record_id = await findDealRecordId(investment.deal_id.toString());
 
   const user_record_id = await findUserRecordId(investment.user_id.toString());
 
@@ -180,7 +178,7 @@ export const updateSignedInvestment = async (
 export const findDealTrackerInvestment = async (
   investment: Investment
 ): Promise<DealTrackerInvestment | null> => {
-  const deal_id = investment.metadata.get("deal_id");
+  const deal_id = investment.deal_id;
 
   const name =
     investment.investor_type === "Entity" ||

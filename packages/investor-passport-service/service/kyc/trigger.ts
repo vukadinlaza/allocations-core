@@ -11,20 +11,32 @@ import {
 import { InvestorPassport, KYCResult } from "@allocations/core-models";
 import { getNameScanData } from "./utils";
 
-const kyc = async (id: string, filterKey?: string) => {
+const kyc = async (
+  id: string,
+  {
+    filterKey,
+    service,
+    app,
+  }: { filterKey?: string; service?: string; app?: string } = {}
+) => {
   const passport = await InvestorPassport.findById(id);
 
   if (!passport) {
     throw new Error(`Unable to find Investor Passport during KYC id: ${id}`);
   }
 
-  if (filterKey && passport.phase !== "kyc") {
+  if (
+    filterKey &&
+    (passport.phase === "self-accredited" || passport.phase === "review")
+  ) {
     const kycResult = await KYCResult.findOne({ passport_id: id }).sort({
       _id: -1,
     });
     await sendMessage({
       id,
       filterKey,
+      service,
+      app,
       payload: {
         id: passport._id,
         result: kycResult,
@@ -32,6 +44,8 @@ const kyc = async (id: string, filterKey?: string) => {
       event: "kyc-results",
     });
   }
+
+  if (passport.phase !== "kyc") return;
 
   const kyc = await getNameScanData(passport);
   const kycResult = await KYCResult.create({
@@ -44,6 +58,8 @@ const kyc = async (id: string, filterKey?: string) => {
     await sendMessage({
       id,
       filterKey,
+      service,
+      app,
       payload: { id: passport._id, result: kycResult },
       event: "kyc-results",
     });
@@ -71,8 +87,8 @@ export const snsHandler = async ({ Records }: SNSEvent) => {
 
   for (const record of Records) {
     try {
-      const { id, filterKey } = JSON.parse(record.Sns.Message);
-      await kyc(id, filterKey);
+      const { id, filterKey, service, app } = JSON.parse(record.Sns.Message);
+      await kyc(id, { filterKey, service, app });
     } catch (err: any) {
       console.error(err);
     }

@@ -65,6 +65,15 @@
     mongodb "^4.1.1"
     mongoose "^6.0.6"
 
+"@allocations/service-common@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@allocations/service-common/-/service-common-1.1.0.tgz#4287ef36c39e84f607349dca309efb85ccb0c523"
+  integrity sha512-qkYcFTxplvKn9TOOFGde3sk3yCtv5ORcEhRXLw3AnPMcJY1+4qbJ96v3iSIpLtT2KKGEHa7NJIDbM6fCb+T9TQ==
+  dependencies:
+    jsonwebtoken "^8.5.1"
+    mongodb "^4.1.1"
+    mongoose "^6.0.6"
+
 "@allocations/service-testing@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@allocations/service-testing/-/service-testing-1.0.0.tgz#346df1f236b49d19d0f66fc97202de760f5bc23b"

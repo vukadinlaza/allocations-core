@@ -22,36 +22,82 @@ export default Router()
   .post("/", async (req, res, next) => {
     try {
       const { passport_id, deal_id, ...rest } = req.body;
-      if (!passport_id) {
-        const investment = await Investment.findOneAndUpdate(
-          {
-            phase: "invited",
-            deal_id,
-            investor_email: rest.investor_email,
-          },
-          rest,
-          { upsert: true, new: true }
-        );
-        res.send(investment);
-      }
-
-      const [deal, passport] = await Promise.all([
+      const [deal, existingInvestment] = await Promise.all([
         Deal.findById(deal_id),
-        InvestorPassport.findById(passport_id).populate<{
-          tax_information: TaxInformation;
-        }>("tax_information"),
+        Investment.findOne({
+          phase: "invited",
+          deal_id,
+          investor_email: rest.investor_email,
+        }),
       ]);
       if (!deal) {
         throw new HttpError("Invalid Deal", 400);
       }
+
+      if (!passport_id) {
+        if (existingInvestment) {
+          const investment = await Investment.findOneAndUpdate(
+            {
+              phase: "invited",
+              deal_id,
+              investor_email: rest.investor_email,
+            },
+            rest,
+            { upsert: true, new: true }
+          );
+          res.send(investment);
+        } else {
+          const investment = await Investment.create({
+            ...rest,
+            phase: "invited",
+            deal_id,
+            investor_email: rest.investor_email,
+          });
+          res.send(investment);
+        }
+
+        return;
+      }
+
+      const passport = await InvestorPassport.findById(passport_id).populate<{
+        tax_information: TaxInformation;
+      }>("tax_information");
+
       if (!passport) {
         throw new HttpError("Invalid InvestorPassport", 400);
       }
 
-      const investment = await Investment.findOneAndUpdate(
-        { phase: "invited", deal_id, investor_email: rest.investor_email },
-        {
+      let investment;
+      if (existingInvestment) {
+        investment = await Investment.findOneAndUpdate(
+          { phase: "invited", deal_id, investor_email: rest.investor_email },
+          {
+            ...rest,
+            passport_id,
+            phase: "invited",
+            investor_type: passport.type,
+            investor_name:
+              passport.type === "Entity"
+                ? passport.representative
+                : passport.name,
+            investor_entity_name:
+              passport.type === "Entity" ? passport.name : null,
+            investor_country: passport.country,
+            investor_state: (
+              passport.tax_information?.tax_form as W9ETaxForm | W9TaxForm
+            )?.state,
+            accredited_investor_type: passport.accreditation_type,
+            carry_fee_percent: deal.carry_fee,
+            management_fee_percent: deal.management_fee,
+            management_fee_frequency: deal.management_fee_frequency,
+          },
+          { upsert: true, new: true }
+        );
+      } else {
+        investment = await Investment.create({
           ...rest,
+          passport_id,
+          deal_id,
           phase: "invited",
           investor_type: passport.type,
           investor_name:
@@ -63,15 +109,13 @@ export default Router()
           investor_country: passport.country,
           investor_state: (
             passport.tax_information?.tax_form as W9ETaxForm | W9TaxForm
-          ).state,
+          )?.state,
           accredited_investor_type: passport.accreditation_type,
           carry_fee_percent: deal.carry_fee,
           management_fee_percent: deal.management_fee,
           management_fee_frequency: deal.management_fee_frequency,
-        },
-        { upsert: true, new: true }
-      );
-
+        });
+      }
       res.send(investment);
 
       await initializeInvestment(

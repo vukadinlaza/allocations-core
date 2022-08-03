@@ -47,7 +47,10 @@ export const createSubscriptionAgreement = (
     InvestorFormField[]
   >((acc, group) => [...acc, ...group.fields], []);
 
-  const data: { [key: string]: any } = {};
+  const data: { [key: string]: any } = {
+    agreed_to_terms: true,
+    investor_signature: investment.investor_name,
+  };
   for (const field of subscriptionTemplate.docspring.investor_fields) {
     if (field.value_setter) {
       const fieldSetter = new Function(

@@ -13,6 +13,7 @@ export default Router()
       const agreement = await InvestmentAgreement.findByIdAndUpdate(
         req.params.id,
         {
+          signed: true,
           signature_packet: req.body,
         },
         { new: true }

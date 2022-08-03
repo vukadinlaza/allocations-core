@@ -41,6 +41,7 @@ provider:
     AIRTABLE_DEAL_TRACKER_BASE_ID: ${self:custom.secrets.AIRTABLE_DEAL_TRACKER_BASE_ID}
     AIRTABLE_DEAL_TRACKER_TABLE_ID: ${self:custom.secrets.AIRTABLE_DEAL_TRACKER_TABLE_ID, ""}
     NAME_SCAN_API_KEY: ${self:custom.secrets.NAME_SCAN_API_KEY}
+    SKIP_AIRTABLE_SYNC: ${self:custom.secrets.SKIP_AIRTABLE_SYNC}
   apiGateway:
     resourcePolicy:
       - Effect: Allow

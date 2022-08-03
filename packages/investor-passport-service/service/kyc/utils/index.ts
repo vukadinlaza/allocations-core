@@ -41,12 +41,26 @@ const evaluateNameScanData = (hits: { category: string }[]) => {
 };
 
 const getPersonalNameScan = async (investorPassport: InvestorPassport) => {
-  const { persons } = await getNameScan(investorPassport);
+  const { persons, numberOfMatches } = await getNameScan(investorPassport);
+  if (!numberOfMatches)
+    return {
+      passed: true,
+      hits: [],
+    };
+
   return evaluateNameScanData(persons);
 };
 
 const getOrganizationNameScan = async (investorPassport: InvestorPassport) => {
-  const { organizations } = await getNameScan(investorPassport);
+  const { organizations, numberOfMatches } = await getNameScan(
+    investorPassport
+  );
+  if (!numberOfMatches)
+    return {
+      passed: true,
+      hits: [],
+    };
+
   return evaluateNameScanData(organizations);
 };
 

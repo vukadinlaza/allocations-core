@@ -21,10 +21,9 @@ export const handler = async ({ Records }: SQSEvent) => {
       if (!investment) {
         throw new Error("Investment Not Found");
       }
-      const subscriptionTemplate = await SubscriptionTemplate.findOne({
-        template_id:
-          investment.deal.subscription_agreement.docspring_base_template_id,
-      });
+      const subscriptionTemplate = await SubscriptionTemplate.findById(
+        investment.deal.subscription_agreement.docspring_base_template_id
+      ).lean();
       if (!subscriptionTemplate) {
         throw new Error("Missing SubscriptionTemplate");
       }

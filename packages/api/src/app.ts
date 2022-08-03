@@ -44,7 +44,7 @@ app.use("/api/v1/tasks", taskRoutes);
 app.use("/api/v1/subscription-agreements", subscriptionAgreements);
 app.use("/api/v1/investments", investments);
 app.use("/api/v1/investment-documents", investmentDocuments);
-app.use("/api/v1/investor-passport", investorPassports);
+app.use("/api/v1/investor-passports", investorPassports);
 app.use("/api/v1/passport-users", passportUsers);
 app.use("/api/v1/plaid", plaidRoutes);
 

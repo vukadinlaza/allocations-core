@@ -7,6 +7,7 @@ import {
   LambdaEvent,
   triggerTransition,
   LambdaResponse,
+  HttpError,
 } from "@allocations/service-common";
 
 export const handler = async (event: LambdaEvent): Promise<LambdaResponse> => {
@@ -15,11 +16,11 @@ export const handler = async (event: LambdaEvent): Promise<LambdaResponse> => {
     const { body } = parseRequest(event);
     const investment = await Investment.findOne({
       _id: body.id,
-      phase: "new",
+      phase: "invited",
     });
 
     if (!investment) {
-      return send({ acknowledged: true });
+      throw new HttpError("Not Found", "404");
     }
 
     await triggerTransition({
@@ -31,6 +32,6 @@ export const handler = async (event: LambdaEvent): Promise<LambdaResponse> => {
     return send({ acknowledged: true });
   } catch (err: any) {
     console.error(err);
-    return sendError({ error: err as Error, status: "500" });
+    return sendError({ error: err as Error, status: err.status || "500" });
   }
 };

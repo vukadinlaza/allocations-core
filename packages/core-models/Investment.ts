@@ -19,7 +19,7 @@ export interface Investment extends Document {
   carry_fee_percent: number | null;
   management_fee_percent: number | null;
   custom_management_fee: string | null;
-  management_fee_frequency: "One-Time" | "Annually";
+  management_fee_frequency: string;
   metadata: Map<string, any>;
   submission_data: Map<string, any>;
 }
@@ -130,8 +130,6 @@ const schema = new mongoose.Schema(
     },
     management_fee_frequency: {
       type: String,
-      enum: ["One-Time", "Annually", null],
-      default: "One-Time",
     },
     metadata: Map,
     submission_data: Map,
