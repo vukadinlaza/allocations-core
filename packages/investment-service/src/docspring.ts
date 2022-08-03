@@ -5,7 +5,6 @@ import {
   SubscriptionTemplate,
 } from "@allocations/core-models";
 import fetch from "node-fetch";
-import moment from "moment";
 
 const TOKEN = Buffer.from(process.env.DOCSPRING_TOKEN!).toString("base64");
 
