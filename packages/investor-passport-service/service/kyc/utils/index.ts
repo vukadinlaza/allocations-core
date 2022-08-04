@@ -65,6 +65,13 @@ const getOrganizationNameScan = async (investorPassport: InvestorPassport) => {
 };
 
 export const getNameScanData = async (investorPassport: InvestorPassport) => {
+  if (investorPassport.test) {
+    return {
+      passed: true,
+      hits: [],
+    };
+  }
+
   return investorPassport.type === "Individual"
     ? getPersonalNameScan(investorPassport)
     : getOrganizationNameScan(investorPassport);

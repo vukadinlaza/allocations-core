@@ -15,7 +15,7 @@ export const handler = async ({ Records }: any): Promise<void> => {
     const investmentInput = Investment.hydrate(JSON.parse(Message));
 
     try {
-      if (process.env.SKIP_AIRTABLE_SYNC) {
+      if (process.env.SKIP_AIRTABLE_SYNC || investmentInput.test) {
         return await triggerTransition({
           id: investmentInput._id.toString(),
           action: "COMPLETE",

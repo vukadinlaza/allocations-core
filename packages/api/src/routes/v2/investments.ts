@@ -62,17 +62,24 @@ export default Router()
       const passport = await InvestorPassport.findById(passport_id).populate<{
         tax_information: TaxInformation;
       }>("tax_information");
-
       if (!passport) {
         throw new HttpError("Invalid InvestorPassport", 400);
       }
 
       let investment;
       if (existingInvestment) {
+        if (passport.test && !existingInvestment.test) {
+          throw new HttpError(
+            "Mismatch test environment: InvestorPassport is in test mode",
+            400
+          );
+        }
+
         investment = await Investment.findOneAndUpdate(
           { phase: "invited", deal_id, investor_email: rest.investor_email },
           {
             ...rest,
+            test: existingInvestment.test,
             passport_id,
             phase: "invited",
             investor_type: passport.type,
@@ -94,6 +101,13 @@ export default Router()
           { upsert: true, new: true }
         );
       } else {
+        if (passport.test && !rest.test) {
+          throw new HttpError(
+            "Mismatch test environment: InvestorPassport is in test mode",
+            400
+          );
+        }
+
         investment = await Investment.create({
           ...rest,
           passport_id,

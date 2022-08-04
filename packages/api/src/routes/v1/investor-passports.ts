@@ -49,6 +49,7 @@
 import { Router } from "express";
 import {
   InvestorPassport,
+  KYCResult,
   PassportUser,
   TaxInformation,
 } from "@allocations/core-models";
@@ -658,6 +659,14 @@ export default Router()
     try {
       const { id } = req.params;
       res.send(await triggerKYC(id, req.headers["x-api-token"] as string));
+    } catch (e: any) {
+      next(e);
+    }
+  })
+
+  .get("/:id/kyc-results", async (req, res, next) => {
+    try {
+      res.send(await KYCResult.find({ passport_id: req.params.id }));
     } catch (e: any) {
       next(e);
     }

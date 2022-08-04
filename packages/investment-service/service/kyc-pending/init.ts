@@ -13,7 +13,7 @@ export const handler = async ({ Records }: SQSEvent) => {
       await sendMessage({
         id: investment._id.toString(),
         service: "passport-service",
-        app: "onboarding",
+        app: "core",
         payload: {
           id: investment.passport_id,
           filterKey: "investment-kyc",

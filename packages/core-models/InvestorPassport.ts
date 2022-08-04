@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface InvestorPassport extends Document {
+  test: boolean;
   phase: string;
   name: string;
   type: "Entity" | "Individual";
@@ -15,6 +16,10 @@ export interface InvestorPassport extends Document {
 
 const schema: Schema = new mongoose.Schema(
   {
+    test: {
+      type: Boolean,
+      default: false
+    },
     phase: {
       type: String,
       required: true,

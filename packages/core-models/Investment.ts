@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface Investment extends Document {
-  _id: Types.ObjectId;
+  test: boolean;
   deal_id: Types.ObjectId;
   user_id: Types.ObjectId;
   passport_id?: Types.ObjectId;
@@ -58,6 +58,10 @@ const transactionSchema: Schema = new mongoose.Schema({
 
 const schema = new mongoose.Schema(
   {
+    test: {
+      type: Boolean,
+      default: false,
+    },
     deal_id: {
       type: Schema.Types.ObjectId,
       ref: "Deal",

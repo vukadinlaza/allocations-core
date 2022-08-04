@@ -1,5 +1,5 @@
 org: allocations
-app: onboarding
+app: core
 service: passport-service
 frameworkVersion: "2"
 variablesResolutionMode: 20210326
@@ -98,7 +98,7 @@ functions:
           event: s3:ObjectCreated:*
           existing: true
           rules:
-            - prefix: passport
+            - prefix: passport/
 
   review:
     handler: service/review/review.handler
