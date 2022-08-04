@@ -1,4 +1,5 @@
 import mongoose, { Model, Document as MongooseDocument } from "mongoose";
+import { getS3Link } from "./utils/links";
 
 export interface Document extends MongooseDocument {
   deal_id?: mongoose.Types.ObjectId;
@@ -15,6 +16,8 @@ export interface Document extends MongooseDocument {
   metadata: Map<string, string | boolean | number>;
   createdAt: string;
   updatedAt: string;
+
+  getLink(): Promise<string>;
 }
 
 interface DocumentModel extends Model<Document> {}
@@ -62,6 +65,13 @@ const schema = new mongoose.Schema<Document, DocumentModel>(
   },
   { timestamps: true }
 );
+
+schema.methods.getLink = function () {
+  return getS3Link({
+    bucket: this.bucket,
+    key: this.path,
+  });
+};
 
 export const Document = mongoose.model<Document, DocumentModel>(
   "Document",

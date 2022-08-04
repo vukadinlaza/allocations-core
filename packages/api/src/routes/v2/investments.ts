@@ -3,9 +3,11 @@ import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import {
   Deal,
+  Document,
   Investment,
   InvestmentAgreement,
   InvestorPassport,
+  PlaidAccount,
   TaxInformation,
   W9ETaxForm,
   W9TaxForm,
@@ -202,6 +204,41 @@ export default Router()
           })
         )
       );
+    } catch (e) {
+      next(e);
+    }
+  })
+
+  .get("/:id/payment-methods", async (req, res, next) => {
+    try {
+      const paymentMethods = [];
+      const investment = await Investment.findById(req.params.id).populate<{
+        deal: Deal;
+      }>("deal");
+      if (!investment) {
+        throw new HttpError("Investment Not Found", 404);
+      }
+
+      const wireInstructions = await Document.findOne({
+        deal_id: investment.deal._id,
+        title: "Wire Instructions",
+      });
+      if (wireInstructions) {
+        const account = await PlaidAccount.findOne({
+          deal_id: investment.deal._id,
+        });
+
+        paymentMethods.push({
+          type: "wire-instructions",
+          title: "Wire",
+          link: await wireInstructions.getLink(),
+          account_name: account?.account_name,
+          account_number: account?.account_number,
+          routing_number: account?.routing_number,
+        });
+      }
+
+      res.send(paymentMethods);
     } catch (e) {
       next(e);
     }
