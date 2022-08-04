@@ -1,9 +1,5 @@
 import { Router, Request } from "express";
-import {
-  Investment,
-  InvestorPassport,
-  Transaction,
-} from "@allocations/core-models";
+import { Investment, Transaction } from "@allocations/core-models";
 import { S3Client } from "@aws-sdk/client-s3";
 import {
   initialize,
