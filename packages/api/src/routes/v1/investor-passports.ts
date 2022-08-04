@@ -342,7 +342,7 @@ export default Router()
       }
 
       const command = new PutObjectCommand({
-        Bucket: process.env.ONBOARDING_BUCKET!,
+        Bucket: process.env.DOCUMENTS_BUCKET!,
         Key: `passport/${passport._id}/${req.params.type}`,
         ContentType: req.body.content_type,
       });

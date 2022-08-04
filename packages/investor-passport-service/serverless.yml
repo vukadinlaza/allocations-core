@@ -66,7 +66,7 @@ provider:
       Action:
         ["s3:GetObject", "s3:PutObject", "s3:ListBucket", "s3:DeleteObject"]
       Resource:
-        - "arn:aws:s3:::allocations-onboarding-documents-${opt:stage, 'dev'}/*"
+        - "arn:aws:s3:::allocations-deal-documents-${opt:stage, 'dev'}/*"
 
 functions:
   healthCheck:
@@ -94,7 +94,7 @@ functions:
     handler: service/onboarding/upload.handler
     events:
       - s3:
-          bucket: allocations-onboarding-documents-${opt:stage, 'dev'}
+          bucket: allocations-deal-documents-${opt:stage, 'dev'}
           event: s3:ObjectCreated:*
           existing: true
           rules:
