@@ -317,7 +317,7 @@ export default Router()
         deal_id,
         title: "Wire Instructions",
       });
-      if (!doc) throw new HttpError("No document found", 404);
+      if (!doc || !doc.complete) throw new HttpError("No document found", 404);
 
       const command = new GetObjectCommand({
         Bucket: doc.bucket,
