@@ -122,7 +122,6 @@ export default Router()
     try {
       const passport = await InvestorPassport.create({
         ...req.body,
-        test: res.locals.api_key.test,
         phase: "new",
       });
 

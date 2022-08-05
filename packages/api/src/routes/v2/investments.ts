@@ -103,7 +103,7 @@ export default Router()
           { upsert: true, new: true }
         );
       } else {
-        if (passport.test && !res.locals.api_key.test) {
+        if (passport.test && !rest.test) {
           throw new HttpError(
             "Mismatch test environment: InvestorPassport is in test mode",
             400
@@ -112,7 +112,7 @@ export default Router()
 
         investment = await Investment.create({
           ...rest,
-          test: res.locals.api_key.test,
+          test: rest.test,
           passport_id,
           deal_id,
           phase: "invited",
