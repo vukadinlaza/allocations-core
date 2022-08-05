@@ -3,9 +3,11 @@ import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import {
   Deal,
+  Document,
   Investment,
   InvestmentAgreement,
   InvestorPassport,
+  PlaidAccount,
   TaxInformation,
   W9ETaxForm,
   W9TaxForm,
@@ -62,17 +64,24 @@ export default Router()
       const passport = await InvestorPassport.findById(passport_id).populate<{
         tax_information: TaxInformation;
       }>("tax_information");
-
       if (!passport) {
         throw new HttpError("Invalid InvestorPassport", 400);
       }
 
       let investment;
       if (existingInvestment) {
+        if (passport.test && !existingInvestment.test) {
+          throw new HttpError(
+            "Mismatch test environment: InvestorPassport is in test mode",
+            400
+          );
+        }
+
         investment = await Investment.findOneAndUpdate(
           { phase: "invited", deal_id, investor_email: rest.investor_email },
           {
             ...rest,
+            test: existingInvestment.test,
             passport_id,
             phase: "invited",
             investor_type: passport.type,
@@ -94,8 +103,16 @@ export default Router()
           { upsert: true, new: true }
         );
       } else {
+        if (passport.test && !res.locals.api_key.test) {
+          throw new HttpError(
+            "Mismatch test environment: InvestorPassport is in test mode",
+            400
+          );
+        }
+
         investment = await Investment.create({
           ...rest,
+          test: res.locals.api_key.test,
           passport_id,
           deal_id,
           phase: "invited",
@@ -188,6 +205,41 @@ export default Router()
           })
         )
       );
+    } catch (e) {
+      next(e);
+    }
+  })
+
+  .get("/:id/payment-methods", async (req, res, next) => {
+    try {
+      const paymentMethods = [];
+      const investment = await Investment.findById(req.params.id).populate<{
+        deal: Deal;
+      }>("deal");
+      if (!investment) {
+        throw new HttpError("Investment Not Found", 404);
+      }
+
+      const wireInstructions = await Document.findOne({
+        deal_id: investment.deal._id,
+        title: "Wire Instructions",
+      });
+      if (wireInstructions) {
+        const account = await PlaidAccount.findOne({
+          deal_id: investment.deal._id,
+        });
+
+        paymentMethods.push({
+          type: "wire-instructions",
+          title: "Wire",
+          link: await wireInstructions.getLink(),
+          account_name: account?.account_name,
+          account_number: account?.account_number,
+          routing_number: account?.routing_number,
+        });
+      }
+
+      res.send(paymentMethods);
     } catch (e) {
       next(e);
     }

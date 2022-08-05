@@ -50,6 +50,14 @@ const schema = new mongoose.Schema<PlaidAccount>(
       createdAt: "created_at",
       updatedAt: "updated_at",
     },
+    toJSON: {
+      virtuals: true,
+      transform: (_, ret) => {
+        delete ret.__v;
+        delete ret.access_token;
+        return ret;
+      },
+    },
   }
 );
 

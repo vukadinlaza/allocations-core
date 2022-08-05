@@ -1,9 +1,5 @@
 import { Router, Request } from "express";
-import {
-  Investment,
-  InvestorPassport,
-  Transaction,
-} from "@allocations/core-models";
+import { Investment, Transaction } from "@allocations/core-models";
 import { S3Client } from "@aws-sdk/client-s3";
 import {
   initialize,
@@ -35,23 +31,10 @@ const client = new S3Client({ region: "us-east-1" });
 export default Router()
   .post("/", async (req, res, next) => {
     try {
-      const { submission_data, passport_id, ...rest } = req.body;
-
-      const passport = await InvestorPassport.findById(passport_id);
-      if (!passport) {
-        throw new HttpError("Invalid passport id", 400);
-      }
-
+      const { submission_data, ...rest } = req.body;
       const investment = await Investment.create({
         ...rest,
         ...submission_data,
-        passport_id,
-        submission_data,
-        investor_name:
-          passport.type === "Entity" ? passport.representative : passport.name,
-        investor_entity_name: passport.type === "Entity" ? passport.name : null,
-        investor_type: passport.type,
-        investor_country: passport.country,
         phase: "new",
       });
 

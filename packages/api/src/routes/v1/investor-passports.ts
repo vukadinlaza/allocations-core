@@ -49,6 +49,7 @@
 import { Router } from "express";
 import {
   InvestorPassport,
+  KYCResult,
   PassportUser,
   TaxInformation,
 } from "@allocations/core-models";
@@ -121,6 +122,7 @@ export default Router()
     try {
       const passport = await InvestorPassport.create({
         ...req.body,
+        test: res.locals?.api_key?.test ? res.locals.api_key.test : false,
         phase: "new",
       });
 
@@ -342,7 +344,7 @@ export default Router()
       }
 
       const command = new PutObjectCommand({
-        Bucket: process.env.ONBOARDING_BUCKET!,
+        Bucket: process.env.DOCUMENTS_BUCKET!,
         Key: `passport/${passport._id}/${req.params.type}`,
         ContentType: req.body.content_type,
       });
@@ -658,6 +660,14 @@ export default Router()
     try {
       const { id } = req.params;
       res.send(await triggerKYC(id, req.headers["x-api-token"] as string));
+    } catch (e: any) {
+      next(e);
+    }
+  })
+
+  .get("/:id/kyc-results", async (req, res, next) => {
+    try {
+      res.send(await KYCResult.find({ passport_id: req.params.id }));
     } catch (e: any) {
       next(e);
     }
