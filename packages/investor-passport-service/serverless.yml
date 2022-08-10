@@ -113,7 +113,7 @@ functions:
       - sns:
           arn: ${redtail:service_topic}
           filterPolicy:
-            app: [onboarding]
+            app: [core]
             service: [passport-service]
             event: [trigger-kyc]
 

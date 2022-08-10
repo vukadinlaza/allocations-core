@@ -1,4 +1,4 @@
-import { Organization } from "@allocations/organization-models";
+import { Organization } from "@allocations/core-models";
 import fetch from "node-fetch";
 
 const TOKEN = Buffer.from(

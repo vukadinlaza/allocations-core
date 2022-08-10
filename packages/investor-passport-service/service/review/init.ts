@@ -12,11 +12,12 @@ export const handler = async ({ Records }: SQSEvent): Promise<void> => {
     const { Message } = JSON.parse(record.body);
     const passport = InvestorPassport.hydrate(JSON.parse(Message));
 
-    if(passport.test) {
+    if (passport.test) {
       await triggerTransition({
-        id: _id.toString(),
+        id: passport._id.toString(),
         action: "DONE",
         phase: "review",
       });
     }
+  }
 };
