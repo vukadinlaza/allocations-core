@@ -24,7 +24,9 @@ export const handler = async ({ Records }: SQSEvent) => {
   for (const record of Records) {
     try {
       const { Message } = JSON.parse(record.body);
-      const account = PlaidAccount.hydrate(JSON.parse(Message));
+      const { _id } = JSON.parse(Message);
+      const account = await PlaidAccount.findById(_id).select("+access_token");
+      if (!account) continue;
 
       const { data } = await client.transactionsSync({
         access_token: account.access_token,
