@@ -79,9 +79,6 @@ export default Router()
    *          schema:
    *            type: object
    *            properties:
-   *              customer_id:
-   *                type: string
-   *                description: The id of the associated customer.
    *              name:
    *                type: string
    *                description: The name of the investor passport. Either the Entity's name or the Individual's name.
@@ -600,10 +597,6 @@ export default Router()
    *                passport_id:
    *                  type: string
    *                  description: The associated Investor Passport id.
-   *                type:
-   *                  type: string
-   *                  enum: [W-9, W-9-E, W-8-BEN, W-8-BEN-E]
-   *                  description: The tax form filled out.
    *                tax_id:
    *                  type: string
    *                  description: The SSN or EIN used for the tax form.

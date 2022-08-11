@@ -113,11 +113,6 @@ export interface W8BENETaxForm extends Document {
 
 const W9TaxFormSchema: Schema = new mongoose.Schema(
   {
-    type: {
-      type: String,
-      enum: ["W-9", "W-9-E", "W-8-BEN", "W-8-BEN-E"],
-      required: true,
-    },
     address: {
       type: String,
       required: true,
@@ -332,11 +327,16 @@ export const TaxInformationSchema: Schema = new mongoose.Schema(
       ref: "InvestorPassport",
       required: true,
     },
+    type: {
+      type: String,
+      enum: ["W-9", "W-9-E", "W-8-BEN", "W-8-BEN-E"],
+      required: true,
+    },
     tax_form_document_id: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "PassportAsset",
     },
-    tax_form: W9TaxFormSchema,
+    tax_form: new mongoose.Schema({}, { discriminatorKey: "type" }),
     signature_packet: {
       type: signaturePacketSchema,
       select: false,
@@ -357,20 +357,23 @@ export const TaxInformationSchema: Schema = new mongoose.Schema(
   }
 );
 
-export const W9TaxForm = mongoose.model<W9TaxForm>("TaxForm", W9TaxFormSchema);
+export const W9TaxForm = TaxInformationSchema.path<Schema.Types.Subdocument>(
+  "tax_form"
+).discriminator("W9TaxForm", W9TaxFormSchema, "W-9");
 
 export const W9ETaxForm = TaxInformationSchema.path<Schema.Types.Subdocument>(
   "tax_form"
-).discriminator("W9ETaxForm", W9ETaxFormSchema);
+).discriminator("W9ETaxForm", W9ETaxFormSchema, "W-9-E");
 
 export const W8BENTaxForm = TaxInformationSchema.path<Schema.Types.Subdocument>(
   "tax_form"
-).discriminator("W8BENTaxForm", W8BENTaxFormSchema);
+).discriminator("W8BENTaxForm", W8BENTaxFormSchema, "W-8-BEN");
 
 export const W8BENETaxForm =
   TaxInformationSchema.path<Schema.Types.Subdocument>("tax_form").discriminator(
     "W8BENETaxForm",
-    W8BENETaxFormSchema
+    W8BENETaxFormSchema,
+    "W-8-BEN-E"
   );
 
 export const TaxInformation = mongoose.model<TaxInformation>(
