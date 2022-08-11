@@ -1,4 +1,4 @@
-import { Investment } from "@allocations/core-models";
+import { Investment, InvestmentAgreement } from "@allocations/core-models";
 import {
   connectMongoose,
   parseRequest,
@@ -25,6 +25,14 @@ export const handler = async (event: LambdaEvent): Promise<LambdaResponse> => {
           "Investment in phase signed or agreements-pending not found"
         ),
       });
+    }
+
+    const investmentAgreements = await InvestmentAgreement.find({investment_id: investment._id, status: {$ne: 'archived'}})
+    
+    if(investmentAgreements?.length){
+      for(let document of investmentAgreements){
+        await InvestmentAgreement.findByIdAndUpdate(document._id, {status: 'archived'})
+      }
     }
 
     await triggerTransition({

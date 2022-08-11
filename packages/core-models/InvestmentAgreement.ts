@@ -8,6 +8,7 @@ export interface InvestmentAgreement extends Document {
   md5: string;
   s3_bucket?: string;
   s3_key?: string;
+  status?: 'archived' | 'active';
   signature_packet?: {
     accepted_intent_to_sign: boolean;
     accepted_electronic_business: boolean;
@@ -75,6 +76,11 @@ const schema = new mongoose.Schema<InvestmentAgreement>(
       type: String,
       select: false,
       required: true,
+    },
+    status: {
+      type: String,
+      enum: ['archived', 'active'],
+      required: false,
     },
     signature_packet: {
       type: signaturePacketSchema,

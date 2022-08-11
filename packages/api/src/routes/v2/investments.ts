@@ -185,6 +185,7 @@ export default Router()
     try {
       const agreements = await InvestmentAgreement.find({
         investment_id: req.params.id,
+        status: { $ne: "archived" },
         ...req.query,
       }).select("+s3_bucket +s3_key");
 
