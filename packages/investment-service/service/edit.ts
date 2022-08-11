@@ -27,13 +27,7 @@ export const handler = async (event: LambdaEvent): Promise<LambdaResponse> => {
       });
     }
 
-    const investmentAgreements = await InvestmentAgreement.find({investment_id: investment._id, status: {$ne: 'archived'}})
-    
-    if(investmentAgreements?.length){
-      for(let document of investmentAgreements){
-        await InvestmentAgreement.findByIdAndUpdate(document._id, {status: 'archived'})
-      }
-    }
+   await InvestmentAgreement.updateMany({investment_id: investment._id, status: {$ne: 'archived'}}, {status: 'archived'})
 
     await triggerTransition({
       id: body.id,
