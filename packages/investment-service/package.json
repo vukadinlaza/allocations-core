@@ -14,7 +14,7 @@
     "test:signed": "jest -i test/service/signed/init.spec.ts -t \"signed tests\""
   },
   "dependencies": {
-    "@allocations/core-models": "*",
+    "@allocations/core-models": "^0.0.2",
     "@allocations/serverless-allocations-redtail": "^2.2.2",
     "@allocations/service-common": "^1.1.0",
     "airtable": "^0.11.1",
