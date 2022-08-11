@@ -95,7 +95,7 @@ const schema = new mongoose.Schema<Deal, DealModel>(
     },
     organization_name: { type: String, required: true },
     slug: String,
-    name: String,
+    name: { type: String, required: true },
     user_id: {
       type: mongoose.SchemaTypes.ObjectId,
       required: false,
@@ -249,6 +249,8 @@ schema.virtual("phases", {
   foreignField: "deal_id",
   justOne: false,
 });
+
+schema.index({ organization_id: 1, name: 1 }, { unique: true });
 
 schema.statics.initialize = async function (
   id: mongoose.Types.ObjectId,
