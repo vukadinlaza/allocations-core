@@ -3,29 +3,3 @@ kind: Deployment
 metadata:
   name: allocations-core
   #add custom deployment fields here following the same pattern as the base deployment yml
-spec:
-  template:
-    spec:
-      containers:
-        - image: datadog/agent
-          name: datadog-agent
-          env:
-            - name: DD_API_KEY
-              value: ea836b7282fc795a0e277ac0cb793da7
-            - name: DD_LOGS_ENABLED
-              value: "true"
-            - name: DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL
-              value: "true"
-            - name: DD_CONTAINER_EXCLUDE_LOGS
-              value: "name:datadog-agent"
-            - name: DD_SITE
-              value: "datadoghq.com"
-            - name: DD_EKS_FARGATE
-              value: "true"
-            - name: DD_CLUSTER_NAME
-              value: allocations-galaxy
-            - name: DD_KUBERNETES_KUBELET_NODENAME
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: spec.nodeName
