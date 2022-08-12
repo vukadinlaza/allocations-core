@@ -1,7 +1,10 @@
 import pino from "pino";
 
 const pinoOptions = {
-  name: "core-api",
+  name: "allocations-core",
+  mixin() {
+    return { stage: process.env.STAGE };
+  },
   dedupe: false,
   formatters: {
     level(level: any) {

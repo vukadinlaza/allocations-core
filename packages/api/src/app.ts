@@ -2,6 +2,7 @@ import express from "express";
 import { verify } from "jsonwebtoken";
 import { checkToken, errorMiddleware } from "@allocations/api-common";
 import expressPinoLogger from "express-pino-logger";
+import logger from "../logger";
 import dealRoutes from "./routes/v1/deals";
 import documentRoutes from "./routes/v1/documents";
 import organizationRoutes from "./routes/v1/organizations";
@@ -26,6 +27,7 @@ const app = express();
 
 app.use(
   expressPinoLogger({
+    logger,
     serializers: {
       req: (req) => {
         let appName;
