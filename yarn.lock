@@ -10,10 +10,10 @@
     d "1"
     es5-ext "^0.10.47"
 
-"@allocations/api-common@^0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@allocations/api-common/-/api-common-0.1.7.tgz#9797d334cf5b5125a687276f5822a7b222c0ce84"
-  integrity sha512-VOnw+H++Fy47tomupcl3EBBwKUaq8sHT/hhuEH7NxJCS+Jq0Dzk4asI497rJw7+oTrhfMYNYFKQENzPoT0NGvQ==
+"@allocations/api-common@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@allocations/api-common/-/api-common-0.1.8.tgz#9b4ea8a03ae742c007301b88d32d384b5aea3522"
+  integrity sha512-95GBDBuuxw3akcvCYAwewZi3v+dirsHvKJZPRz4bE9y8Tzf5kOe68h2Hhh1k68ouDTzBaMQIesx0MaiG0aKxmQ==
   dependencies:
     "@allocations/service-common" "^0.1.0"
     "@types/express" "^4.17.13"
@@ -23,6 +23,7 @@
     mongodb-memory-server "^8.1.0"
     mongoose "^6.0.6"
     node-fetch "2"
+    pino "^8.4.0"
 
 "@allocations/serverless-allocations-redtail@^2.2.2":
   version "2.2.2"
@@ -8185,6 +8186,23 @@ pino@^7.5.0, pino@^7.9.1:
     safe-stable-stringify "^2.1.0"
     sonic-boom "^2.2.1"
     thread-stream "^0.15.1"
+
+pino@^8.4.0:
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-8.4.0.tgz#fb8622b70670068cc9d10ccf04c168580cef00c0"
+  integrity sha512-R95U66WOb4Ggtb1RPGnC2uvtc8T0i1FSbrKHrAudRtiLDrlNxKjM1MyCJu+V4gL0qdE/7/LoXAmkEY/TlX6ELA==
+  dependencies:
+    atomic-sleep "^1.0.0"
+    fast-redact "^3.1.1"
+    on-exit-leak-free "^2.1.0"
+    pino-abstract-transport v1.0.0
+    pino-std-serializers "^6.0.0"
+    process-warning "^2.0.0"
+    quick-format-unescaped "^4.0.3"
+    real-require "^0.2.0"
+    safe-stable-stringify "^2.3.1"
+    sonic-boom "^3.1.0"
+    thread-stream "^2.0.0"
 
 pirates@^4.0.4:
   version "4.0.5"
