@@ -1,8 +1,9 @@
 import express from "express";
-import { verify } from "jsonwebtoken";
-import { checkToken, errorMiddleware } from "@allocations/api-common";
-import expressPinoLogger from "express-pino-logger";
-import logger from "../logger";
+import {
+  checkToken,
+  errorMiddleware,
+  loggerMiddleware,
+} from "@allocations/api-common";
 import dealRoutes from "./routes/v1/deals";
 import documentRoutes from "./routes/v1/documents";
 import organizationRoutes from "./routes/v1/organizations";
@@ -25,31 +26,7 @@ import investmentAgreements from "./routes/v2/investment-agreements";
 
 const app = express();
 
-app.use(
-  expressPinoLogger({
-    logger,
-    serializers: {
-      req: (req) => {
-        let appName;
-        try {
-          const payload = verify(
-            req.headers["x-api-token"],
-            process.env.APP_SECRET!
-          ) as { appName: string };
-          appName = payload.appName;
-        } catch {
-          appName = "unknown";
-        }
-
-        return {
-          method: req.method,
-          url: req.url,
-          appName: appName,
-        };
-      },
-    },
-  })
-);
+app.use(loggerMiddleware);
 
 app.use(checkToken());
 app.use(express.urlencoded({ extended: false }));

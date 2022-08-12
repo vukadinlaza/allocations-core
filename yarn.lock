@@ -10,14 +10,15 @@
     d "1"
     es5-ext "^0.10.47"
 
-"@allocations/api-common@^0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@allocations/api-common/-/api-common-0.1.8.tgz#9b4ea8a03ae742c007301b88d32d384b5aea3522"
-  integrity sha512-95GBDBuuxw3akcvCYAwewZi3v+dirsHvKJZPRz4bE9y8Tzf5kOe68h2Hhh1k68ouDTzBaMQIesx0MaiG0aKxmQ==
+"@allocations/api-common@^0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@allocations/api-common/-/api-common-0.1.9.tgz#377378f5bc542c70ffcb4c08174a0905652b5d77"
+  integrity sha512-+JiDkmZRm3s53GAUma3VPCG5IiohHWN1PSLy4RkOGmQ6U0wxXbHPeXxjy+Qwi+GFSB8/hP3SBplBm8F9PcODCw==
   dependencies:
     "@allocations/service-common" "^0.1.0"
     "@types/express" "^4.17.13"
     express "^4.17.2"
+    express-pino-logger "^7.0.0"
     jsonwebtoken "^8.5.1"
     mongodb "^4.1.1"
     mongodb-memory-server "^8.1.0"

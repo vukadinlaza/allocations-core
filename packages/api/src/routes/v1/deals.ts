@@ -5,10 +5,9 @@ import {
   inviteInvestorsTaskComplete,
   signInvestmentAgreement,
 } from "../../utils/deals";
-import { HttpError } from "@allocations/api-common";
+import { HttpError, logger } from "@allocations/api-common";
 import { Entity } from "@allocations/core-models";
 import mongoose from "mongoose";
-import logger from "../../../logger";
 import { basename } from "path";
 import {
   getDataRequestToken,
