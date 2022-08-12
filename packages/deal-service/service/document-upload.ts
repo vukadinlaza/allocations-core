@@ -5,7 +5,7 @@ import { Organization } from "@allocations/core-models";
 import logger from "../logger";
 import { basename } from "path";
 const fileName = basename(__filename, ".ts");
-const log = logger().child({ module: fileName });
+const log = logger.child({ module: fileName });
 
 export const handler = async ({ Records }: S3Event) => {
   try {

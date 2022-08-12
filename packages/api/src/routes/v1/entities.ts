@@ -4,7 +4,7 @@ import logger from "../../../logger";
 import { basename } from "path";
 import { HttpError } from "@allocations/api-common";
 const fileName = basename(__filename, ".ts");
-const log = logger().child({ module: fileName });
+const log = logger.child({ module: fileName });
 
 export default Router()
   .post("/", async (req, res, next) => {

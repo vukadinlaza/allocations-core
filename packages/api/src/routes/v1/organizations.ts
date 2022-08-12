@@ -8,7 +8,7 @@ import { HttpError } from "@allocations/api-common";
 import logger from "../../../logger";
 import { basename } from "path";
 const fileName = basename(__filename, ".ts");
-const log = logger().child({ module: fileName });
+const log = logger.child({ module: fileName });
 
 export default Router()
   .post("/", async (req, res, next) => {

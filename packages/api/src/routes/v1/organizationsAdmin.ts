@@ -5,7 +5,7 @@ import logger from "../../../logger";
 import { basename } from "path";
 import { ObjectId } from "mongodb";
 const fileName = basename(__filename, ".ts");
-const log = logger().child({ module: fileName });
+const log = logger.child({ module: fileName });
 
 export default Router()
   .post("/:org_id", async (req, res, next) => {

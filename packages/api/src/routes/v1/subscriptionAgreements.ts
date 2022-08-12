@@ -6,7 +6,7 @@ import logger from "../../../logger";
 import { getTemplateData, addTemplateFields } from "../../utils/docspring";
 import { getFieldPlacement } from "../../utils/pagefinder";
 const fileName = basename(__filename, ".ts");
-const log = logger().child({ module: fileName });
+const log = logger.child({ module: fileName });
 
 export default Router()
   .get("/", async (_, res, next) => {

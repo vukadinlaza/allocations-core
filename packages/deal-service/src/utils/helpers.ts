@@ -7,7 +7,7 @@ import { ObjectId } from "mongodb";
 import fetch from "node-fetch";
 
 const fileName = basename(__filename, ".ts");
-const log = logger().child({ module: fileName });
+const log = logger.child({ module: fileName });
 
 export const updateDealEntity = async (
   deal_id: ObjectId,

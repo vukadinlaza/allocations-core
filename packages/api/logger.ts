@@ -13,8 +13,4 @@ const pinoOptions = {
   },
 };
 
-const logger = () => {
-  return pino(pinoOptions);
-};
-
-export default logger;
+export default pino(pinoOptions);

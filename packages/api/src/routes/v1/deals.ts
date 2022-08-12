@@ -17,7 +17,7 @@ import {
 } from "../../utils/docspring";
 import { ObjectId } from "mongodb";
 const fileName = basename(__filename, ".ts");
-const log = logger().child({ module: fileName });
+const log = logger.child({ module: fileName });
 
 const getSetupCost = (deal: Deal) => {
   if (deal.type === "fund") {
