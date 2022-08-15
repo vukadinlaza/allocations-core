@@ -1,4 +1,4 @@
-import type { SQSEvent } from "aws-lambda";
+import type { SNSEvent } from "aws-lambda";
 import {
   connectMongoose,
   triggerTransition,

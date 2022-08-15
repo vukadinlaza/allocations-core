@@ -2,6 +2,7 @@ org: allocations
 app: core
 service: entity-service
 frameworkVersion: "2"
+variablesResolutionMode: 20210326
 
 plugins:
   - serverless-plugin-monorepo
@@ -72,6 +73,8 @@ functions:
           bucket: onboarding-documents-${opt:stage, 'dev'}
           event: s3:ObjectCreated:*
           existing: true
+          rules:
+            - prefix: entities
 
   checkSigning:
     handler: service/agreements-pending/check.handler

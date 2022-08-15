@@ -58,6 +58,8 @@ functions:
           bucket: onboarding-documents-${opt:stage, 'dev'}
           event: s3:ObjectCreated:*
           existing: true
+          rules:
+            - prefix: organizations
 
   # ------------------------------------------------ AGREEMENTS-PENDING FUNCTIONS ----------------------------------------------------------
 

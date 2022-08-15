@@ -27,7 +27,7 @@ export const createSubmission = async ({
         data: entity,
         metadata: {
           assetType,
-          model: "entity",
+          model: "entities",
           modelId: entity._id,
           title: `${assetType}.pdf`,
         },
