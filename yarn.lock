@@ -40,15 +40,6 @@
   dependencies:
     serverless "^2.64.1"
 
-"@allocations/service-common@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@allocations/service-common/-/service-common-0.0.8.tgz#b6d4710f97542abd4758151677953bdd95cb7ed0"
-  integrity sha512-n41PZE1hb04SNwzAzSkYKXmTwBdse6kJncgEwRRzN7c0DkwpXZRK+JVy++gpy+rOW8igTMyW1+6nLVNrlMu/mg==
-  dependencies:
-    jsonwebtoken "^8.5.1"
-    mongodb "^4.1.1"
-    mongoose "^6.0.6"
-
 "@allocations/service-common@^0.1.0", "@allocations/service-common@^0.1.2":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@allocations/service-common/-/service-common-0.1.3.tgz#bc3d968196e06ffefbb91a4486b124d199867ef1"

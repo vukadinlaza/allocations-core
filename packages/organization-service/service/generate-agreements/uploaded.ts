@@ -10,7 +10,7 @@ export const handler = async ({ Records }: S3Event) => {
 
   for (const record of Records) {
     try {
-      const [organizationId, type, title] = record.s3.object.key.split("/");
+      const [, organizationId, type, title] = record.s3.object.key.split("/");
       const [organization] = await Promise.all([
         Organization.findById(organizationId),
         OrganizationAgreement.create({
@@ -24,10 +24,18 @@ export const handler = async ({ Records }: S3Event) => {
         }),
       ]);
 
-      const [servicesAgreement, mou] = await Promise.all([
+      const [terms, servicesAgreement, poa, mou] = await Promise.all([
+        OrganizationAgreement.findOne({
+          organization_id: organizationId,
+          type: "terms-and-conditions",
+        }),
         OrganizationAgreement.findOne({
           organization_id: organizationId,
           type: "services-agreement",
+        }),
+        OrganizationAgreement.findOne({
+          organization_id: organizationId,
+          type: "power-of-attorney",
         }),
         OrganizationAgreement.findOne({
           organization_id: organizationId,
@@ -36,7 +44,7 @@ export const handler = async ({ Records }: S3Event) => {
       ]);
 
       let waitingForGeneration = false;
-      if (!servicesAgreement) {
+      if (!terms || !servicesAgreement || !poa) {
         waitingForGeneration = true;
       }
 

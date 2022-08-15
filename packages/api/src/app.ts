@@ -23,6 +23,7 @@ import organizationAgreements from "./routes/v2/organization-agreements";
 import organizationFundManagers from "./routes/v2/organization-fund-managers";
 import investmentsV2 from "./routes/v2/investments";
 import investmentAgreements from "./routes/v2/investment-agreements";
+import entityAgreements from "./routes/v2/entity-agreements.ts";
 
 const app = express();
 
@@ -50,6 +51,10 @@ app.use("/api/v2/organizations", organizationRoutesv2);
 app.use("/api/v2/organization-fund-managers", organizationFundManagers);
 app.use("/api/v2/organization-agreements", organizationAgreements);
 app.use("/api/v2/organization-moderators", organizationModerators);
+
+app.use("/api/v2/entitis", entityRoutes);
+app.use("/api/v2/entity-agreements", entityAgreements);
+
 app.use("/api/v2/investments", investmentsV2);
 app.use("/api/v2/investment-agreements", investmentAgreements);
 

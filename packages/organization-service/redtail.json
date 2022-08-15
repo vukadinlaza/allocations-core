@@ -11,23 +11,27 @@
       "GENERATION_COMPLETE": "agreements-pending"
     },
     "agreements-pending": {
-      "DONE": "ops-handoff",
-      "LOST": "lost"
-    },
-    "ops-handoff": {
       "DONE": "kyc-pending",
       "LOST": "lost"
     },
     "kyc-pending": {
-      "DONE": "entity-pending"
+      "DONE": "ops-handoff"
+    },
+    "ops-handoff": {
+      "DONE": "entity-pending",
+      "LOST": "lost"
     },
     "entity-pending": {
       "DONE": "onboarded",
-      "LOST": "lost"
+      "LOST": "lost",
+      "ERROR": "entity-error"
     },
     "onboarded": {
       "DONE": "complete",
       "LOST": "lost"
+    },
+    "entity-error": {
+      "RETRY": "entity-pending"
     },
     "complete": {},
     "lost": {}

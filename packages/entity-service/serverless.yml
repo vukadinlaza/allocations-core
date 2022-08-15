@@ -1,5 +1,5 @@
 org: allocations
-app: onboarding
+app: core
 service: entity-service
 frameworkVersion: "2"
 
@@ -11,6 +11,7 @@ plugins:
   - "@allocations/serverless-allocations-redtail"
 
 custom:
+  secrets: ${ssm:/aws/reference/secretsmanager/allocations_build_api/${opt:stage}}
   redtail:
     config: ${file(./redtail.json)}
   serverless-offline:
@@ -38,9 +39,10 @@ provider:
   lambdaHashingVersion: 20201221
   memorySize: 512
   environment:
-    APP_SECRET: ${param:APP_SECRET}
-    MONGO_URL: ${param:MONGO_URL}
-    MONGO_DB: ${param:MONGO_DB}
+    APP_SECRET: ${self:custom.secrets.APP_SECRET}
+    MONGODB_URI: ${self:custom.secrets.MONGODB_URI}
+    DOCSPRING_TOKEN_ID: ${self:custom.secrets.ORGANIZATION_DOCSPRING_TOKEN_ID}
+    DOCSPRING_TOKEN_SECRET: ${self:custom.secrets.ORGANIZATION_DOCSPRING_TOKEN_SECRET}
   apiGateway:
     resourcePolicy:
       - Effect: Allow
@@ -56,27 +58,31 @@ functions:
   initialize:
     handler: service/initialize.handler
     events:
-      - http:
-          path: initialize
-          method: POST
-  #  --------------------------------- Organization Pending Functions --------------------------------------
-
-  check:
-    handler: service/organization-pending/check.handler
-    events:
       - sns:
           arn: ${redtail:service_topic}
-          topicName: entities
           filterPolicy:
-            app: [onboarding]
-            service: [organization-service]
-            event: [init]
-            phase: [entity-pending]
+            app: [core]
+            service: [entity-service]
+            event: [entity-intitialize]
 
-  cronCheck:
-    handler: service/organization-pending/cron-check.handler
-    memorySize: 1024
-    timeout: 300
+  uploadAgreement:
+    handler: service/generate-agreements/uploaded.handler
     events:
-      - schedule: rate(1 hour)
-#  --------------------------------- Formation Pending Functions --------------------------------------
+      - s3:
+          bucket: onboarding-documents-${opt:stage, 'dev'}
+          event: s3:ObjectCreated:*
+          existing: true
+
+  checkSigning:
+    handler: service/agreements-pending/check.handler
+    events:
+      - http:
+          path: agreements-pending/check
+          method: POST
+
+  complete:
+    handler: service/formation-pending/complete.handler
+    events:
+      - http:
+          path: complete
+          method: POST

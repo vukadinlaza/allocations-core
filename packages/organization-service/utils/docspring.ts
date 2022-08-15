@@ -13,7 +13,9 @@ export const createSubmission = async ({
   templateId: string;
   organization: Organization;
   assetType:
+    | "terms-and-conditions"
     | "services-agreement"
+    | "power-of-attorney"
     | "memorandum-of-understanding"
     | "master-series-llc-agreement";
 }) => {
@@ -30,7 +32,9 @@ export const createSubmission = async ({
         data: organization,
         metadata: {
           assetType,
-          organizationId: organization._id,
+          model: "organizations",
+          modelId: organization._id,
+          title: `${assetType}.pdf`,
         },
       }),
     }
@@ -42,11 +46,27 @@ export const createSubmission = async ({
   return res.json();
 };
 
+export const createTermsAgreement = (organization: Organization) => {
+  return createSubmission({
+    organization,
+    assetType: "terms-and-conditions",
+    templateId: "tpl_2hE5JMxXGcdE5S4tsR",
+  });
+};
+
 export const createServicesAgreement = (organization: Organization) => {
   return createSubmission({
     organization,
     assetType: "services-agreement",
-    templateId: "tpl_JRTdSjKnF3kXZQKFdE",
+    templateId: "tpl_XhkcmkyQxKxLDpfsdN",
+  });
+};
+
+export const createPOAAgreement = (organization: Organization) => {
+  return createSubmission({
+    organization,
+    assetType: "power-of-attorney",
+    templateId: "tpl_XhkcmkyQxKxLDpfsdN",
   });
 };
 

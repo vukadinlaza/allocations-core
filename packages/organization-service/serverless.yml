@@ -1,5 +1,5 @@
 org: allocations
-app: product
+app: core
 service: organization-service
 frameworkVersion: "2"
 variablesResolutionMode: 20210326
@@ -85,8 +85,8 @@ functions:
       - sns:
           arn: ${redtail:service_topic}
           filterPolicy:
-            app: [build]
-            service: [passport-service]
+            app: [core]
+            service: [organization-service]
             filterKey: [organization-kyc]
             event: [kyc-results]
 

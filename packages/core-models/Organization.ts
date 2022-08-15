@@ -4,6 +4,7 @@ export interface Organization extends Document {
   name: string;
   phase: string;
   slug: string;
+  desired_entity_name?: string;
   master_series: string;
   high_volume_partner: boolean;
   mou_signed: boolean;
@@ -31,6 +32,9 @@ const schema = new mongoose.Schema<Organization>(
       type: Boolean,
       required: true,
       default: false,
+    },
+    desired_entity_name: {
+      type: String,
     },
     mou_signed: {
       type: Boolean,

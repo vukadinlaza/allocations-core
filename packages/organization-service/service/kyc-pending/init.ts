@@ -21,9 +21,13 @@ export const handler = async ({ Records }: SQSEvent) => {
         fund_managers.map((fund_manager) => {
           return sendMessage({
             id: organization._id.toString(),
+            service: "passport-service",
+            app: "core",
             payload: {
               id: fund_manager.passport_id,
               filterKey: "organization-kyc",
+              service: "organization-service",
+              app: "core",
             },
             event: "trigger-kyc",
           });

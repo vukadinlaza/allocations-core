@@ -1,9 +1,12 @@
 {
   "phases": {
     "new": {
-      "CREATED": "organization-pending"
+      "CREATED": "generate-agreements"
     },
-    "organization-pending": {
+    "generate-agreements": {
+      "GENERATION_COMPLETE": "agreements-pending"
+    },
+    "agreements-pending": {
       "DONE": "formation-pending"
     },
     "formation-pending": {

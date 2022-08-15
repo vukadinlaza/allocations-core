@@ -5,19 +5,8 @@ export interface Entity extends Document {
   phase: string;
   organization_id: mongoose.Types.ObjectId;
   structure: "LLC" | "LP";
-  manager: {
-    passport_id: mongoose.Types.ObjectId;
-    type: "Entity" | "Individual";
-    name: string;
-    signer: string;
-    representative?: string;
-    title?: string;
-  };
-  member: {
-    passport_id: mongoose.Types.ObjectId;
-    name: string;
-    signer: string;
-  };
+  manager_passport_id: mongoose.Types.ObjectId;
+  member_passport_id: mongoose.Types.ObjectId;
   address_line_1?: string;
   address_line_2?: string;
   city?: string;
@@ -57,44 +46,15 @@ const schema = new mongoose.Schema<Entity>(
       enum: ["LLC", "LP"],
       required: true,
     },
-    manager: {
-      passport_id: {
-        type: mongoose.SchemaTypes.ObjectId,
-        required: true,
-      },
-      type: {
-        type: String,
-        enum: ["Entity", "Individual"],
-        required: true,
-      },
-      name: {
-        type: String,
-        required: true,
-      },
-      signer: {
-        type: String,
-        required: true,
-      },
+    manager_passport_id: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "InvestorPassport",
+      required: true,
     },
-    member: {
-      passport_id: {
-        type: mongoose.SchemaTypes.ObjectId,
-        required: true,
-      },
-      name: {
-        type: String,
-        required: true,
-      },
-      signer: {
-        type: String,
-        required: true,
-      },
-      representative: {
-        type: String,
-      },
-      title: {
-        type: String,
-      },
+    member_passport_id: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "InvestorPassport",
+      required: true,
     },
     address_line_1: {
       type: String,
@@ -127,20 +87,6 @@ const schema = new mongoose.Schema<Entity>(
 schema.virtual("organization", {
   ref: "Organization",
   localField: "organization_id",
-  foreignField: "_id",
-  justOne: true,
-});
-
-schema.virtual("manager", {
-  ref: "InvestorPassport",
-  localField: "manager_passport_id",
-  foreignField: "_id",
-  justOne: true,
-});
-
-schema.virtual("member", {
-  ref: "InvestorPassport",
-  localField: "member_passport_id",
   foreignField: "_id",
   justOne: true,
 });
