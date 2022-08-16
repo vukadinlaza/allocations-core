@@ -26,11 +26,14 @@ export default Router()
 
   .post("/:id/complete", async (req, res, next) => {
     try {
+      const entity = await Entity.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      });
       await completeFormation(
         req.params.id,
         req.headers["x-api-token"] as string
       );
-      res.send({ message: "Success" });
+      res.send(entity);
     } catch (e: any) {
       next(e);
     }

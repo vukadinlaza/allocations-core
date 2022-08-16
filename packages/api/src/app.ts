@@ -52,7 +52,7 @@ app.use("/api/v2/organization-fund-managers", organizationFundManagers);
 app.use("/api/v2/organization-agreements", organizationAgreements);
 app.use("/api/v2/organization-moderators", organizationModerators);
 
-app.use("/api/v2/entitis", entityRoutes);
+app.use("/api/v2/entities", entityRoutes);
 app.use("/api/v2/entity-agreements", entityAgreements);
 
 app.use("/api/v2/investments", investmentsV2);
