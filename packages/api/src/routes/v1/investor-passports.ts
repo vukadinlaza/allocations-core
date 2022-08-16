@@ -51,8 +51,10 @@ import {
   InvestorPassport,
   KYCResult,
   PassportUser,
+  PassportAsset,
   TaxInformation,
 } from "@allocations/core-models";
+import { getFormType } from "../../utils/investor-passports";
 import { HttpError } from "@allocations/api-common";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -660,6 +662,71 @@ export default Router()
   .get("/:id/kyc-results", async (req, res, next) => {
     try {
       res.send(await KYCResult.find({ passport_id: req.params.id }));
+    } catch (e: any) {
+      next(e);
+    }
+  })
+  /**
+   * @openapi
+   * /api/v1/investor-passports/{id}/complete:
+   *  get:
+   *    summary: Get all incomplete information for an investor passport
+   *    description: Get an array of objects showing the missing model and type.
+   *    tags: [Investor Passport]
+   *    parameters:
+   *      - name: id
+   *        in: path
+   *        description: InvestorPassport ID
+   *        required: true
+   *        schema:
+   *          type: string
+   *    responses:
+   *      200:
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: array
+   *              items:
+   *                type: object
+   *                description: Object detailing missing information.
+   *                properties:
+   *                  model:
+   *                    type: string
+   *                    description: The model of the missing information ("PassportAsset", "TaxInformation", etc).
+   *                  type:
+   *                    type: string
+   *                    description: The exact kind of information missing ("W-9", "government-issued-id", etc).
+   */
+  .get("/:id/complete", async (req, res, next) => {
+    try {
+      const [passport, taxInformation, governmentId] = await Promise.all([
+        InvestorPassport.findById(req.params.id),
+        TaxInformation.findOne({
+          passport_id: req.params.id,
+        }),
+        PassportAsset.findOne({
+          passport_id: req.params.id,
+          type: "government-issued-id",
+        }),
+      ]);
+
+      if (!passport) throw new HttpError("Passport not found", 404);
+
+      const taxFormType = getFormType({
+        type: passport.type,
+        country: passport.country || "United States",
+      });
+
+      const missing = [];
+
+      if (!taxInformation) {
+        missing.push({ model: "TaxInformation", type: taxFormType });
+      }
+
+      if (!governmentId) {
+        missing.push({ model: "PassportAsset", type: "government-issued-id" });
+      }
+      res.send(missing);
     } catch (e: any) {
       next(e);
     }
