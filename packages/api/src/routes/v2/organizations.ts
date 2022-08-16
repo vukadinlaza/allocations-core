@@ -103,7 +103,10 @@ export default Router()
     try {
       const organizationDetails = await Organization.findById(req.params.id)
         .populate("entities")
-        .populate("admins")
+        .populate({
+          path: "fund_managers",
+          populate: "passport",
+        })
         .populate("moderators");
 
       if (!organizationDetails)

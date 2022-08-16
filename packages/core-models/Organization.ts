@@ -69,7 +69,7 @@ schema.virtual("admins", {
 });
 
 schema.virtual("fund_managers", {
-  ref: "OrganizationFundManagers",
+  ref: "OrganizationFundManager",
   localField: "_id",
   foreignField: "organization_id",
 });
@@ -83,7 +83,7 @@ schema.virtual("moderators", {
 schema.virtual("entities", {
   ref: "Entity",
   localField: "_id",
-  foreignField: "organization_ids",
+  foreignField: "organization_id",
 });
 
 export const Organization = mongoose.model<Organization>(

@@ -11,7 +11,7 @@ plugins:
   - "@allocations/serverless-allocations-redtail"
 
 custom:
-  secrets: ${ssm:/aws/reference/secretsmanager/allocations_build_api/${opt:stage}}
+  secrets: ${ssm:/aws/reference/secretsmanager/allocations-core/${opt:stage}}
   redtail:
     config: ${file(./redtail.json)}
   prune:
