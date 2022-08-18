@@ -51,12 +51,16 @@ import {
   InvestorPassport,
   KYCResult,
   PassportUser,
-  PassportAsset,
   TaxInformation,
+  PassportAsset,
 } from "@allocations/core-models";
 import { getFormType } from "../../utils/investor-passports";
 import { HttpError } from "@allocations/api-common";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import {
   checkPassportOnboardingStatus,
@@ -611,6 +615,7 @@ export default Router()
       const taxInformation = await TaxInformation.findOne({
         passport_id: req.params.id,
       });
+
       if (!taxInformation) {
         throw new HttpError("Not Found", 404);
       }
@@ -658,7 +663,6 @@ export default Router()
       next(e);
     }
   })
-
   .get("/:id/kyc-results", async (req, res, next) => {
     try {
       res.send(await KYCResult.find({ passport_id: req.params.id }));
@@ -666,6 +670,7 @@ export default Router()
       next(e);
     }
   })
+
   /**
    * @openapi
    * /api/v1/investor-passports/{id}/complete:
@@ -727,6 +732,65 @@ export default Router()
         missing.push({ model: "PassportAsset", type: "government-issued-id" });
       }
       res.send(missing);
+    } catch (e: any) {
+      next(e);
+    }
+  })
+
+  /**
+   * @openapi
+   * /api/v1/investor-passports/{id}/asset:
+   *  get:
+   *    description: Get a Passport Asset.
+   *    tags: [Investor Passport]
+   *    parameters:
+   *      - name: id
+   *        in: path
+   *        description: InvestorPassport ID
+   *        required: true
+   *        schema:
+   *          type: string
+   *      - name: type
+   *        in: query
+   *        description: PassportAsset type.
+   *        required: true
+   *        schema:
+   *          type: string;
+   *           enum: [tax-form, government-issued-id, proof-of-residence]
+   *    responses:
+   *      200:
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              description: An object containing the signed url for the asset.
+   *              properties:
+   *                link:
+   *                  type: string
+   *                  description: The signed url of the asset.
+   */
+  .get("/:id/asset", async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { type } = req.query;
+
+      if (!type) {
+        throw new HttpError("Asset type is required", 400);
+      }
+
+      const asset = await PassportAsset.findOne({ id, type });
+      if (!asset) {
+        throw new HttpError("Not Found", 404);
+      }
+
+      const command = new GetObjectCommand({
+        Bucket: asset.bucket,
+        Key: asset.path,
+      });
+
+      const link = await getSignedUrl(client, command);
+
+      res.send({ link });
     } catch (e: any) {
       next(e);
     }
