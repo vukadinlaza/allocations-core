@@ -157,6 +157,18 @@ export default Router()
     }
   })
 
+  .patch("/:id", async (req, res, next) => {
+    try {
+      res.send(
+        await PlaidAccount.findByIdAndUpdate(req.params.id, req.body, {
+          new: true,
+        })
+      );
+    } catch (e) {
+      next(e);
+    }
+  })
+
   .delete("/:id", async (req, res, next) => {
     try {
       const transactions = await PlaidTransaction.find({

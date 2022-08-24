@@ -41,7 +41,7 @@ export const handler = async ({ Records }: SQSEvent) => {
             name: transaction.name,
             amount: Math.abs(transaction.amount),
             type: transaction.amount < 0 ? "Credit" : "Debit",
-            status: "Pending",
+            status: transaction.pending ? "Pending" : "Complete",
             date: transaction.datetime || transaction.date,
           });
         })
@@ -56,7 +56,7 @@ export const handler = async ({ Records }: SQSEvent) => {
               name: transaction.name,
               amount: Math.abs(transaction.amount),
               type: transaction.amount < 0 ? "Credit" : "Debit",
-              status: "Pending",
+              status: transaction.pending ? "Pending" : "Complete",
               date: transaction.datetime,
             }
           );
