@@ -158,7 +158,27 @@ export default Router()
 
   .delete("/:id", async (req, res, next) => {
     try {
-      res.send(await PlaidAccount.findByIdAndDelete(req.params.id));
+      const transactions = await PlaidTransaction.find({
+        plaid_account: req.params.id,
+        $or: [
+          { category: { $exists: true } },
+          { investment_id: { $exists: true } },
+        ],
+      });
+
+      if (transactions.length) {
+        throw new HttpError(
+          "Unable to delete account because transactions have already been reconciled",
+          400
+        );
+      }
+
+      await Promise.all([
+        PlaidAccount.findByIdAndDelete(req.params.id),
+        PlaidTransaction.deleteMany({ plaid_account: req.params.id }),
+      ]);
+
+      res.send({ acknowledged: true });
     } catch (e) {
       next(e);
     }
