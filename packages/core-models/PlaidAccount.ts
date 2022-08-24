@@ -3,6 +3,7 @@ import mongoose, { Document } from "mongoose";
 export interface PlaidAccount extends Document {
   phase: "new" | "syncing" | "synced" | "closed";
   deal_id: mongoose.Types.ObjectId;
+  plaid_item_id: string;
   access_token: string;
   account_name: string;
   account_number: string;
@@ -26,6 +27,10 @@ const schema = new mongoose.Schema<PlaidAccount>(
       required: true,
     },
     account_name: {
+      type: String,
+      required: true,
+    },
+    plaid_item_id: {
       type: String,
       required: true,
     },

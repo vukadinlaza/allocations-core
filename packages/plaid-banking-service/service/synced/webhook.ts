@@ -19,6 +19,7 @@ export const handler = async (event: LambdaEvent) => {
 
     const account = await PlaidAccount.findOne({
       deal_id: event.pathParameters!.id,
+      plaid_item_id: body.item_id,
     });
     if (!account)
       throw new HttpError(

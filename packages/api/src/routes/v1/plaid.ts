@@ -65,6 +65,7 @@ export default Router()
       const account = await PlaidAccount.create({
         phase: "new",
         deal_id: req.body.deal_id,
+        plaid_item_id: data.item_id,
         access_token: data.access_token,
         account_name: auth.accounts[0].name,
         account_number: auth.numbers.ach[0].account,
