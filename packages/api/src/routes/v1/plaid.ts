@@ -154,4 +154,12 @@ export default Router()
     } catch (e) {
       next(e);
     }
+  })
+
+  .delete("/:id", async (req, res, next) => {
+    try {
+      res.send(await PlaidAccount.findByIdAndDelete(req.params.id));
+    } catch (e) {
+      next(e);
+    }
   });
