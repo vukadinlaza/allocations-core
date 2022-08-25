@@ -20,6 +20,16 @@ custom:
 
 provider:
   name: aws
+  endpointType: PRIVATE
+  vpcEndpointIds:
+    - vpce-0cc4064fecca36cab
+  vpc:
+    securityGroupIds:
+      - sg-0245432c2213eeeb8
+      - sg-0665e26c1dc22d6dd
+    subnetIds:
+      - subnet-016539b44e6b89113
+      - subnet-01a39dab42b630de6
   runtime: nodejs14.x
   lambdaHashingVersion: 20201221
   memorySize: 512
@@ -28,6 +38,16 @@ provider:
     MONGODB_URI: ${self:custom.secrets.MONGODB_URI}
     DOCSPRING_TOKEN_ID: ${self:custom.secrets.ORGANIZATION_DOCSPRING_TOKEN_ID}
     DOCSPRING_TOKEN_SECRET: ${self:custom.secrets.ORGANIZATION_DOCSPRING_TOKEN_SECRET}
+  apiGateway:
+    resourcePolicy:
+      - Effect: Allow
+        Principal: "*"
+        Action: execute-api:Invoke
+        Resource:
+          - execute-api:/*
+        Condition:
+          StringEquals:
+            aws:SourceVpc: vpc-0d05ab0d45d1ddbd5
 
 functions:
   initialize:
