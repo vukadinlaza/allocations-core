@@ -2,9 +2,10 @@ import mongoose, { Document } from "mongoose";
 
 export interface StripeTransaction extends Document {
   phase: "new" | "processing" | "succeeded" | "failed";
-  type: "initial-drawdown" | "capital-call";
   deal_id: mongoose.Types.ObjectId;
+  investment_id: mongoose.Types.ObjectId;
   stripe_account_id: mongoose.Types.ObjectId;
+  type: "initial-drawdown" | "capital-call";
   stripe_payment_intent_id: string;
   amount: number;
 
@@ -19,9 +20,24 @@ const schema = new mongoose.Schema<StripeTransaction>(
       enum: ["new", "processing", "succeeded", "failed"],
       required: true,
     },
+    deal_id: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Deal",
+      required: true,
+    },
+    investment_id: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Investment",
+      required: true,
+    },
     stripe_account_id: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "StripeAccount",
+      required: true,
+    },
+    type: {
+      type: String,
+      enum: ["initial-drawdown", "capital-call"],
       required: true,
     },
     stripe_payment_intent_id: {
@@ -49,6 +65,6 @@ const schema = new mongoose.Schema<StripeTransaction>(
 );
 
 export const StripeTransaction = mongoose.model<StripeTransaction>(
-  "StripeAccount",
+  "StripeTransaction",
   schema
 );

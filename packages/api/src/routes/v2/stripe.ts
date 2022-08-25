@@ -12,7 +12,7 @@ const stripe = new Stripe(process.env.STRIPE_API_KEY!, {
 });
 
 export default Router()
-  .post("/", async (req, res, next) => {
+  .post("/accounts", async (req, res, next) => {
     try {
       const plaidAccount = await PlaidAccount.findOne({
         deal_id: req.body.deal_id,
@@ -85,8 +85,15 @@ export default Router()
     }
   })
 
-  .post("/create-transaction", async (req, res, next) => {
+  .post("/transactions", async (req, res, next) => {
     try {
+      const existingTransaction = await StripeTransaction.findOne({
+        investment_id: req.body.investment_id,
+      });
+      if (existingTransaction) {
+        throw new HttpError("Transaction already exists for investment", 400);
+      }
+
       const account = await StripeAccount.findOne({
         deal_id: req.body.deal_id,
       });
@@ -102,9 +109,10 @@ export default Router()
 
       const transaction = await StripeTransaction.create({
         phase: "new",
-        type: req.body.type || "initial-drawdown",
         deal_id: req.body.deal_id,
+        investment_id: req.body.investment_id,
         stripe_account_id: account._id,
+        type: req.body.type || "initial-drawdown",
         stripe_payment_intent_id: intent.id,
         amount: req.body.amount,
       });
@@ -115,7 +123,7 @@ export default Router()
     }
   })
 
-  .get("/", async (req, res, next) => {
+  .get("/accounts", async (req, res, next) => {
     try {
       res.send(await StripeAccount.find(req.query));
     } catch (e) {
@@ -123,16 +131,9 @@ export default Router()
     }
   })
 
-  .get("/:id/transactions", async (req, res, next) => {
+  .get("/transactions", async (req, res, next) => {
     try {
-      const account = await StripeAccount.findById(req.params.id);
-      if (!account) {
-        throw new HttpError("StripeAccount Not Found", 404);
-      }
-
-      res.send(
-        await StripeTransaction.find({ stripe_account_id: account._id })
-      );
+      res.send(await StripeTransaction.find(req.query));
     } catch (e) {
       next(e);
     }
