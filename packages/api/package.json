@@ -73,6 +73,7 @@
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "2.12.313",
     "pino": "^7.9.1",
-    "pino-webpack-plugin": "^1.1.0"
+    "pino-webpack-plugin": "^1.1.0",
+    "stripe": "^10.5.0"
   }
 }

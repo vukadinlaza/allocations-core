@@ -2558,6 +2558,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.23.tgz#70f5f20b0b1b38f696848c1d3647bb95694e615e"
   integrity sha512-MhbCWN18R4GhO8ewQWAFK4TGQdBpXWByukz7cWyJmXhvRuCIaM/oWytGPqVmDzgEnnaIc9ss6HbU5mUi+vyZPA==
 
+"@types/node@>=8.1.0":
+  version "18.7.13"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.7.13.tgz#23e6c5168333480d454243378b69e861ab5c011a"
+  integrity sha512-46yIhxSe5xEaJZXWdIBP7GU4HDTG8/eo0qd9atdiL+lFpA03y8KS+lkTN834TWJj5767GbWv4n/P6efyTFt1Dw==
+
 "@types/pino-http@*":
   version "5.8.1"
   resolved "https://registry.yarnpkg.com/@types/pino-http/-/pino-http-5.8.1.tgz#ebb194750ad2f9245c3028b5d2c4e6d64f685ba9"
@@ -9527,6 +9532,14 @@ strip-outer@^1.0.1:
   integrity sha512-k55yxKHwaXnpYGsOzg4Vl8+tDrWylxDEpknGjhTiZB8dFRU5rTo9CAzeycivxV3s+zlTKwrs6WxMxR95n26kwg==
   dependencies:
     escape-string-regexp "^1.0.2"
+
+stripe@^10.5.0:
+  version "10.5.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-10.5.0.tgz#64d967f987e037c1b80f64cc870f792e6cf0fffe"
+  integrity sha512-OT1EP12LPjg2Wdi6r6klIfB944obprhkS/QXGNI14xopeqRwpxjuVHzTbPfFSPuiWR78HR2VbTlHvY0iYLr1NA==
+  dependencies:
+    "@types/node" ">=8.1.0"
+    qs "^6.10.3"
 
 strtok3@^6.2.4:
   version "6.3.0"
