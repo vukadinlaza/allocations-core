@@ -24,6 +24,7 @@ import organizationFundManagers from "./routes/v2/organization-fund-managers";
 import investmentsV2 from "./routes/v2/investments";
 import investmentAgreements from "./routes/v2/investment-agreements";
 import entityAgreements from "./routes/v2/entity-agreements.ts";
+import stripe from "./routes/v2/stripe";
 
 const app = express();
 
@@ -57,6 +58,8 @@ app.use("/api/v2/entity-agreements", entityAgreements);
 
 app.use("/api/v2/investments", investmentsV2);
 app.use("/api/v2/investment-agreements", investmentAgreements);
+
+app.use("/api/v2/stripe", stripe);
 
 app.use(errorMiddleware());
 
