@@ -40,7 +40,7 @@ export const createSubmission = async ({
     }
   );
   if (!res.ok) {
-    throw new Error(`Failed to make docspring submission: ${await res.text()}`);
+    throw new Error(`Failed to make DocSpring submission: ${await res.text()}`);
   }
 
   return res.json();
@@ -66,7 +66,7 @@ export const createPOAAgreement = (organization: Organization) => {
   return createSubmission({
     organization,
     assetType: "power-of-attorney",
-    templateId: "tpl_XhkcmkyQxKxLDpfsdN",
+    templateId: "tpl_gXk2AEDGkkT2CDQDQK",
   });
 };
 
