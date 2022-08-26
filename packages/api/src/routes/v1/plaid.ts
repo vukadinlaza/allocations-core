@@ -13,7 +13,10 @@ import {
   DepositoryAccountSubtype,
   CountryCode,
 } from "plaid";
-import { initializePlaidAccount } from "../../services/plaid";
+import {
+  initializePlaidAccount,
+  reconcilePlaidTransaction,
+} from "../../services/plaid";
 
 const configuration = new Configuration({
   basePath: PlaidEnvironments[process.env.PLAID_ENVIRONMENT!],
@@ -125,6 +128,11 @@ export default Router()
       }
 
       res.send(transaction);
+
+      await reconcilePlaidTransaction(
+        transaction,
+        req.headers["x-api-token"] as string
+      );
     } catch (e) {
       next(e);
     }

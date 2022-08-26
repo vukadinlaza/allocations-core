@@ -50,3 +50,10 @@ functions:
     timeout: 300
     events:
       - schedule: rate(12 hours)
+
+  reconcile:
+    handler: service/reconcile.handler
+    events:
+      - http:
+          path: reconcile
+          method: POST

@@ -127,3 +127,13 @@ functions:
             service: [investment-v2]
             filterKey: [investment-kyc]
             event: [kyc-results]
+
+  reconcile:
+    handler: service/signed/reconcile.handler
+    events:
+      - sns:
+          arn: ${redtail:service_topic}
+          filterPolicy:
+            app: [core]
+            service: [investment-v2]
+            event: [reconcile]

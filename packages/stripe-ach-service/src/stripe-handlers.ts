@@ -1,6 +1,13 @@
-import { StripePayout } from "@allocations/core-models";
-import { StripeAccount, StripeTransaction } from "@allocations/core-models";
-import { HttpError, triggerTransition } from "@allocations/service-common";
+import {
+  StripeAccount,
+  StripeTransaction,
+  StripePayout,
+} from "@allocations/core-models";
+import {
+  HttpError,
+  sendMessage,
+  triggerTransition,
+} from "@allocations/service-common";
 import Stripe from "stripe";
 
 export const handleAccountUpdated = async (stripeAccount: Stripe.Account) => {
@@ -48,12 +55,26 @@ export const handlePaymentIntentProcessing = async (
 export const handlePaymentIntentSucceeded = async (
   paymentIntent: Stripe.PaymentIntent
 ) => {
-  await StripeTransaction.findOneAndUpdate(
+  const transaction = await StripeTransaction.findOneAndUpdate(
     {
       stripe_payment_intent_id: paymentIntent.id,
     },
-    { phase: "succeeded" }
+    { phase: "succeeded" },
+    { new: true }
   );
+
+  if (transaction) {
+    await sendMessage({
+      id: transaction.investment_id.toString(),
+      app: "core",
+      service: "investment-v2",
+      event: "reconcile",
+      payload: {
+        investment_id: transaction.investment_id,
+        type: "ach",
+      },
+    });
+  }
 };
 
 export const handlePaymentIntentFailed = async (

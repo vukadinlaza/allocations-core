@@ -17,7 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@allocations/core-models": "*",
-    "@allocations/service-common": "^1.0.0",
+    "@allocations/service-common": "^1.1.0",
     "@aws-sdk/client-s3": "^3.33.0",
     "@aws-sdk/s3-request-presigner": "^3.33.0",
     "aws-sdk": "^2.998.0",
