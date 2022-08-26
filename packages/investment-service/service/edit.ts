@@ -27,7 +27,10 @@ export const handler = async (event: LambdaEvent): Promise<LambdaResponse> => {
       });
     }
 
-   await InvestmentAgreement.updateMany({investment_id: investment._id, status: {$ne: 'archived'}}, {status: 'archived'})
+    await InvestmentAgreement.updateMany(
+      { investment_id: investment._id, status: { $ne: "archived" } },
+      { status: "archived" }
+    );
 
     await triggerTransition({
       id: body.id,

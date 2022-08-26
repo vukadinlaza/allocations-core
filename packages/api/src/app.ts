@@ -1,7 +1,9 @@
 import express from "express";
-import { checkToken, errorMiddleware } from "@allocations/api-common";
-import expressPinoLogger from "express-pino-logger";
-import logger from "../logger";
+import {
+  checkToken,
+  errorMiddleware,
+  loggerMiddleware,
+} from "@allocations/api-common";
 import dealRoutes from "./routes/v1/deals";
 import documentRoutes from "./routes/v1/documents";
 import organizationRoutes from "./routes/v1/organizations";
@@ -21,13 +23,11 @@ import organizationAgreements from "./routes/v2/organization-agreements";
 import organizationFundManagers from "./routes/v2/organization-fund-managers";
 import investmentsV2 from "./routes/v2/investments";
 import investmentAgreements from "./routes/v2/investment-agreements";
+import entityAgreements from "./routes/v2/entity-agreements.ts";
+import stripe from "./routes/v2/stripe";
 
 const app = express();
 
-const loggerMiddleware = expressPinoLogger({
-  logger: logger(),
-  autoLogging: false,
-});
 app.use(loggerMiddleware);
 
 app.use(checkToken());
@@ -52,8 +52,14 @@ app.use("/api/v2/organizations", organizationRoutesv2);
 app.use("/api/v2/organization-fund-managers", organizationFundManagers);
 app.use("/api/v2/organization-agreements", organizationAgreements);
 app.use("/api/v2/organization-moderators", organizationModerators);
+
+app.use("/api/v2/entities", entityRoutes);
+app.use("/api/v2/entity-agreements", entityAgreements);
+
 app.use("/api/v2/investments", investmentsV2);
 app.use("/api/v2/investment-agreements", investmentAgreements);
+
+app.use("/api/v2/stripe", stripe);
 
 app.use(errorMiddleware());
 

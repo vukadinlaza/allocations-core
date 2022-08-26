@@ -1,13 +1,21 @@
-import { Entity } from "@allocations/core-models";
 import { requestFactory } from "./request";
 
 const request = requestFactory(process.env.ENTITY_SERVICE_URL!);
 
-export const initializeEntity = (entity: Entity, token: string) => {
+export const completeFormation = (entityId: string, token: string) => {
   return request({
     token,
-    path: "/initialize",
+    path: "/complete",
     method: "POST",
-    body: { id: entity._id },
+    body: { id: entityId },
+  });
+};
+
+export const signAgreement = (entityId: string, token: string) => {
+  return request({
+    token,
+    path: "/agreements-pending/check",
+    method: "POST",
+    body: { id: entityId },
   });
 };

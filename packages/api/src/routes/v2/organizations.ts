@@ -1,5 +1,12 @@
 import { HttpError } from "@allocations/api-common";
-import { Organization, OrganizationModerator } from "@allocations/core-models";
+import {
+  Entity,
+  EntityAgreement,
+  Organization,
+  OrganizationAgreement,
+  OrganizationFundManager,
+  OrganizationModerator,
+} from "@allocations/core-models";
 import { Router } from "express";
 import {
   approveOpsHandoff,
@@ -9,12 +16,20 @@ import {
 export default Router()
   .post("/", async (req, res, next) => {
     try {
-      const { name, user, high_volume_partner } = req.body;
+      const {
+        name,
+        user,
+        high_volume_partner,
+        desired_entity_name,
+        fund_manager_passport_id,
+        banking_manager_passport_id,
+      } = req.body;
 
       const newOrg = await Organization.create({
-        name,
         phase: "new",
+        name,
         high_volume_partner,
+        desired_entity_name,
       });
 
       await OrganizationModerator.create({
@@ -22,6 +37,22 @@ export default Router()
         organization_id: newOrg._id,
         role: "admin",
       });
+
+      if (fund_manager_passport_id) {
+        await OrganizationFundManager.create({
+          passport_id: fund_manager_passport_id,
+          organization_id: newOrg._id,
+          role: "fund-manager",
+        });
+      }
+
+      if (banking_manager_passport_id) {
+        await OrganizationFundManager.create({
+          passport_id: banking_manager_passport_id,
+          organization_id: newOrg._id,
+          role: "banking-manager",
+        });
+      }
 
       res.send(newOrg);
 
@@ -72,7 +103,10 @@ export default Router()
     try {
       const organizationDetails = await Organization.findById(req.params.id)
         .populate("entities")
-        .populate("admins")
+        .populate({
+          path: "fund_managers",
+          populate: "passport",
+        })
         .populate("moderators");
 
       if (!organizationDetails)
@@ -91,6 +125,31 @@ export default Router()
         req.headers["x-api-token"] as string
       );
       res.send({ message: "Success" });
+    } catch (e: any) {
+      next(e);
+    }
+  })
+
+  .get("/:id/action-items", async (req, res, next) => {
+    try {
+      const entities = await Entity.find({ organization_id: req.params.id });
+
+      const [organizationAgreements, entityAgreements] = await Promise.all([
+        OrganizationAgreement.find({
+          organization_id: req.params.id,
+          signed: false,
+        }),
+        EntityAgreement.find({
+          entity_id: entities.map(({ _id }) => _id),
+          signed: false,
+        }),
+      ]);
+
+      res.send({
+        organization_agreements: organizationAgreements,
+        entity_agreements: entityAgreements,
+        // TODO add deal action items
+      });
     } catch (e: any) {
       next(e);
     }

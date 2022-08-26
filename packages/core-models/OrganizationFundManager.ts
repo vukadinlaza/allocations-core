@@ -10,6 +10,7 @@ const schema = new mongoose.Schema<OrganizationFundManager>(
   {
     passport_id: {
       type: mongoose.SchemaTypes.ObjectId,
+      ref: "InvestorPassport",
       required: true,
     },
     organization_id: {
@@ -37,6 +38,13 @@ const schema = new mongoose.Schema<OrganizationFundManager>(
 schema.virtual("organization", {
   ref: "Organization",
   localField: "organization_id",
+  foreignField: "_id",
+  justOne: true,
+});
+
+schema.virtual("passport", {
+  ref: "InvestorPassport",
+  localField: "passport_id",
   foreignField: "_id",
   justOne: true,
 });

@@ -13,7 +13,10 @@ import {
   DepositoryAccountSubtype,
   CountryCode,
 } from "plaid";
-import { initializePlaidAccount } from "../../services/plaid";
+import {
+  initializePlaidAccount,
+  reconcilePlaidTransaction,
+} from "../../services/plaid";
 
 const configuration = new Configuration({
   basePath: PlaidEnvironments[process.env.PLAID_ENVIRONMENT!],
@@ -65,6 +68,7 @@ export default Router()
       const account = await PlaidAccount.create({
         phase: "new",
         deal_id: req.body.deal_id,
+        plaid_item_id: data.item_id,
         access_token: data.access_token,
         account_name: auth.accounts[0].name,
         account_number: auth.numbers.ach[0].account,
@@ -124,6 +128,11 @@ export default Router()
       }
 
       res.send(transaction);
+
+      await reconcilePlaidTransaction(
+        transaction,
+        req.headers["x-api-token"] as string
+      );
     } catch (e) {
       next(e);
     }
@@ -151,6 +160,46 @@ export default Router()
           populate: { path: "deal_id", justOne: true },
         })
       );
+    } catch (e) {
+      next(e);
+    }
+  })
+
+  .patch("/:id", async (req, res, next) => {
+    try {
+      res.send(
+        await PlaidAccount.findByIdAndUpdate(req.params.id, req.body, {
+          new: true,
+        })
+      );
+    } catch (e) {
+      next(e);
+    }
+  })
+
+  .delete("/:id", async (req, res, next) => {
+    try {
+      const transactions = await PlaidTransaction.find({
+        plaid_account: req.params.id,
+        $or: [
+          { category: { $exists: true } },
+          { investment_id: { $exists: true } },
+        ],
+      });
+
+      if (transactions.length) {
+        throw new HttpError(
+          "Unable to delete account because transactions have already been reconciled",
+          400
+        );
+      }
+
+      await Promise.all([
+        PlaidAccount.findByIdAndDelete(req.params.id),
+        PlaidTransaction.deleteMany({ plaid_account: req.params.id }),
+      ]);
+
+      res.send({ acknowledged: true });
     } catch (e) {
       next(e);
     }

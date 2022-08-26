@@ -4,7 +4,11 @@ export interface OrganizationAgreement extends Document {
   title: string;
   organization_id: ObjectId;
   signed: boolean;
-  type: "services-agreement" | "memorandum-of-understanding";
+  type:
+    | "terms-and-conditions"
+    | "services-agreement"
+    | "power-of-attorney"
+    | "memorandum-of-understanding";
   md5: string;
   s3_bucket?: string;
   s3_key?: string;
@@ -63,7 +67,12 @@ const schema = new mongoose.Schema<OrganizationAgreement>(
     },
     type: {
       type: String,
-      enum: ["services-agreement", "memorandum-of-understanding"],
+      enum: [
+        "terms-and-conditions",
+        "services-agreement",
+        "power-of-attorney",
+        "memorandum-of-understanding",
+      ],
       required: true,
     },
     s3_bucket: {

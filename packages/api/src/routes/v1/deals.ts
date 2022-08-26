@@ -5,10 +5,9 @@ import {
   inviteInvestorsTaskComplete,
   signInvestmentAgreement,
 } from "../../utils/deals";
-import { HttpError } from "@allocations/api-common";
+import { HttpError, logger } from "@allocations/api-common";
 import { Entity } from "@allocations/core-models";
 import mongoose from "mongoose";
-import logger from "../../../logger";
 import { basename } from "path";
 import {
   getDataRequestToken,
@@ -17,7 +16,7 @@ import {
 } from "../../utils/docspring";
 import { ObjectId } from "mongodb";
 const fileName = basename(__filename, ".ts");
-const log = logger().child({ module: fileName });
+const log = logger.child({ module: fileName });
 
 const getSetupCost = (deal: Deal) => {
   if (deal.type === "fund") {

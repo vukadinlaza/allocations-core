@@ -1,0 +1,18 @@
+{
+  "phases": {
+    "connect-pending": {
+      "DETAILS_SUBMITTED": "verification-pending",
+      "VERIFICATION_COMPLETE": "live",
+      "FAILED": "failed"
+    },
+    "verification-pending": {
+      "VERIFICATION_COMPLETE": "live",
+      "FAILED": "failed"
+    },
+    "live": {
+      "CLOSE": "closed"
+    },
+    "closed": {},
+    "failed": {}
+  }
+}

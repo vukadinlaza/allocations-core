@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { Organization, OrganizationAdmin } from "@allocations/core-models";
 import mongoose from "mongoose";
-import logger from "../../../logger";
 import { basename } from "path";
 import { ObjectId } from "mongodb";
+import { logger } from "@allocations/api-common";
 const fileName = basename(__filename, ".ts");
-const log = logger().child({ module: fileName });
+const log = logger.child({ module: fileName });
 
 export default Router()
   .post("/:org_id", async (req, res, next) => {

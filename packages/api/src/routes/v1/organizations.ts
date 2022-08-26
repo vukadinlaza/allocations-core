@@ -4,11 +4,10 @@ import { Entity } from "@allocations/core-models";
 import mongoose from "mongoose";
 import { createMemorandumOfUnderstanding } from "../../utils/memorandumOfUnderstanding";
 import { Deal } from "@allocations/core-models";
-import { HttpError } from "@allocations/api-common";
-import logger from "../../../logger";
+import { HttpError, logger } from "@allocations/api-common";
 import { basename } from "path";
 const fileName = basename(__filename, ".ts");
-const log = logger().child({ module: fileName });
+const log = logger.child({ module: fileName });
 
 export default Router()
   .post("/", async (req, res, next) => {

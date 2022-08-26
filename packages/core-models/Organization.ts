@@ -4,6 +4,7 @@ export interface Organization extends Document {
   name: string;
   phase: string;
   slug: string;
+  desired_entity_name?: string;
   master_series: string;
   high_volume_partner: boolean;
   mou_signed: boolean;
@@ -31,6 +32,9 @@ const schema = new mongoose.Schema<Organization>(
       type: Boolean,
       required: true,
       default: false,
+    },
+    desired_entity_name: {
+      type: String,
     },
     mou_signed: {
       type: Boolean,
@@ -65,7 +69,7 @@ schema.virtual("admins", {
 });
 
 schema.virtual("fund_managers", {
-  ref: "OrganizationFundManagers",
+  ref: "OrganizationFundManager",
   localField: "_id",
   foreignField: "organization_id",
 });
@@ -79,7 +83,7 @@ schema.virtual("moderators", {
 schema.virtual("entities", {
   ref: "Entity",
   localField: "_id",
-  foreignField: "organization_ids",
+  foreignField: "organization_id",
 });
 
 export const Organization = mongoose.model<Organization>(

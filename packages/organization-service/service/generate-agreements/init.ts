@@ -6,7 +6,9 @@ import {
 import { Organization, OrganizationAgreement } from "@allocations/core-models";
 import {
   createMOUAgreement,
+  createPOAAgreement,
   createServicesAgreement,
+  createTermsAgreement,
 } from "../../utils/docspring";
 
 export const handler = async ({ Records }: SQSEvent) => {
@@ -17,10 +19,18 @@ export const handler = async ({ Records }: SQSEvent) => {
       const { Message } = JSON.parse(record.body);
       const organization = Organization.hydrate(JSON.parse(Message));
 
-      const [servicesAgreement, mou] = await Promise.all([
+      const [terms, servicesAgreement, poa, mou] = await Promise.all([
+        OrganizationAgreement.findOne({
+          organization_id: organization._id,
+          type: "terms-and-conditions",
+        }),
         OrganizationAgreement.findOne({
           organization_id: organization._id,
           type: "services-agreement",
+        }),
+        OrganizationAgreement.findOne({
+          organization_id: organization._id,
+          type: "power-of-attorney",
         }),
         OrganizationAgreement.findOne({
           organization_id: organization._id,
@@ -29,9 +39,19 @@ export const handler = async ({ Records }: SQSEvent) => {
       ]);
 
       let waitingForGeneration = false;
+      if (!terms) {
+        waitingForGeneration = true;
+        await createTermsAgreement(organization);
+      }
+
       if (!servicesAgreement) {
         waitingForGeneration = true;
         await createServicesAgreement(organization);
+      }
+
+      if (!poa) {
+        waitingForGeneration = true;
+        await createPOAAgreement(organization);
       }
 
       if (organization.high_volume_partner && !mou) {
@@ -41,7 +61,7 @@ export const handler = async ({ Records }: SQSEvent) => {
 
       if (waitingForGeneration) continue;
 
-      triggerTransition({
+      await triggerTransition({
         id: organization._id.toString(),
         action: "GENERATION_COMPLETE",
         phase: "generate-agreements",

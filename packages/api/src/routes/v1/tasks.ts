@@ -1,11 +1,10 @@
 import { Router } from "express";
-import logger from "../../../logger";
 import fetch from "node-fetch";
 import { basename } from "path";
 import { Deal, DealPhase } from "@allocations/core-models";
-import { HttpError } from "@allocations/api-common";
+import { HttpError, logger } from "@allocations/api-common";
 const fileName = basename(__filename, ".ts");
-const log = logger().child({ module: fileName });
+const log = logger.child({ module: fileName });
 
 const requestHook = async (url: string, body: any) => {
   const res = await fetch(url, {

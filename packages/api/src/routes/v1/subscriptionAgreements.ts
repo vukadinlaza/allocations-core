@@ -1,12 +1,11 @@
 import { Router } from "express";
 import { SubscriptionTemplate, Deal } from "@allocations/core-models";
-import { HttpError } from "@allocations/api-common";
+import { HttpError, logger } from "@allocations/api-common";
 import { basename } from "path";
-import logger from "../../../logger";
 import { getTemplateData, addTemplateFields } from "../../utils/docspring";
 import { getFieldPlacement } from "../../utils/pagefinder";
 const fileName = basename(__filename, ".ts");
-const log = logger().child({ module: fileName });
+const log = logger.child({ module: fileName });
 
 export default Router()
   .get("/", async (_, res, next) => {

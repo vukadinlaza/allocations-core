@@ -5,7 +5,7 @@ import {
   GetObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { HttpError } from "@allocations/api-common";
+import { HttpError, logger } from "@allocations/api-common";
 import { Deal, DealPhase, Document, Task } from "@allocations/core-models";
 import type { DealPhase as DealPhaseType } from "@allocations/core-models";
 import { createServicesAgreement } from "../../utils/servicesAgreement";
@@ -16,12 +16,11 @@ import {
 } from "../../utils/memorandumOfUnderstanding";
 import { deleteDocumentByTaskId } from "../../utils/documents";
 import { Organization } from "@allocations/core-models";
-import logger from "../../../logger";
 import { basename } from "path";
 import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 const fileName = basename(__filename, ".ts");
-const log = logger().child({ module: fileName });
+const log = logger.child({ module: fileName });
 
 const client = new S3Client({ region: "us-east-1" });
 

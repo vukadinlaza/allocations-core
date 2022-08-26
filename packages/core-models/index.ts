@@ -24,3 +24,7 @@ export * from "./InvestmentAgreement";
 
 export * from "./PlaidAccount";
 export * from "./PlaidTransaction";
+
+export * from "./StripeAccount";
+export * from "./StripeTransaction";
+export * from "./StripePayout";

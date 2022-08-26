@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "cd ../organization-models && yarn build && cd ../entity-models && yarn build",
+    "build": "cd ../core-models && yarn build",
     "test": "NODE_ENV=test APP_SECRET='1234' jest",
     "test:watch": "yarn test --watch",
     "prepublish": "yarn build",
@@ -17,7 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@allocations/core-models": "*",
-    "@allocations/service-common": "^1.0.0",
+    "@allocations/service-common": "^1.1.0",
     "@aws-sdk/client-s3": "^3.33.0",
     "@aws-sdk/s3-request-presigner": "^3.33.0",
     "aws-sdk": "^2.998.0",

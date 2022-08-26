@@ -19,7 +19,8 @@
       "FAILED": "failed"
     },
     "signed": {
-      "DONE": "wired",
+      "RECONCILE_WIRE": "wired",
+      "RECONCILE_ACH": "ach",
       "EDIT": "generate-agreements"
     },
     "wired": {

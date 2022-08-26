@@ -8,7 +8,7 @@
     "test:watch": "npm run test -- --watch",
     "prebuild": "cd ../core-models && yarn build",
     "build": "tsc",
-    "dev": "nodemon -r dotenv/config --exec ts-node server.ts",
+    "dev": "nodemon -r dotenv/config --exec ts-node server.ts | pino-pretty -c -t",
     "start": "node dist/server.js"
   },
   "jest": {
@@ -46,7 +46,7 @@
     "jest": "^27.4.5",
     "mongodb": "^4.4.1",
     "nodemon": "^2.0.15",
-    "pino-pretty": "^7.5.4",
+    "pino-pretty": "^9.0.0",
     "prettier": "^2.5.1",
     "supertest": "^6.1.6",
     "ts-jest": "^27.1.2",
@@ -54,7 +54,7 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@allocations/api-common": "^0.1.7",
+    "@allocations/api-common": "^0.1.9",
     "@allocations/core-models": "*",
     "@aws-sdk/client-s3": "^3.49.0",
     "@aws-sdk/s3-request-presigner": "^3.49.0",
@@ -73,6 +73,7 @@
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "2.12.313",
     "pino": "^7.9.1",
-    "pino-webpack-plugin": "^1.1.0"
+    "pino-webpack-plugin": "^1.1.0",
+    "stripe": "^10.5.0"
   }
 }

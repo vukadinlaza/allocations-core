@@ -52,9 +52,15 @@ import {
   KYCResult,
   PassportUser,
   TaxInformation,
+  PassportAsset,
 } from "@allocations/core-models";
+import { getFormType } from "../../utils/investor-passports";
 import { HttpError } from "@allocations/api-common";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import {
   checkPassportOnboardingStatus,
@@ -79,9 +85,6 @@ export default Router()
    *          schema:
    *            type: object
    *            properties:
-   *              customer_id:
-   *                type: string
-   *                description: The id of the associated customer.
    *              name:
    *                type: string
    *                description: The name of the investor passport. Either the Entity's name or the Individual's name.
@@ -600,10 +603,6 @@ export default Router()
    *                passport_id:
    *                  type: string
    *                  description: The associated Investor Passport id.
-   *                type:
-   *                  type: string
-   *                  enum: [W-9, W-9-E, W-8-BEN, W-8-BEN-E]
-   *                  description: The tax form filled out.
    *                tax_id:
    *                  type: string
    *                  description: The SSN or EIN used for the tax form.
@@ -616,6 +615,7 @@ export default Router()
       const taxInformation = await TaxInformation.findOne({
         passport_id: req.params.id,
       });
+
       if (!taxInformation) {
         throw new HttpError("Not Found", 404);
       }
@@ -663,10 +663,134 @@ export default Router()
       next(e);
     }
   })
-
   .get("/:id/kyc-results", async (req, res, next) => {
     try {
       res.send(await KYCResult.find({ passport_id: req.params.id }));
+    } catch (e: any) {
+      next(e);
+    }
+  })
+
+  /**
+   * @openapi
+   * /api/v1/investor-passports/{id}/complete:
+   *  get:
+   *    summary: Get all incomplete information for an investor passport
+   *    description: Get an array of objects showing the missing model and type.
+   *    tags: [Investor Passport]
+   *    parameters:
+   *      - name: id
+   *        in: path
+   *        description: InvestorPassport ID
+   *        required: true
+   *        schema:
+   *          type: string
+   *    responses:
+   *      200:
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: array
+   *              items:
+   *                type: object
+   *                description: Object detailing missing information.
+   *                properties:
+   *                  model:
+   *                    type: string
+   *                    description: The model of the missing information ("PassportAsset", "TaxInformation", etc).
+   *                  type:
+   *                    type: string
+   *                    description: The exact kind of information missing ("W-9", "government-issued-id", etc).
+   */
+  .get("/:id/complete", async (req, res, next) => {
+    try {
+      const [passport, taxInformation, governmentId] = await Promise.all([
+        InvestorPassport.findById(req.params.id),
+        TaxInformation.findOne({
+          passport_id: req.params.id,
+        }),
+        PassportAsset.findOne({
+          passport_id: req.params.id,
+          type: "government-issued-id",
+        }),
+      ]);
+
+      if (!passport) throw new HttpError("Passport not found", 404);
+
+      const taxFormType = getFormType({
+        type: passport.type,
+        country: passport.country || "United States",
+      });
+
+      const missing = [];
+
+      if (!taxInformation) {
+        missing.push({ model: "TaxInformation", type: taxFormType });
+      }
+
+      if (!governmentId) {
+        missing.push({ model: "PassportAsset", type: "government-issued-id" });
+      }
+      res.send(missing);
+    } catch (e: any) {
+      next(e);
+    }
+  })
+
+  /**
+   * @openapi
+   * /api/v1/investor-passports/{id}/asset:
+   *  get:
+   *    description: Get a Passport Asset.
+   *    tags: [Investor Passport]
+   *    parameters:
+   *      - name: id
+   *        in: path
+   *        description: InvestorPassport ID
+   *        required: true
+   *        schema:
+   *          type: string
+   *      - name: type
+   *        in: query
+   *        description: PassportAsset type.
+   *        required: true
+   *        schema:
+   *          type: string;
+   *           enum: [tax-form, government-issued-id, proof-of-residence]
+   *    responses:
+   *      200:
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              description: An object containing the signed url for the asset.
+   *              properties:
+   *                link:
+   *                  type: string
+   *                  description: The signed url of the asset.
+   */
+  .get("/:id/asset", async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { type } = req.query;
+
+      if (!type) {
+        throw new HttpError("Asset type is required", 400);
+      }
+
+      const asset = await PassportAsset.findOne({ id, type });
+      if (!asset) {
+        throw new HttpError("Not Found", 404);
+      }
+
+      const command = new GetObjectCommand({
+        Bucket: asset.bucket,
+        Key: asset.path,
+      });
+
+      const link = await getSignedUrl(client, command);
+
+      res.send({ link });
     } catch (e: any) {
       next(e);
     }

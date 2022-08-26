@@ -1,32 +1,26 @@
-"use-strict";
+import type { SNSEvent } from "aws-lambda";
 import {
-  LambdaEvent,
-  parseRequest,
   connectMongoose,
-  sendError,
-  HttpError,
   triggerTransition,
-  send,
 } from "@allocations/service-common";
 import { Entity } from "@allocations/core-models";
 
-export const handler = async (event: LambdaEvent) => {
-  try {
-    const { body = {} } = parseRequest(event);
-    await connectMongoose();
+export const handler = async ({ Records }: SNSEvent) => {
+  await connectMongoose();
 
-    const entity = await Entity.findById(body.id);
-    if (!entity)
-      throw new HttpError(`Entity with id ${body.id} not found`, "404");
+  for (const record of Records) {
+    try {
+      const { id } = JSON.parse(record.Sns.Message);
+      const entity = await Entity.findById(JSON.parse(id));
+      if (!entity) continue;
 
-    await triggerTransition({
-      id: entity._id.toString(),
-      action: "CREATED",
-      phase: "new",
-    });
-
-    return send({ acknowledged: true, _id: entity._id });
-  } catch (err: any) {
-    return sendError({ error: err, status: err.status });
+      await triggerTransition({
+        id: entity._id.toString(),
+        action: "CREATED",
+        phase: "new",
+      });
+    } catch (err: any) {
+      console.error(err);
+    }
   }
 };
