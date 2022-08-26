@@ -4,6 +4,7 @@ export interface StripeAccount extends Document {
   phase: "connect-pending" | "verification-pending" | "live" | "failed";
   deal_id: mongoose.Types.ObjectId;
   stripe_account_id: string;
+  stripe_external_account_id: string;
 
   updated_at: Date;
   created_at: Date;
@@ -22,6 +23,10 @@ const schema = new mongoose.Schema<StripeAccount>(
       required: true,
     },
     stripe_account_id: {
+      type: String,
+      required: true,
+    },
+    stripe_external_account_id: {
       type: String,
       required: true,
     },

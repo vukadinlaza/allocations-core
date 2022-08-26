@@ -8,6 +8,7 @@ import {
   InvestmentAgreement,
   InvestorPassport,
   PlaidAccount,
+  StripeAccount,
   TaxInformation,
   W9ETaxForm,
   W9TaxForm,
@@ -236,6 +237,17 @@ export default Router()
           account_name: account?.account_name,
           account_number: account?.account_number,
           routing_number: account?.routing_number,
+        });
+      }
+
+      const stripeAccount = await StripeAccount.findOne({
+        phase: "live",
+        deal_id: investment.deal_id,
+      });
+      if (stripeAccount) {
+        paymentMethods.push({
+          type: "ach",
+          title: "ACH",
         });
       }
 

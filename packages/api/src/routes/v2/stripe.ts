@@ -2,6 +2,7 @@ import { HttpError } from "@allocations/api-common";
 import {
   PlaidAccount,
   StripeAccount,
+  StripePayout,
   StripeTransaction,
 } from "@allocations/core-models";
 import { Router } from "express";
@@ -68,6 +69,8 @@ export default Router()
             phase: "connect-pending",
             deal_id: req.body.deal_id,
             stripe_account_id: stripeAccount.id,
+            stripe_external_account_id:
+              stripeAccount.external_accounts?.data[0].id,
           },
           { upsert: true, new: true }
         ),
@@ -90,8 +93,17 @@ export default Router()
       const existingTransaction = await StripeTransaction.findOne({
         investment_id: req.body.investment_id,
       });
+      if (existingTransaction?.phase !== "new") {
+        throw new HttpError("Payment already processing or complete", 400);
+      }
       if (existingTransaction) {
-        throw new HttpError("Transaction already exists for investment", 400);
+        await stripe.paymentIntents.update(
+          existingTransaction.stripe_payment_intent_id,
+          {
+            amount: req.body.amount * 100,
+          }
+        );
+        return res.send(existingTransaction);
       }
 
       const account = await StripeAccount.findOne({
@@ -102,9 +114,18 @@ export default Router()
       }
 
       const intent = await stripe.paymentIntents.create({
-        amount: req.body.amount,
+        amount: req.body.amount * 100,
         currency: "usd",
+        confirmation_method: "automatic",
+        payment_method: req.body.payment_method,
         payment_method_types: ["us_bank_account"],
+        transfer_data: {
+          destination: account.stripe_account_id,
+        },
+        metadata: {
+          investment_id: req.body.investment_id,
+          deal_id: req.body.deal_id,
+        },
       });
 
       const transaction = await StripeTransaction.create({
@@ -134,6 +155,14 @@ export default Router()
   .get("/transactions", async (req, res, next) => {
     try {
       res.send(await StripeTransaction.find(req.query));
+    } catch (e) {
+      next(e);
+    }
+  })
+
+  .get("/payouts", async (req, res, next) => {
+    try {
+      res.send(await StripePayout.find(req.query));
     } catch (e) {
       next(e);
     }
