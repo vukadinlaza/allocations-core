@@ -14,6 +14,7 @@ export * from "./KYCResult";
 export * from "./PassportAsset";
 
 export * from "./Deal";
+export * from "./DealAsset";
 export * from "./DealPhase";
 export * from "./DealAgreement";
 export * from "./Document";
