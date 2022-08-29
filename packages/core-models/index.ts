@@ -15,6 +15,7 @@ export * from "./PassportAsset";
 
 export * from "./Deal";
 export * from "./DealPhase";
+export * from "./DealAgreement";
 export * from "./Document";
 export * from "./SubscriptionTemplate";
 
