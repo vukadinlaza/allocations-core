@@ -1,5 +1,5 @@
 import { Router, Request } from "express";
-import { Investment, Transaction } from "@allocations/core-models";
+import { Investment} from "@allocations/core-models";
 import { S3Client } from "@aws-sdk/client-s3";
 import {
   initialize,
@@ -67,76 +67,6 @@ export default Router()
       next(e);
     }
   })
-
-  .patch(
-    "/:id/link-transaction",
-    async (
-      // eslint-disable-next-line @typescript-eslint/ban-types
-      req: Request<{ id: string }, {}, LinkTransactionRequestBody, {}>,
-      res,
-      next
-    ) => {
-      try {
-        if (_.isEmpty(req.body)) {
-          throw new Error("Request body is required");
-        }
-        const {
-          committed_amount,
-          is_crypto,
-          treasury_transaction_id,
-          wired_date,
-          wired_amount,
-        } = req.body;
-        const { id } = req.params;
-
-        // Check whether a matching investment exists!
-        const originalInvestment = await Investment.findById(id);
-        if (!originalInvestment) {
-          throw new Error(`Could not find investment ${id} to update`);
-        }
-
-        // Create a Transaction document with data from incoming treasury txn
-        const newTransaction = await Transaction.create({
-          committed_amount,
-          is_crypto,
-          treasury_transaction_id,
-          wired_date,
-          wired_amount,
-        });
-
-        if (!newTransaction) {
-          throw Error(
-            `Creating Transaction for investment ${id} failed. Transaction not linked.`
-          );
-        }
-
-        // Update the investment with the new transaction
-        const updatedInvestment = await Investment.findByIdAndUpdate(
-          id,
-          { $push: { transactions: newTransaction }, phase: "wired" },
-          { new: true }
-          // I don't think we need a callback here
-        );
-
-        if (
-          !updatedInvestment ||
-          updatedInvestment?.transactions.length ===
-            originalInvestment.transactions.length
-        ) {
-          throw new Error(
-            `Could not link new Transaction: ${newTransaction._id} with Investment: ${originalInvestment._id}`
-          );
-        }
-        res.send({
-          updated: true,
-          invest_transaction_id: newTransaction._id,
-          investment_id: id,
-        });
-      } catch (e: any) {
-        next(e);
-      }
-    }
-  )
 
   .post("/:id/resign", async (req, res, next) => {
     try {

@@ -16,6 +16,7 @@ export const handler = async (event: LambdaEvent) => {
     const agreements = await InvestmentAgreement.find({
       investment_id: body.id,
       signed: false,
+      status: {$ne: 'archived'}
     });
     if (!agreements.length) {
       await triggerTransition({
