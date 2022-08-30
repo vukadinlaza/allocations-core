@@ -91,7 +91,7 @@ export const getInvestmentAgreementPreview = async (
   );
   if (!res.ok)
     throw new Error(
-      `Unable to generate investment agreement preview for ${investment.investor_email}`
+      `Unable to generate investment agreement preview for ${investment._id}`
     );
 
   return res.json();
