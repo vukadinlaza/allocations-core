@@ -68,52 +68,6 @@ export default Router()
     }
   })
 
-  .patch(
-    "/:id/link-transaction",
-    async (
-      // eslint-disable-next-line @typescript-eslint/ban-types
-      req: Request<{ id: string }, {}, LinkTransactionRequestBody, {}>,
-      res,
-      next
-    ) => {
-      try {
-        if (_.isEmpty(req.body)) {
-          throw new Error("Request body is required");
-        }
-
-        const { id } = req.params;
-
-        // Check whether a matching investment exists!
-        const originalInvestment = await Investment.findById(id);
-        if (!originalInvestment) {
-          throw new Error(`Could not find investment ${id} to update`);
-        }
-
-        // Update the investment with the new transaction
-        const updatedInvestment = await Investment.findByIdAndUpdate(
-          id,
-          { phase: "wired" },
-          { new: true }
-          // I don't think we need a callback here
-        );
-
-        if (
-          !updatedInvestment) {
-          throw new Error(
-            `Could not link new Transaction with Investment: ${originalInvestment._id}`
-          );
-        }
-        res.send({
-          updated: true,
-          invest_transaction_id: '',
-          investment_id: id,
-        });
-      } catch (e: any) {
-        next(e);
-      }
-    }
-  )
-
   .post("/:id/resign", async (req, res, next) => {
     try {
       const investment = await Investment.findOneAndUpdate(
