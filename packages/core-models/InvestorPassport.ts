@@ -8,6 +8,7 @@ export interface InvestorPassport extends Document {
   title: string | null;
   representative: string | null;
   country: string | null;
+  us_state: string | null;
   accreditation_type: string;
   metadata: Map<string, any>;
   updated_at: Date;
@@ -42,6 +43,10 @@ const schema: Schema = new mongoose.Schema(
       default: null,
     },
     country: {
+      type: String,
+      default: null,
+    },
+    us_state: {
       type: String,
       default: null,
     },
