@@ -97,13 +97,18 @@ export default Router()
         throw new HttpError("Payment already processing or complete", 400);
       }
       if (existingTransaction) {
-        await stripe.paymentIntents.update(
-          existingTransaction.stripe_payment_intent_id,
-          {
-            amount: req.body.amount * 100,
-          }
-        );
-        return res.send(existingTransaction);
+        const [transaction, intent] = await Promise.all([
+          StripeTransaction.findByIdAndUpdate(existingTransaction._id, {
+            amount: req.body.amount,
+          }),
+          stripe.paymentIntents.update(
+            existingTransaction.stripe_payment_intent_id,
+            {
+              amount: req.body.amount * 100,
+            }
+          ),
+        ]);
+        return res.send({ transaction, client_secret: intent.client_secret });
       }
 
       const account = await StripeAccount.findOne({
@@ -138,7 +143,7 @@ export default Router()
         amount: req.body.amount,
       });
 
-      res.send(transaction);
+      res.send({ transaction, client_secret: intent.client_secret });
     } catch (e) {
       next(e);
     }

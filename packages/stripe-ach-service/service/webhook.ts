@@ -35,7 +35,7 @@ export const handler = async (event: LambdaEvent) => {
 
     const stripeEvent = stripe.webhooks.constructEvent(
       event.body as string,
-      event.headers["stripe-signature"],
+      event.headers["Stripe-Signature"],
       process.env.STRIPE_WEBHOOK_SECRET!
     );
 
@@ -43,6 +43,7 @@ export const handler = async (event: LambdaEvent) => {
 
     return send({ acknowledged: true });
   } catch (err: any) {
+    console.error(err);
     return sendError({ error: err, status: err.status });
   }
 };
