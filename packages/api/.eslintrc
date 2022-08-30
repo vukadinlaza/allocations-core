@@ -22,5 +22,6 @@
 
     // https://github.com/typescript-eslint/typescript-eslint/blob/v4.30.0/packages/eslint-plugin/docs/rules/no-var-requires.md
     "@typescript-eslint/no-var-requires": "off"
-  }
+  },
+  "sort-keys": ["error", "asc", { "caseSensitive": true, "natural": false }]
 }
