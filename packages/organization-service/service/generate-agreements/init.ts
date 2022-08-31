@@ -29,6 +29,13 @@ export const handler = async ({ Records }: SQSEvent) => {
         role: "fund-manager",
       }).populate<{ passport: InvestorPassport }>("passport");
 
+      const organizationObject = organization.toObject();
+
+      const orgWithFM = {
+        ...organizationObject,
+        fund_manager: fundManager?.passport.name,
+      };
+
       const [terms, servicesAgreement, poa, mou] = await Promise.all([
         OrganizationAgreement.findOne({
           organization_id: organization._id,
@@ -56,20 +63,14 @@ export const handler = async ({ Records }: SQSEvent) => {
 
       if (!servicesAgreement) {
         waitingForGeneration = true;
-        await createServicesAgreement({
-          ...organization,
-          //@ts-ignore
-          fund_manager: fundManager?.passport.name,
-        });
+        //@ts-ignore
+        await createServicesAgreement(fundManager ? orgWithFM : organization);
       }
 
       if (!poa) {
         waitingForGeneration = true;
-        await createPOAAgreement({
-          ...organization,
-          //@ts-ignore
-          fund_manager: fundManager?.passport.name,
-        });
+        //@ts-ignore
+        await createPOAAgreement(fundManager ? orgWithFM : organization);
       }
 
       if (organization.high_volume_partner && !mou) {
