@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { Investment } from "@allocations/core-models";
+import { Investment, InvestorPassport } from "@allocations/core-models";
 
 export type NameScanData = {
   numMatches: number;
@@ -9,15 +9,15 @@ export type NameScanData = {
   metaData: string;
 };
 
-export const getNameScanData = async (investment: Investment) => {
+export const getNameScanData = async (investment: Investment & {passport: InvestorPassport}) => {
   const data = {
-    name: investment.investor_entity_name,
-    country: investment.investor_country || "",
-    state: investment.investor_state || "",
+    name: investment.passport.type === "Entity" ? investment.passport.name : null,
+    country: investment.passport.country || "",
+    state: investment.passport.us_state || "",
   };
   const res = await fetch(
     `https://namescan.io/api/v3/${
-      investment.investor_type === "Entity"
+      investment.passport.type === "Entity"
         ? "organisation-scans"
         : "person-scans"
     }/emerald`,
