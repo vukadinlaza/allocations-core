@@ -80,27 +80,21 @@ export default Router()
         }
 
         investment = await Investment.findOneAndUpdate(
-          { phase: "invited", deal_id, investor_email: rest.investor_email },
+          { phase: "invited", deal_id, user_id },
           {
             ...rest,
             test: existingInvestment.test,
             passport_id,
             phase: "invited",
-            investor_type: passport.type,
-            investor_name:
-              passport.type === "Entity"
-                ? passport.representative
-                : passport.name,
-            investor_entity_name:
-              passport.type === "Entity" ? passport.name : null,
-            investor_country: passport.country,
-            investor_state: (
-              passport.tax_information?.tax_form as W9ETaxForm | W9TaxForm
-            )?.state,
-            accredited_investor_type: passport.accreditation_type,
             carry_fee_percent: deal.carry_fee,
             management_fee_percent: deal.management_fee,
             management_fee_frequency: deal.management_fee_frequency,
+            metadata: {
+              submission_data: {
+                passport_id,
+                ...rest
+              }
+            }
           },
           { upsert: true, new: true }
         );
@@ -122,6 +116,12 @@ export default Router()
           carry_fee_percent: deal.carry_fee,
           management_fee_percent: deal.management_fee,
           management_fee_frequency: deal.management_fee_frequency,
+          metadata: {
+            submission_data: {
+              passport_id,
+              ...rest
+            }
+          }
         });
       }
       res.send(investment);
