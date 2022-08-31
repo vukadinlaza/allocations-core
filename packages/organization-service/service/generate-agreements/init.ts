@@ -3,7 +3,12 @@ import {
   connectMongoose,
   triggerTransition,
 } from "@allocations/service-common";
-import { Organization, OrganizationAgreement } from "@allocations/core-models";
+import {
+  InvestorPassport,
+  Organization,
+  OrganizationAgreement,
+  OrganizationFundManager,
+} from "@allocations/core-models";
 import {
   createMOUAgreement,
   createPOAAgreement,
@@ -18,6 +23,11 @@ export const handler = async ({ Records }: SQSEvent) => {
     for (const record of Records) {
       const { Message } = JSON.parse(record.body);
       const organization = Organization.hydrate(JSON.parse(Message));
+
+      const fundManager = await OrganizationFundManager.findOne({
+        organization_id: organization._id,
+        role: "fund-manager",
+      }).populate<{ passport: InvestorPassport }>("passport");
 
       const [terms, servicesAgreement, poa, mou] = await Promise.all([
         OrganizationAgreement.findOne({
@@ -46,12 +56,20 @@ export const handler = async ({ Records }: SQSEvent) => {
 
       if (!servicesAgreement) {
         waitingForGeneration = true;
-        await createServicesAgreement(organization);
+        await createServicesAgreement({
+          ...organization,
+          //@ts-ignore
+          fund_manager: fundManager?.passport.name,
+        });
       }
 
       if (!poa) {
         waitingForGeneration = true;
-        await createPOAAgreement(organization);
+        await createPOAAgreement({
+          ...organization,
+          //@ts-ignore
+          fund_manager: fundManager?.passport.name,
+        });
       }
 
       if (organization.high_volume_partner && !mou) {

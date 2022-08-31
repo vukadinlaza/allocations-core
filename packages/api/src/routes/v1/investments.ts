@@ -1,4 +1,4 @@
-import { Router, Request } from "express";
+import { Router } from "express";
 import { Investment} from "@allocations/core-models";
 import { S3Client } from "@aws-sdk/client-s3";
 import {
@@ -16,15 +16,6 @@ import mongoose from "mongoose";
 interface GeneralObject {
   [key: string]: any;
 }
-
-type LinkTransactionRequestBody = {
-  readonly committed_amount: boolean;
-  readonly is_crypto: boolean;
-  readonly ommitted_amount: number;
-  readonly treasury_transaction_id: string;
-  readonly wired_amount: number;
-  readonly wired_date: string;
-};
 
 const client = new S3Client({ region: "us-east-1" });
 
