@@ -10,8 +10,6 @@ import {
   PlaidAccount,
   StripeAccount,
   TaxInformation,
-  W9ETaxForm,
-  W9TaxForm,
 } from "@allocations/core-models";
 import { HttpError } from "@allocations/api-common";
 import {
