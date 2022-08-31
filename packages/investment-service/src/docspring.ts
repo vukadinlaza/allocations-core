@@ -74,7 +74,8 @@ export const createSubscriptionAgreement = (
       );
     } else {
       // @ts-ignore
-      data[field.name] = investment[field.name] || "";
+      const templateFieldValue = investment[field.name] || investment.metadata?.submission_data?.[field.name]
+      data[field.name] = templateFieldValue || "";
     }
   }
 

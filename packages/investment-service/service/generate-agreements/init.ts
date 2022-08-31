@@ -28,7 +28,7 @@ export const handler = async ({ Records }: SQSEvent) => {
 
       const investment = await Investment.findById(_id).populate<{
         deal: Deal;
-      }>("deal");
+      }>("deal").lean();
       if (!investment) {
         throw new Error("Investment Not Found");
       }
