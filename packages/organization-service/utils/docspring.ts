@@ -54,7 +54,9 @@ export const createTermsAgreement = (organization: Organization) => {
   });
 };
 
-export const createServicesAgreement = (organization: Organization) => {
+export const createServicesAgreement = (
+  organization: Organization
+) => {
   return createSubmission({
     organization,
     assetType: "services-agreement",
@@ -62,7 +64,9 @@ export const createServicesAgreement = (organization: Organization) => {
   });
 };
 
-export const createPOAAgreement = (organization: Organization) => {
+export const createPOAAgreement = (
+  organization: Organization
+) => {
   return createSubmission({
     organization,
     assetType: "power-of-attorney",

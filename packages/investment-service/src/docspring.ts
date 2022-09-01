@@ -8,6 +8,16 @@ import fetch from "node-fetch";
 
 const TOKEN = Buffer.from(process.env.DOCSPRING_TOKEN!).toString("base64");
 
+interface InvestmentForDocspring extends Investment {
+  deal: Deal      
+  investor_type: string;
+  investor_name: string;
+  investor_entity_name: string | null;
+  investor_country: string;
+  investor_state: string;
+  accredited_investor_type: string;
+}
+
 const createSubmission = async ({
   templateId,
   data,
@@ -40,7 +50,7 @@ const createSubmission = async ({
 };
 
 export const createSubscriptionAgreement = (
-  investment: Investment & { deal: Deal },
+  investment: InvestmentForDocspring,
   subscriptionTemplate: SubscriptionTemplate
 ) => {
   const formFields = subscriptionTemplate.form_structure.groups.reduce<
@@ -64,7 +74,8 @@ export const createSubscriptionAgreement = (
       );
     } else {
       // @ts-ignore
-      data[field.name] = investment[field.name] || "";
+      const templateFieldValue = investment[field.name] || investment.metadata?.submission_data?.[field.name]
+      data[field.name] = templateFieldValue || "";
     }
   }
 

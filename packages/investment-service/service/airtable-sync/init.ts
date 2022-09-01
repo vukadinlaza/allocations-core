@@ -1,4 +1,4 @@
-import { Investment } from "@allocations/core-models";
+import { Investment, InvestorPassport } from "@allocations/core-models";
 import {
   connectMongoose,
   triggerTransition,
@@ -23,8 +23,14 @@ export const handler = async ({ Records }: any): Promise<void> => {
         });
       }
 
+      const passport = await InvestorPassport.findById(investmentInput.passport_id).lean();
+      if (!passport) {
+        throw new Error(`Passport Not Found: investmentInput: ${JSON.stringify(investmentInput, null, 2)}`);
+      }
+
       const { record_id } = await createOrFindDealTrackerInvestment(
-        investmentInput
+        investmentInput,
+        passport
       );
       const investment = await Investment.findByIdAndUpdate(
         investmentInput._id,
@@ -38,7 +44,7 @@ export const handler = async ({ Records }: any): Promise<void> => {
           `Unable to find investment with id ${investmentInput._id}`
         );
       }
-      await updateSignedInvestment(investment);
+      await updateSignedInvestment(investment, passport);
       await triggerTransition({
         id: investmentInput._id.toString(),
         action: "COMPLETE",

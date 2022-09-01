@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import fetch from "node-fetch";
-import { Investment } from "@allocations/core-models";
+import { Investment, InvestorPassport } from "@allocations/core-models";
 import { NameScanData } from "./utils/namescan";
 const { AIRTABLE_API_KEY, AIRTABLE_DEAL_TRACKER_BASE_ID } = process.env;
 
@@ -54,11 +54,6 @@ type DealTrackerInvestment = {
   "KYC Scan Meta Data"?: string;
 };
 
-const getNameOrEntity = (investment: Investment) => {
-  return investment.investor_type === "Entity"
-    ? investment.investor_entity_name
-    : investment.investor_name;
-};
 
 const findDealRecordId = async (deal_id: string): Promise<RecordId> => {
   const filterByFormula = encodeURIComponent(`FIND("${deal_id}", {deal_id})`);
@@ -101,7 +96,8 @@ const findUserRecordId = async (user_id: string): Promise<RecordId> => {
 };
 
 export const createInvestment = async (
-  investment: Investment
+  investment: Investment,
+  passport: InvestorPassport
 ): Promise<DealTrackerInvestment> => {
   const deal_record_id = await findDealRecordId(investment.deal_id.toString());
 
@@ -119,7 +115,7 @@ export const createInvestment = async (
         records: [
           {
             fields: {
-              "Investor Name": investment.investor_name,
+              "Investor Name": passport.name,
               "Deal Name (webapp)": [deal_record_id],
               Email: [user_record_id],
             },
@@ -138,7 +134,8 @@ export const createInvestment = async (
 };
 
 export const updateSignedInvestment = async (
-  investment: Investment
+  investment: Investment,
+  passport: InvestorPassport
 ): Promise<DealTrackerInvestment> => {
   const res = await fetch(
     `https://api.airtable.com/v0/${AIRTABLE_DEAL_TRACKER_BASE_ID}/${AIRTABLE_DEAL_TRACKER_TABLE_ID}`,
@@ -155,11 +152,11 @@ export const updateSignedInvestment = async (
             fields: {
               "Carry %": investment.carry_fee_percent,
               "Management Fee %": investment.management_fee_percent,
-              "Investor Type": investment.investor_type,
-              "Investor Name/Entity": getNameOrEntity(investment),
-              "Investor Country": investment.investor_country,
-              "Accredited Investor": investment.accredited_investor_type,
-              "Investor State": investment.investor_state,
+              "Investor Type": passport.type,
+              "Investor Name/Entity": passport.name,
+              "Investor Country": passport.country,
+              "Accredited Investor": passport.accreditation_type,
+              "Investor State": passport.us_state,
               "Total Amount Committed (without fees)":
                 investment.total_committed_amount,
               "Mongo Investment ID": investment._id,
@@ -176,19 +173,13 @@ export const updateSignedInvestment = async (
 };
 
 export const findDealTrackerInvestment = async (
-  investment: Investment
+  investment: Investment,
+  passport: InvestorPassport
 ): Promise<DealTrackerInvestment | null> => {
   const deal_id = investment.deal_id;
 
-  const name =
-    investment.investor_type === "Entity" ||
-    investment.investor_type === "Trust"
-      ? investment.investor_entity_name
-      : investment.investor_name;
-
-  const nameOrEntity = getNameOrEntity(investment);
   const filterByFormula = encodeURIComponent(
-    `AND(FIND("${investment.user_id}", {Mongo User ID}), FIND("${deal_id}", {deal_id}), FIND("${name}", {Investor Name/Entity}))`
+    `AND(FIND("${investment.user_id}", {Mongo User ID}), FIND("${deal_id}", {deal_id}), FIND("${passport.name}", {Investor Name/Entity}))`
   );
   const res = await fetch(
     `https://api.airtable.com/v0/${AIRTABLE_DEAL_TRACKER_BASE_ID}/${AIRTABLE_DEAL_TRACKER_TABLE_ID}?filterByFormula=${filterByFormula}`,
@@ -203,7 +194,7 @@ export const findDealTrackerInvestment = async (
 
   const { records } = (await res.json()) as any;
   const record = records.reduce((foundRecord: any, record: any) => {
-    if (record["Investor Name/Entity"] === nameOrEntity) return record;
+    if (record["Investor Name/Entity"] === passport.name) return record;
     else if (!foundRecord && !record["Investor Name/Entity"]) return record;
     else return record;
   }, null);
@@ -213,12 +204,13 @@ export const findDealTrackerInvestment = async (
 };
 
 export const createOrFindDealTrackerInvestment = async (
-  investment: Investment
+  investment: Investment,
+  passport: InvestorPassport
 ): Promise<DealTrackerInvestment> => {
-  const dealTrackerInvestment = await findDealTrackerInvestment(investment);
+  const dealTrackerInvestment = await findDealTrackerInvestment(investment, passport);
   if (dealTrackerInvestment) return dealTrackerInvestment;
 
-  return createInvestment(investment);
+  return createInvestment(investment, passport);
 };
 
 export const updateBlueSkyFees = async (

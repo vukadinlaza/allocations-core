@@ -10,8 +10,6 @@ import {
   PlaidAccount,
   StripeAccount,
   TaxInformation,
-  W9ETaxForm,
-  W9TaxForm,
 } from "@allocations/core-models";
 import { HttpError } from "@allocations/api-common";
 import {
@@ -24,15 +22,16 @@ const client = new S3Client({ region: "us-east-1" });
 export default Router()
   .post("/", async (req, res, next) => {
     try {
-      const { passport_id, deal_id, ...rest } = req.body;
+      const { passport_id, deal_id, user_id, ...rest } = req.body;
       const [deal, existingInvestment] = await Promise.all([
         Deal.findById(deal_id),
         Investment.findOne({
           phase: "invited",
           deal_id,
-          investor_email: rest.investor_email,
+          user_id
         }),
       ]);
+
       if (!deal) {
         throw new HttpError("Invalid Deal", 400);
       }
@@ -54,7 +53,7 @@ export default Router()
             ...rest,
             phase: "invited",
             deal_id,
-            investor_email: rest.investor_email,
+            user_id
           });
           res.send(investment);
         }
@@ -79,27 +78,21 @@ export default Router()
         }
 
         investment = await Investment.findOneAndUpdate(
-          { phase: "invited", deal_id, investor_email: rest.investor_email },
+          { phase: "invited", deal_id, user_id },
           {
             ...rest,
             test: existingInvestment.test,
             passport_id,
             phase: "invited",
-            investor_type: passport.type,
-            investor_name:
-              passport.type === "Entity"
-                ? passport.representative
-                : passport.name,
-            investor_entity_name:
-              passport.type === "Entity" ? passport.name : null,
-            investor_country: passport.country,
-            investor_state: (
-              passport.tax_information?.tax_form as W9ETaxForm | W9TaxForm
-            )?.state,
-            accredited_investor_type: passport.accreditation_type,
             carry_fee_percent: deal.carry_fee,
             management_fee_percent: deal.management_fee,
             management_fee_frequency: deal.management_fee_frequency,
+            metadata: {
+              submission_data: {
+                passport_id,
+                ...rest
+              }
+            }
           },
           { upsert: true, new: true }
         );
@@ -116,22 +109,17 @@ export default Router()
           test: rest.test,
           passport_id,
           deal_id,
+          user_id,
           phase: "invited",
-          investor_type: passport.type,
-          investor_name:
-            passport.type === "Entity"
-              ? passport.representative
-              : passport.name,
-          investor_entity_name:
-            passport.type === "Entity" ? passport.name : null,
-          investor_country: passport.country,
-          investor_state: (
-            passport.tax_information?.tax_form as W9ETaxForm | W9TaxForm
-          )?.state,
-          accredited_investor_type: passport.accreditation_type,
           carry_fee_percent: deal.carry_fee,
           management_fee_percent: deal.management_fee,
           management_fee_frequency: deal.management_fee_frequency,
+          metadata: {
+            submission_data: {
+              passport_id,
+              ...rest
+            }
+          }
         });
       }
       res.send(investment);

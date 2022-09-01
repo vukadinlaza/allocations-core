@@ -1,13 +1,13 @@
 // @ts-nocheck
 import { updateBlueSkyFees, getDealTrackerDealRecords } from "../../airtable";
-import { Investment } from "@allocations/core-models";
+import { Investment, InvestorPassport } from "@allocations/core-models";
 
 export const totalWiredByState = (transactions) => {
   return transactions.reduce((acc, curr) => {
-    if (!acc[curr.investor_state]) {
-      acc[curr.investor_state] = 0;
+    if (!acc[curr.passport.us_state]) {
+      acc[curr.passport.us_state] = 0;
     }
-    acc[curr.investor_state] = acc[curr.investor_state] +=
+    acc[curr.passport.us_state] = acc[curr.passport.us_state] +=
       curr.total_committed_amount;
     return acc;
   }, {});
@@ -631,7 +631,9 @@ export const stateMap = [
 export const getNewBSFees = async (deal_id: string): Promise<any> => {
   const investments = await Investment.find({
     "metadata.deal_id": deal_id,
-  }).lean();
+  }).populate<{
+    passport: InvestorPassport;
+  }>("passport_id").lean();
   const total = totalWired(investments);
   const stateTotals = totalWiredByState(investments);
 
@@ -656,11 +658,11 @@ export const getNewBSFees = async (deal_id: string): Promise<any> => {
   const blueSkyDealFees = investments
     .filter(
       (v, i, a) =>
-        a.findIndex((t) => t.investor_state === v.investor_state) === i
+        a.findIndex((t) => t.passport.us_state === v.passport.us_state) === i
     )
     .map((investment) => {
       const feeData =
-        feeTotalsByState.find((s) => s.state === investment.investor_state) ||
+        feeTotalsByState.find((s) => s.state === investment.passport.us_state) ||
         {};
       return { ...investment, feeData };
     });
@@ -678,7 +680,7 @@ export const updateAirtableBSF = async (investments, deal_id) => {
       };
     } else {
       const invWithFee = investments.find(
-        (i) => i.investor_state === record["Investor State"]
+        (i) => i.passport.us_state === record["Investor State"]
       );
       updatedStates[record["Investor State"]] = true;
       return {

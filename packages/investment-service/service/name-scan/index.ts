@@ -1,4 +1,4 @@
-import { Investment } from "@allocations/core-models";
+import { Investment, InvestorPassport } from "@allocations/core-models";
 import { connectMongoose } from "@allocations/service-common";
 import { getNameScanData } from "../utils/namescan";
 import { updateKYCData } from "../airtable";
@@ -7,7 +7,9 @@ export const handler = async ({ Records }: any): Promise<void> => {
   await connectMongoose();
   for (const record of Records) {
     const { _id } = JSON.parse(record.Sns.Message);
-    const investment = await Investment.findById(_id);
+    const investment = await Investment.findById(_id).populate<{
+      passport: InvestorPassport;
+    }>("passport_id");;
 
     try {
       if (!investment) {
