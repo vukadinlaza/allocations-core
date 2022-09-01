@@ -167,7 +167,6 @@ const W9ETaxFormSchema = new mongoose.Schema({
   },
   smllc_owner_name: {
     type: String,
-    required: true,
   },
   taxed_as: {
     type: String,
