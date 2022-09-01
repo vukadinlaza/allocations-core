@@ -167,11 +167,18 @@ const W9ETaxFormSchema = new mongoose.Schema({
   },
   smllc_owner_name: {
     type: String,
+    required: function () {
+      // @ts-ignore
+      return this.company_type === "Single-Member LLC";
+    },
   },
   taxed_as: {
     type: String,
     enum: ["C Corporation", "S Corporation", "Partnership"],
-    required: true,
+    required: function () {
+      // @ts-ignore
+      return this.company_type === "Limited Liability Company";
+    },
   },
 });
 
