@@ -91,6 +91,7 @@ const schema = new mongoose.Schema<Deal, DealModel>(
   {
     organization_id: {
       type: mongoose.SchemaTypes.ObjectId,
+      ref: "Organization",
       required: true,
     },
     organization_name: { type: String, required: true },
@@ -293,5 +294,12 @@ schema.statics.findByIdWithPhases = async function (id) {
 
   return deal;
 };
+
+schema.virtual("organization", {
+  ref: "Organization",
+  localField: "organization_id",
+  foreignField: "_id",
+  justOne: true,
+});
 
 export const Deal = mongoose.model<Deal, DealModel>("Deal", schema);
