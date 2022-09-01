@@ -16,6 +16,7 @@ interface InvestmentForDocspring extends Investment {
   investor_country: string;
   investor_state: string;
   accredited_investor_type: string;
+  investor_title: string;
 }
 
 const createSubmission = async ({

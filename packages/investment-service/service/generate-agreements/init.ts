@@ -16,6 +16,7 @@ interface InvestmentForDocspring extends Investment {
   investor_country: string;
   investor_state: string;
   accredited_investor_type: string;
+  investor_title: string;
 }
 
 export const handler = async ({ Records }: SQSEvent) => {
@@ -55,7 +56,8 @@ export const handler = async ({ Records }: SQSEvent) => {
           passport.type === "Entity" ? passport.name : null,
         investor_country: passport.country!,
         investor_state: passport.us_state || '',
-        accredited_investor_type: passport.accreditation_type
+        accredited_investor_type: passport.accreditation_type,
+        investor_title: passport.title,
       } as InvestmentForDocspring, 
         subscriptionTemplate)
     }
