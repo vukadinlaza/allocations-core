@@ -93,7 +93,8 @@ export default Router()
       const existingTransaction = await StripeTransaction.findOne({
         investment_id: req.body.investment_id,
       });
-      if (existingTransaction?.phase !== "new") {
+
+      if (existingTransaction && existingTransaction.phase !== "new" ) {
         throw new HttpError("Payment already processing or complete", 400);
       }
       if (existingTransaction) {
