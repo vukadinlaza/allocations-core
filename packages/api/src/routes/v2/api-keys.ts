@@ -95,7 +95,7 @@ export default Router()
 
   .delete("/:id", async (req, res, next) => {
     try {
-      const key = await APIKey.findById(req.params.id);
+      const key = await APIKey.findById(req.params.id).select("+key_id");
       if (!key) {
         throw new HttpError(`API Key with id ${req.params.id} not found`, 404);
       }
