@@ -6,7 +6,7 @@ import {
   DeleteApiKeyCommand,
 } from "@aws-sdk/client-api-gateway";
 import { APIKey } from "@allocations/core-models";
-import { HttpError } from "@allocations/api-common";
+import { HttpError, logger } from "@allocations/api-common";
 
 const client = new APIGatewayClient({ region: "us-east-1" });
 
@@ -30,7 +30,7 @@ export default Router()
         plan: string;
         test: boolean;
       } = req.body;
-      if (!organization_id || !plan) {
+      if (!organization_id) {
         return res.status(400).send("Request body improperly formatted");
       }
 
@@ -67,6 +67,7 @@ export default Router()
 
       res.send(key);
     } catch (e) {
+      logger.error(e);
       next(e);
     }
   })
