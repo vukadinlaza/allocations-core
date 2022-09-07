@@ -7,25 +7,39 @@ ECR_REGISTRY=046746691294.dkr.ecr.us-east-1.amazonaws.com
 ECR_REPOSITORY=allocations-core
 export IMAGE=$ECR_REGISTRY/$ECR_REPOSITORY:$sha
 
+if [ $STAGE = "staging" ]
+then
+  export base_url=https://static.allocations.sh
+else
+  export base_url=https://static.allocations.dev
+fi
+
 if [ $type = "next" ]
 then
-  export next_patch_url=https://static.allocations.dev/ymls/next/full.yml
+  export next_patch_url=$base_url/ymls/next/full.yml
 else
-  export next_patch_url=https://static.allocations.dev/ymls/next/empty.yml
+  export next_patch_url=$base_url/ymls/next/empty.yml
+fi
+
+if [ $production_scheme = "internet-facing" ] && [ $STAGE = "production" ]
+then
+  export acl_patch_url=$base_url/ymls/acl/with-waf.yml
+else
+  export acl_patch_url=$base_url/ymls/acl/without-waf.yml
 fi
 
 mkdir -p temp/base
 cd temp/base
-curl https://static.allocations.dev/ymls/base/kustomization.yml > kustomization.yml
-curl https://static.allocations.dev/ymls/base/deployment.yml > deployment.yml
+curl $base_url/ymls/base/kustomization.yml > kustomization.yml
+curl $base_url/ymls/base/deployment.yml > deployment.yml
 
 cd .. && mkdir -p overlays/$STAGE
 cd overlays/$STAGE
-curl https://static.allocations.dev/ymls/overlays/$STAGE/kustomization.yml > kustomization.yml
+curl $base_url/ymls/overlays/$STAGE/kustomization.yml > kustomization.yml
 cp ../../../deployment/custom/patch.yml .
 envsubst < kustomization.yml > kustomization.yaml
 rm kustomization.yml
 kubectl kustomize . > new-deployment.yml
 envsubst < new-deployment.yml | kubectl apply -f -
 
-rm -rf temp
+kubectl rollout status deployment/$name -n $STAGE

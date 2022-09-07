@@ -25,6 +25,7 @@ jobs:
           STAGE: ${{ github.event.inputs.stage }}
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPO: ${{ github.repository }}
+          ACL_ARN: ${{ secrets.ACL_ARN }}
         run: |
           chmod +x ./.github/scripts/deploy.sh
           ./.github/scripts/deploy.sh
