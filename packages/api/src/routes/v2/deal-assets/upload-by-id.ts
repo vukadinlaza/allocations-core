@@ -8,7 +8,9 @@ const client = new S3Client({ region: "us-east-1" });
 
 export const uploadById: RequestHandler = async (req, res, next) => {
   try {
-    const asset = await DealAsset.findById(req.params.id);
+    const asset = await DealAsset.findById(req.params.id).select(
+      "+s3_bucket +s3_key"
+    );
     if (!asset) {
       throw new HttpError("Asset Not Found", 404);
     }
