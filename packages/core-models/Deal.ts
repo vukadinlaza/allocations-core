@@ -75,8 +75,10 @@ export interface Deal extends Document {
     investor_docspring_template_id: string;
     fm_signing_data_req_id: string;
     field_injection_strategy: string;
-    fm_template_approved: boolean,
-    investor_template_approved: boolean
+    fm_template_approved: boolean;
+    fm_template_approved_by: string;
+    investor_template_approved: boolean;
+    investor_template_approved_by: string;
   };
   metadata: Map<string, any>;
 }
@@ -238,7 +240,9 @@ const schema = new mongoose.Schema<Deal, DealModel>(
       fm_signing_data_req_id: String,
       field_injection_strategy: String,
       fm_template_approved: Boolean,
-      investor_template_approved: Boolean
+      fm_template_approved_by: String,
+      investor_template_approved: Boolean,
+      investor_template_approved_by: String
     },
     metadata: Map,
   },
