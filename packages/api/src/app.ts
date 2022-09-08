@@ -27,6 +27,7 @@ import entityAgreements from "./routes/v2/entity-agreements.ts";
 import stripe from "./routes/v2/stripe";
 import dealAgreementsRoutes from "./routes/v2/deal-agreements";
 import dealAssetsRoutes from "./routes/v2/deal-assets";
+import apiKeys from "./routes/v2/api-keys";
 
 const app = express();
 
@@ -64,6 +65,8 @@ app.use("/api/v2/investment-agreements", investmentAgreements);
 app.use("/api/v2/stripe", stripe);
 app.use("/api/v2/deal-agreements", dealAgreementsRoutes);
 app.use("/api/v2/deal-assets", dealAssetsRoutes);
+
+app.use("/api/v2/api-keys", apiKeys);
 
 app.use(errorMiddleware());
 

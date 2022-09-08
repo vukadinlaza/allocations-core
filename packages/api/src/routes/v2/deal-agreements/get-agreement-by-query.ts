@@ -7,23 +7,22 @@ const client = new S3Client({ region: "us-east-1" });
 
 export const getAgreementByQuery: RequestHandler = async (req, res, next) => {
   try {
-    const agreements = await DealAgreement.find(req.query).select(
-      "+s3_bucket +s3_key"
-    ).lean();
+    const agreements = await DealAgreement.find(req.query)
+      .select("+s3_bucket +s3_key")
+      .lean();
 
     const agreementsWithLink = await Promise.all(
       agreements.map(async (agreement) => {
-        const agreementJSON = agreement.toJSON();
         const command = new GetObjectCommand({
           Bucket: agreement.s3_bucket,
           Key: agreement.s3_key,
         });
 
-        delete agreementJSON.s3_bucket;
-        delete agreementJSON.s3_key;
+        delete agreement.s3_bucket;
+        delete agreement.s3_key;
 
         return {
-          ...agreementJSON,
+          ...agreement,
           link: await getSignedUrl(client, command),
         };
       })

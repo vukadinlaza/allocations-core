@@ -41,6 +41,12 @@ schema.virtual("organization", {
   justOne: true,
 });
 
+schema.virtual("fund_manager", {
+  ref: "OrganizationFundManager",
+  localField: "organization_id",
+  foreignField: "organization_id",
+});
+
 export const OrganizationModerator = mongoose.model<OrganizationModerator>(
   "OrganizationModerator",
   schema

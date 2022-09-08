@@ -39,7 +39,7 @@ export const handler = async ({ Records }: SQSEvent) => {
             plaid_account: account._id,
             plaid_transaction_id: transaction.transaction_id,
             name: transaction.name,
-            amount: transaction.amount,
+            amount: transaction.amount * -1,
             type: transaction.amount < 0 ? "Credit" : "Debit",
             status: transaction.pending ? "Pending" : "Posted",
             date: transaction.datetime || transaction.date,
@@ -54,7 +54,7 @@ export const handler = async ({ Records }: SQSEvent) => {
             {
               plaid_account: account._id,
               name: transaction.name,
-              amount: transaction.amount,
+              amount: transaction.amount * -1,
               type: transaction.amount < 0 ? "Credit" : "Debit",
               status: transaction.pending ? "Pending" : "Posted",
               date: transaction.datetime,
