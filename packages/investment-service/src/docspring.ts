@@ -74,6 +74,7 @@ export const createSubscriptionAgreement = (
         formFields
       );
     } else {
+      if(['agreed_to_terms', 'investor_signature'].includes(field.name)) continue;
       // @ts-ignore
       const templateFieldValue = investment[field.name] || investment.metadata?.submission_data?.[field.name]
       data[field.name] = templateFieldValue || "";
