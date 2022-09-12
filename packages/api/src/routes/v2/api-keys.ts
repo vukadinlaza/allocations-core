@@ -36,6 +36,7 @@ export default Router()
 
       const createKeyCommand = new CreateApiKeyCommand({
         name: `${organization_id}-${Date.now()}`,
+        enabled: true,
       });
       const apiKey = await client.send(createKeyCommand);
 
