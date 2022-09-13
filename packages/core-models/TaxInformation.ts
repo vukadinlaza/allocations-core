@@ -4,7 +4,7 @@ export interface TaxInformation extends Document {
   passport_id: mongoose.Types.ObjectId;
   type: "W-9" | "W-9-E" | "W-8-BEN" | "W-8-BEN-E";
   tax_form_document_id: mongoose.Types.ObjectId;
-  tax_form: W9ETaxForm | W9ETaxForm | W8BENTaxForm | W8BENETaxForm;
+  tax_form: W9TaxForm | W9ETaxForm | W8BENTaxForm | W8BENETaxForm;
   signature_packet?: {
     accepted_intent_to_sign: boolean;
     accepted_electronic_business: boolean;
@@ -111,33 +111,28 @@ export interface W8BENETaxForm extends Document {
   foreign_tax_id: string;
 }
 
-const W9TaxFormSchema: Schema = new mongoose.Schema(
-  {
-    address: {
-      type: String,
-      required: true,
-    },
-    city: {
-      type: String,
-      required: true,
-    },
-    state: {
-      type: String,
-      required: true,
-    },
-    tax_id: {
-      type: String,
-      required: true,
-    },
-    postal_code: {
-      type: String,
-      required: true,
-    },
+const W9TaxFormSchema: Schema = new mongoose.Schema({
+  address: {
+    type: String,
+    required: true,
   },
-  {
-    discriminatorKey: "type",
-  }
-);
+  city: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  tax_id: {
+    type: String,
+    required: true,
+  },
+  postal_code: {
+    type: String,
+    required: true,
+  },
+});
 
 const W9ETaxFormSchema = new mongoose.Schema({
   name: {

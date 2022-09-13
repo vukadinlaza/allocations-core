@@ -7,11 +7,18 @@ import {
   OrganizationFundManager,
   OrganizationModerator,
 } from "@allocations/core-models";
-import { Router } from "express";
+import { Request, Router } from "express";
 import {
   approveOpsHandoff,
   initializeOrganization,
 } from "../../services/organizations";
+
+type InitV1OrgRequestBody = {
+  readonly organization_id: string;
+  readonly fund_manager_passport_id: string;
+  readonly banking_manager_passport_id: string;
+  readonly user_id: string;
+};
 
 export default Router()
   .post("/", async (req, res, next) => {
@@ -20,6 +27,7 @@ export default Router()
         name,
         user,
         high_volume_partner,
+        committed_number_of_deals,
         desired_entity_name,
         fund_manager_passport_id,
         banking_manager_passport_id,
@@ -30,6 +38,7 @@ export default Router()
         name,
         high_volume_partner,
         desired_entity_name,
+        committed_number_of_deals,
       });
 
       await OrganizationModerator.create({
@@ -64,6 +73,75 @@ export default Router()
       next(e);
     }
   })
+
+  .post(
+    "/init-v1-org",
+    async (req: Request<{}, {}, InitV1OrgRequestBody, {}, {}>, res, next) => {
+      try {
+        const {
+          fund_manager_passport_id,
+          organization_id,
+          banking_manager_passport_id,
+          user_id,
+        } = req.body;
+
+        const moderatorData = {
+          user_id: user_id,
+          organization_id: organization_id,
+          role: "admin",
+        };
+
+        const fmData = {
+          passport_id: fund_manager_passport_id,
+          organization_id: organization_id,
+          role: "fund-manager",
+        };
+
+        const bankManagerData = {
+          passport_id: banking_manager_passport_id,
+          organization_id: organization_id,
+          role: "banking-manager",
+        };
+
+        const organization = await Organization.findById(organization_id);
+
+        if (!organization) {
+          throw new HttpError("Organization Not Found", 404);
+        }
+
+        await OrganizationModerator.findOneAndUpdate(
+          moderatorData,
+          moderatorData,
+          { upsert: true }
+        );
+
+        if (fund_manager_passport_id) {
+          await OrganizationFundManager.findOneAndUpdate(fmData, fmData, {
+            upsert: true,
+          });
+        }
+
+        if (banking_manager_passport_id) {
+          await OrganizationFundManager.findOneAndUpdate(
+            bankManagerData,
+            bankManagerData,
+            { upsert: true }
+          );
+        }
+
+        res.send(organization);
+
+        if (!organization.phase || organization.phase === "new") {
+          initializeOrganization(
+            organization,
+            req.headers["x-api-token"] as string
+          );
+        }
+      } catch (e: any) {
+        next(e);
+      }
+    }
+  )
 
   .get("/", async (req, res, next) => {
     try {
