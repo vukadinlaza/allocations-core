@@ -27,6 +27,7 @@ export default Router()
         name,
         user,
         high_volume_partner,
+        committed_number_of_deals,
         desired_entity_name,
         fund_manager_passport_id,
         banking_manager_passport_id,
@@ -37,6 +38,7 @@ export default Router()
         name,
         high_volume_partner,
         desired_entity_name,
+        committed_number_of_deals,
       });
 
       await OrganizationModerator.create({

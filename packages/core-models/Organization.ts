@@ -7,6 +7,7 @@ export interface Organization extends Document {
   desired_entity_name?: string;
   master_series: string;
   high_volume_partner: boolean;
+  committed_number_of_deals: number;
   mou_signed: boolean;
   metadata: Map<string, string | number | boolean>;
 }
@@ -40,6 +41,10 @@ const schema = new mongoose.Schema<Organization>(
       type: Boolean,
       required: true,
       default: false,
+    },
+    committed_number_of_deals: {
+      type: Number,
+      required: true,
     },
     metadata: {
       type: Map,

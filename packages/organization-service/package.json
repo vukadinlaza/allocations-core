@@ -22,13 +22,15 @@
     "@aws-sdk/s3-request-presigner": "^3.33.0",
     "aws-sdk": "^2.998.0",
     "mongodb": "^4.1.1",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "number-to-words": "^1.2.4"
   },
   "devDependencies": {
     "@allocations/serverless-allocations-redtail": "^3.0.0",
     "@types/aws-lambda": "^8.10.88",
     "@types/jest": "^27.0.1",
     "@types/node-fetch": "^2.5.12",
+    "@types/number-to-words": "^1.2.1",
     "jest": "^27.1.0",
     "serverless": "^2.60.1",
     "serverless-offline": "^8.2.0",
