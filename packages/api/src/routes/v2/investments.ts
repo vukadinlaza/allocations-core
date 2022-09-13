@@ -243,4 +243,18 @@ export default Router()
     } catch (e) {
       next(e);
     }
+  })
+
+  .get("/", async (req, res, next) => {
+    try {
+      const investments = await Investment.find(req.query).populate([
+        "passport_id"
+      ]);
+      if (!investments) {
+        throw new HttpError("Not Found", 404);
+      }
+      res.send(investments);
+    } catch (e) {
+      next(e);
+    }
   });
