@@ -138,7 +138,9 @@ export default Router()
   .get("/", async (req, res, next) => {
     try {
       res.send(
-        await OrganizationFundManager.find(req.query).populate("organization")
+        await OrganizationFundManager.find(req.query)
+          .populate("organization")
+          .populate("passport")
       );
     } catch (e) {
       next(e);
