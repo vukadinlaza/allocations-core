@@ -132,6 +132,10 @@ export default Router()
         res.send(organization);
 
         if (!organization.phase || organization.phase === "new") {
+          await Organization.findOneAndUpdate(
+            { _id: organization._id },
+            { phase: "new" }
+          );
           initializeOrganization(
             organization,
             req.headers["x-api-token"] as string
