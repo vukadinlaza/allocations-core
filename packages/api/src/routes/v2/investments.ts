@@ -248,7 +248,8 @@ export default Router()
   .get("/", async (req, res, next) => {
     try {
       const investments = await Investment.find(req.query).populate([
-        "passport_id"
+        "passport_id",
+        "deal_id"
       ]);
       if (!investments) {
         throw new HttpError("Not Found", 404);
