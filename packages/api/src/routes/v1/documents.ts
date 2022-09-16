@@ -8,7 +8,10 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { HttpError, logger } from "@allocations/api-common";
 import { Deal, DealPhase, Document, Task } from "@allocations/core-models";
 import type { DealPhase as DealPhaseType } from "@allocations/core-models";
-import { createServicesAgreement } from "../../utils/servicesAgreement";
+import {
+  createOrderForm,
+  createServicesAgreement,
+} from "../../utils/servicesAgreement";
 import { createAdvisoryAgreement } from "../../utils/advisoryAgreement";
 import {
   createMemorandumOfUnderstanding,
@@ -119,6 +122,7 @@ export default Router()
       } = {
         "Sign Services Agreement": createServicesAgreement,
         "Sign Investment Advisory Agreement": createAdvisoryAgreement,
+        "Sign Order Form": createOrderForm,
       };
 
       const preview = req.query.preview === "true";

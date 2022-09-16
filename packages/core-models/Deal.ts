@@ -35,6 +35,7 @@ export interface Deal extends Document {
   instant_spv_disclaimer?: boolean;
   international_company: boolean;
   international_investors: boolean;
+  investor_passport_id: mongoose.Types.ObjectId;
   management_fee: number;
   management_fee_frequency: string;
   manager: {
@@ -163,6 +164,10 @@ const schema = new mongoose.Schema<Deal, DealModel>(
     instant_spv_disclaimer: Boolean,
     international_company: Boolean,
     international_investors: Boolean,
+    investor_passport_id: {
+      type: mongoose.SchemaTypes.ObjectId,
+      required: false,
+    },
     manager: {
       type: {
         type: String,
@@ -242,7 +247,7 @@ const schema = new mongoose.Schema<Deal, DealModel>(
       fm_template_approved: Boolean,
       fm_template_approved_by: String,
       investor_template_approved: Boolean,
-      investor_template_approved_by: String
+      investor_template_approved_by: String,
     },
     metadata: Map,
   },
