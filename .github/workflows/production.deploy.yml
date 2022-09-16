@@ -1,16 +1,7 @@
-name: Deploy
+name: Deploy Production
 
 on:
-  workflow_dispatch:
-    inputs:
-      stage:
-        description: "Define env name"
-        required: true
-        type: choice
-        default: "staging"
-        options:
-          - staging
-          - production
+  workflow_dispatch
 
 jobs:
   deploy:
@@ -22,7 +13,7 @@ jobs:
 
       - name: Deploy Pod
         env:
-          STAGE: ${{ github.event.inputs.stage }}
+          STAGE: production
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPO: ${{ github.repository }}
           ACL_ARN: ${{ secrets.ACL_ARN }}

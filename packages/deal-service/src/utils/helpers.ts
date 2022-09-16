@@ -45,6 +45,8 @@ export const updateDealEntity = async (
       zip_code: "19901",
       phase: "complete",
     });
+    // Adding a ts ignore. It looks like organization_ids is used in other parts also, but that field is not part of entity model
+    //@ts-ignore
   } else if (!entity?.organization_ids?.includes(deal?.organization_id)) {
     await Entity.findOneAndUpdate(
       { _id: entity._id },

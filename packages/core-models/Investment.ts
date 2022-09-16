@@ -33,6 +33,8 @@ const schema = new mongoose.Schema(
     },
     passport_id: {
       type: Schema.Types.ObjectId,
+      ref: "InvestorPassport",
+      required: true,
     },
     phase: {
       type: String,
