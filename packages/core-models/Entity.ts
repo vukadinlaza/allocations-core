@@ -33,7 +33,7 @@ const schema = new mongoose.Schema<Entity>(
         "formation-pending",
         "complete",
       ],
-      default: "new",
+      default: "verify-entity",
       required: true,
     },
     organization_id: {
