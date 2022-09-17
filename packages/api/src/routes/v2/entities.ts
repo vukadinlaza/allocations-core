@@ -6,7 +6,10 @@ import { completeFormation, verifyEntity } from "../../services/entities";
 export default Router()
   .post("/", async (req, res, next) => {
     try {
-      const entity = await Entity.create(req.body);
+      const entity = await Entity.create({
+        ...req.body,
+        phase: "verify-entity",
+      });
       res.send(entity);
     } catch (e) {
       next(e);
