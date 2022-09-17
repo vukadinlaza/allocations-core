@@ -120,7 +120,7 @@ functions:
       - sns:
           arn: ${redtail:service_topic}
           filterPolicy:
-            app: [build]
+            app: [core]
             service: [entity-service]
             event: [init]
             phase: [complete]

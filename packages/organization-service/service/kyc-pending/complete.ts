@@ -12,32 +12,24 @@ export const handler = async ({ Records }: SNSEvent): Promise<void> => {
   await connectMongoose();
 
   for (const record of Records) {
-    const { id: passportId } = JSON.parse(record.Sns.Message);
+    const { id: passportId, result } = JSON.parse(record.Sns.Message);
+    if (!result?.passed) continue;
 
     try {
-      const admins = await OrganizationFundManager.aggregate<
-        OrganizationFundManager & { organization: Organization }
-      >([
-        { $match: { passport_id: passportId } },
-        {
-          $lookup: {
-            from: Organization.collection.name,
-            localField: "organization_id",
-            foreignField: "_id",
-            as: "organization",
-          },
-        },
-        { $match: { "organization.phase": "kyc-pending" } },
-      ]);
+      const admins = await OrganizationFundManager.find({
+        passport_id: passportId,
+      }).populate<{ organization: Organization }>("organization");
 
       await Promise.all(
-        admins.map((admin) => {
-          return triggerTransition({
-            id: admin.organization_id.toString(),
-            action: "DONE",
-            phase: "kyc-pending",
-          });
-        })
+        admins
+          .filter((admin) => admin.organization.phase === "kyc-pending")
+          .map((admin) => {
+            return triggerTransition({
+              id: admin.organization_id.toString(),
+              action: "DONE",
+              phase: "kyc-pending",
+            });
+          })
       );
     } catch (e: any) {
       console.error(e);

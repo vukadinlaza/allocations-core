@@ -1,7 +1,7 @@
 {
   "phases": {
-    "new": {
-      "CREATED": "generate-agreements"
+    "verify-entity": {
+      "VERIFIED": "generate-agreements"
     },
     "generate-agreements": {
       "GENERATION_COMPLETE": "agreements-pending"
