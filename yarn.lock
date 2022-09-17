@@ -10,10 +10,10 @@
     d "1"
     es5-ext "^0.10.47"
 
-"@allocations/api-common@^0.1.9":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@allocations/api-common/-/api-common-0.1.9.tgz#377378f5bc542c70ffcb4c08174a0905652b5d77"
-  integrity sha512-+JiDkmZRm3s53GAUma3VPCG5IiohHWN1PSLy4RkOGmQ6U0wxXbHPeXxjy+Qwi+GFSB8/hP3SBplBm8F9PcODCw==
+"@allocations/api-common@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@allocations/api-common/-/api-common-0.2.0.tgz#284ee25537957d5e54c4799884f60f53700bf729"
+  integrity sha512-nz6gaQfLvYUR8bJDrU3nZhbNDfQ3I5X7IT/sA8mPyHz0ldW7UhpAjzAghsTT+/qULOkDkwgxj7mYvUA249lN6Q==
   dependencies:
     "@allocations/service-common" "^0.1.0"
     "@types/express" "^4.17.13"
