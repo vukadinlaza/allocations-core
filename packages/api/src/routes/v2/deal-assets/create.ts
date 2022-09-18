@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { DealAsset } from "@allocations/core-models";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -7,15 +8,21 @@ const client = new S3Client({ region: "us-east-1" });
 
 export const create: RequestHandler = async (req, res, next) => {
   try {
+    const _id = new ObjectId();
+    const key = `uploads/deals/${req.body.deal_id}/${_id}${
+      req.body.content_type === "application/pdf" ? ".pdf" : ""
+    }`;
     await DealAsset.create({
       ...req.body,
-      s3_body: "",
-      s3_key: "",
+      _id,
+      s3_body: process.env.DOCUMENTS_BUCKET,
+      s3_key: key,
     });
 
     const command = new PutObjectCommand({
-      Bucket: "",
-      Key: "",
+      Bucket: process.env.DOCUMENTS_BUCKET,
+      Key: key,
+      ContentType: req.body.content_type,
     });
     const link = await getSignedUrl(client, command);
 
