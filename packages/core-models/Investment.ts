@@ -69,12 +69,22 @@ const schema = new mongoose.Schema(
     },
     metadata: Map,
   },
-  { timestamps: { createdAt: "created_at", updatedAt: "updated_at" }, toJSON: { virtuals: true }, }
+  {
+    timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
+    toJSON: { virtuals: true },
+  }
 );
 
 schema.virtual("deal", {
   ref: "Deal",
   localField: "deal_id",
+  foreignField: "_id",
+  justOne: true,
+});
+
+schema.virtual("passport", {
+  ref: "InvestorPassport",
+  localField: "passport_id",
   foreignField: "_id",
   justOne: true,
 });
