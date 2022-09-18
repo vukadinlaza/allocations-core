@@ -13,7 +13,8 @@ export interface DealAsset extends Document {
     | "pitch-deck"
     | "term-sheet"
     | "deal-wire-instructions"
-    | "portfolio-company-wire-instructions";
+    | "portfolio-company-wire-instructions"
+    | "custom";
   uploaded: boolean;
 }
 

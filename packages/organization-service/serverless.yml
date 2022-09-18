@@ -121,7 +121,7 @@ functions:
           arn: ${redtail:service_topic}
           filterPolicy:
             app: [core]
-            service: [entity-service]
+            service: [entity-service--core]
             event: [init]
             phase: [complete]
 

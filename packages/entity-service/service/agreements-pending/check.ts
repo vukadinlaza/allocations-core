@@ -20,7 +20,7 @@ export const handler = async (event: LambdaEvent) => {
     }
 
     const agreements = await EntityAgreement.find({
-      organization_id: entity._id,
+      entity_id: entity._id,
       signed: false,
     });
     if (!agreements.length) {

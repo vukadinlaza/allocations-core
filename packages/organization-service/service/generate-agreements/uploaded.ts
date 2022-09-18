@@ -10,6 +10,14 @@ export const handler = async ({ Records }: S3Event) => {
 
   for (const record of Records) {
     try {
+      const existingAgreement = await OrganizationAgreement.exists({
+        s3_bucket: record.s3.bucket,
+        s3_key: record.s3.object.key,
+      });
+      if (existingAgreement) {
+        continue;
+      }
+
       const [, organizationId, type, title] = record.s3.object.key.split("/");
       const [organization] = await Promise.all([
         Organization.findById(organizationId),
