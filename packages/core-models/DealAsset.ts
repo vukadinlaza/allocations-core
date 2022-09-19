@@ -48,6 +48,7 @@ const schema = new mongoose.Schema<DealAsset>(
         "term-sheet",
         "deal-wire-instructions",
         "portfolio-company-wire-instructions",
+        "custom",
       ],
       required: true,
     },
