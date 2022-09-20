@@ -15,7 +15,7 @@ export const create: RequestHandler = async (req, res, next) => {
     await DealAsset.create({
       ...req.body,
       _id,
-      s3_body: process.env.DOCUMENTS_BUCKET,
+      s3_bucket: process.env.DOCUMENTS_BUCKET,
       s3_key: key,
     });
 
