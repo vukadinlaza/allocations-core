@@ -76,8 +76,6 @@ export default Router()
           auth.numbers.ach[0].wire_routing || auth.numbers.ach[0].routing,
       });
 
-      res.send(account);
-
       await Promise.all([
         initializePlaidAccount(account, req.headers["x-api-token"] as string),
         DealPhase.findOneAndUpdate(
@@ -88,6 +86,8 @@ export default Router()
           { "tasks.$.complete": true }
         ),
       ]);
+
+      res.send(account);
     } catch (e) {
       next(e);
     }
