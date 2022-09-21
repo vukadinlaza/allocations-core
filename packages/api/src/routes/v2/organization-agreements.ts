@@ -62,7 +62,11 @@
  *              description: The date the signer signed the agreement.
  */
 import { Router } from "express";
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  GetObjectCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { OrganizationAgreement } from "@allocations/core-models";
 import { HttpError } from "@allocations/api-common";
@@ -212,6 +216,26 @@ export default Router()
         agreement.organization_id,
         req.headers["x-api-token"] as string
       );
+    } catch (e) {
+      next(e);
+    }
+  })
+
+  .post("/:id/customize", async (req, res, next) => {
+    try {
+      const agreement = await OrganizationAgreement.findById(
+        req.params.id
+      ).select("+s3_bucket +s3_key");
+      if (!agreement) {
+        throw new HttpError("Not Found", 404);
+      }
+
+      const command = new PutObjectCommand({
+        Bucket: agreement.s3_bucket!,
+        Key: agreement.s3_key!,
+      });
+
+      res.send({ link: await getSignedUrl(client, command) });
     } catch (e) {
       next(e);
     }

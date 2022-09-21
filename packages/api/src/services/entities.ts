@@ -2,6 +2,15 @@ import { requestFactory } from "./request";
 
 const request = requestFactory(process.env.ENTITY_SERVICE_URL!);
 
+export const verifyEntity = (entityId: string, token: string) => {
+  return request({
+    token,
+    path: "/verify",
+    method: "POST",
+    body: { id: entityId },
+  });
+};
+
 export const completeFormation = (entityId: string, token: string) => {
   return request({
     token,

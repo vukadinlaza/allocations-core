@@ -388,3 +388,89 @@ export const createServicesAgreement = async (
     task,
   };
 };
+
+export const createOrderForm = async (
+  deal: Deal,
+  task: Task,
+  preview?: boolean
+) => {
+  const templateId: string = preview
+    ? process.env.ORDER_FORM_PREVIEW_TEMPLATE_ID!
+    : process.env.ORDER_FORM_TEMPLATE_ID!;
+
+  const entity = await Entity.findById(deal.master_entity_id);
+
+  const data = {
+    signature:
+      deal.manager.type === "entity"
+        ? deal.manager.entity_representative
+        : deal.manager.name,
+    manager_name: deal.manager.name,
+    client_name:
+      deal.manager.type === "entity"
+        ? deal.manager.entity_representative
+        : deal.manager.name,
+    manager_email: deal.manager.email,
+    master_series: entity
+      ? `${entity?.name} ${entity?.structure}`
+      : "Atomizer LLC",
+    minimum_investment: `$${deal.minimum_investment}`,
+    custom_reporting_adviser: deal.reporting_adviser,
+    closing_date: formatDate(deal.closing_date),
+    offering_type: deal.offering_type,
+    deal_term: deal.deal_term,
+    portfolio_company_name: deal.portfolio_company_name,
+    fees: `Management Fee ${toPercent(deal.management_fee)} (${
+      deal.management_fee_frequency
+    }) / Carry Fee ${toPercent(deal.carry_fee)}`,
+    product_type: convertProductType(deal.asset_type),
+    product_type_fee: toDollarString(calculateProductTypeFee(deal)),
+    product_total: toDollarString(calculateProductTypeFee(deal)),
+    advisor_fee: toDollarString(calculateAdvisorFee(deal)),
+    advisor_count: deal.reporting_adviser === "Sharding Advisers LLC" ? 1 : 0,
+    advisor_fee_total: toDollarString(calculateAdvisorFee(deal)),
+    offering_type_fee:
+      deal.offering_type === "506c" ? "$70 Per Investor/LP" : "included ($0)",
+    offering_type_total:
+      deal.offering_type === "506c" ? "TBD" : "included ($0)",
+    grand_total: toDollarString(calculateGrandTotal(deal)),
+    date: todaysDate(),
+    entity_name: deal.manager.type === "entity" ? deal.manager.name : undefined,
+    // special_terms: convertSpecialTerms(deal),
+  };
+
+  const { id, permanent_download_url, download_url } =
+    await createSubmissionAndGeneratePDF({
+      templateId,
+      data,
+      preview,
+      metadata: {
+        related_entity_type: "deal",
+        document_type: "order-form",
+        deal_id: deal._id,
+      },
+    });
+
+  if (!preview) {
+    await Document.create({
+      status: "pending",
+      deal_id: deal._id,
+      task_id: task._id,
+      title: "Order Form",
+      bucket: process.env.DOCUMENTS_BUCKET,
+      path: `deal/order-form/${getDocspringEnvironment()}/${deal._id}/${id}`,
+      content_type: "application/pdf",
+      uploader_email: deal.manager.email,
+      complete: false,
+      type: "fm-document",
+      metadata: {
+        permanent_download_url,
+      },
+    });
+  }
+
+  return {
+    download_url,
+    task,
+  };
+};

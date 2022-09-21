@@ -13,7 +13,8 @@ export interface DealAsset extends Document {
     | "pitch-deck"
     | "term-sheet"
     | "deal-wire-instructions"
-    | "portfolio-company-wire-instructions";
+    | "portfolio-company-wire-instructions"
+    | "custom";
   uploaded: boolean;
 }
 
@@ -47,6 +48,7 @@ const schema = new mongoose.Schema<DealAsset>(
         "term-sheet",
         "deal-wire-instructions",
         "portfolio-company-wire-instructions",
+        "custom",
       ],
       required: true,
     },

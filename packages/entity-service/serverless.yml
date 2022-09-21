@@ -56,15 +56,12 @@ provider:
             aws:SourceVpc: vpc-0d05ab0d45d1ddbd5
 
 functions:
-  initialize:
-    handler: service/initialize.handler
+  verify:
+    handler: service/verify.handler
     events:
-      - sns:
-          arn: ${redtail:service_topic}
-          filterPolicy:
-            app: [core]
-            service: [entity-service]
-            event: [entity-intitialize]
+      - http:
+          path: verify
+          method: POST
 
   uploadAgreement:
     handler: service/generate-agreements/uploaded.handler

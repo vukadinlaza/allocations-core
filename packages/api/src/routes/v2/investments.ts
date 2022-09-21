@@ -28,7 +28,7 @@ export default Router()
         Investment.findOne({
           phase: "invited",
           deal_id,
-          user_id
+          user_id,
         }),
       ]);
 
@@ -53,7 +53,7 @@ export default Router()
             ...rest,
             phase: "invited",
             deal_id,
-            user_id
+            user_id,
           });
           res.send(investment);
         }
@@ -90,9 +90,9 @@ export default Router()
             metadata: {
               submission_data: {
                 passport_id,
-                ...rest
-              }
-            }
+                ...rest,
+              },
+            },
           },
           { upsert: true, new: true }
         );
@@ -117,9 +117,9 @@ export default Router()
           metadata: {
             submission_data: {
               passport_id,
-              ...rest
-            }
-          }
+              ...rest,
+            },
+          },
         });
       }
       res.send(investment);
@@ -160,7 +160,9 @@ export default Router()
 
   .get("/:id", async (req, res, next) => {
     try {
-      const investment = await Investment.findById(req.params.id);
+      const investment = await Investment.findById(req.params.id)
+        .populate("passport")
+        .populate("deal");
       if (!investment) {
         throw new HttpError("Not Found", 404);
       }
@@ -247,10 +249,9 @@ export default Router()
 
   .get("/", async (req, res, next) => {
     try {
-      const investments = await Investment.find(req.query).populate([
-        "passport_id",
-        "deal_id"
-      ]);
+      const investments = await Investment.find(req.query)
+        .populate("passport")
+        .populate("deal");
       if (!investments) {
         throw new HttpError("Not Found", 404);
       }

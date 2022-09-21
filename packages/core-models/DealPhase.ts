@@ -101,19 +101,31 @@ const schema = new mongoose.Schema(
 );
 
 schema.statics.createBuild = function (deal: Deal) {
-  const { _id: deal_id } = deal;
+  const { _id: deal_id, investor_passport_id } = deal;
 
   // const advisorIsAllocations =
   //   deal.reporting_adviser === "Sharding Advisers LLC";
 
   const buildTasks = [
-    {
-      title: "Sign Services Agreement",
-      type: "fm-document-signature",
-      metadata: {
-        key: "services-agreement",
-      },
-    },
+    ...(investor_passport_id
+      ? [
+          {
+            title: "Sign Order Form",
+            type: "fm-document-signature",
+            metadata: {
+              key: "order-form",
+            },
+          },
+        ]
+      : [
+          {
+            title: "Sign Services Agreement",
+            type: "fm-document-signature",
+            metadata: {
+              key: "services-agreement",
+            },
+          },
+        ]),
     // ...(advisorIsAllocations
     //   ? [
     //       {

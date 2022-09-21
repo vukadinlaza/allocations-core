@@ -25,7 +25,7 @@ const schema = new mongoose.Schema<Entity>(
     phase: {
       type: String,
       enum: [
-        "new",
+        "verify-entity",
         "generate-agreements",
         "agreements-pending",
         "kyc",
@@ -33,7 +33,7 @@ const schema = new mongoose.Schema<Entity>(
         "formation-pending",
         "complete",
       ],
-      default: "new",
+      default: "verify-entity",
       required: true,
     },
     organization_id: {

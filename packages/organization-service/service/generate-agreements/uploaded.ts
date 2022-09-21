@@ -10,6 +10,15 @@ export const handler = async ({ Records }: S3Event) => {
 
   for (const record of Records) {
     try {
+      const existingAgreement = await OrganizationAgreement.exists({
+        s3_bucket: record.s3.bucket.name,
+        s3_key: record.s3.object.key,
+      });
+
+      if (existingAgreement) {
+        continue;
+      }
+
       const [, organizationId, type, title] = record.s3.object.key.split("/");
       const [organization] = await Promise.all([
         Organization.findById(organizationId),
@@ -47,8 +56,12 @@ export const handler = async ({ Records }: S3Event) => {
       if (!terms || !servicesAgreement || !poa) {
         waitingForGeneration = true;
       }
-
-      if (organization!.high_volume_partner && !mou) {
+      if (
+        organization!.high_volume_partner &&
+        !organization!.mou_signed &&
+        !mou &&
+        organization!.committed_number_of_deals
+      ) {
         waitingForGeneration = true;
       }
 
