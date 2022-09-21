@@ -79,7 +79,12 @@ export const handler = async ({ Records }: SQSEvent) => {
         await createPOAAgreement(fundManager ? orgWithFM : organization);
       }
 
-      if (organization.high_volume_partner && !mou && !existingMOU) {
+      if (
+        organization.high_volume_partner &&
+        !mou &&
+        !existingMOU &&
+        organization.committed_number_of_deals
+      ) {
         waitingForGeneration = true;
         const bankingManager = await OrganizationFundManager.findOne({
           organization_id: organization._id,

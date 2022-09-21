@@ -69,4 +69,18 @@ export default Router().post("/bank-info/:task_id", async (req, res, next) => {
     log.error({ err: e }, e.message);
     next(e);
   }
-});
+})
+
+.put("/", async (req, res, next) => {
+  try{
+    const updatedDealPhase = await DealPhase.findOneAndUpdate(
+      req.query,
+      req.body
+    );
+
+    res.send(updatedDealPhase)
+  } catch (e: any) {
+    log.error({ err: e }, e.message);
+    next(e);
+  }
+})
