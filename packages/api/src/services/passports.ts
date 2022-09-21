@@ -40,11 +40,14 @@ export const completePassportReview = async (
   });
 };
 
-export const triggerKYC = async (passportId: string, token: string) => {
+export const triggerKYC = async (
+  { passportId, force = false }: { passportId: string; force?: boolean },
+  token: string
+) => {
   return request({
     token,
     path: "/kyc",
     method: "POST",
-    body: { id: passportId },
+    body: { id: passportId, force },
   });
 };

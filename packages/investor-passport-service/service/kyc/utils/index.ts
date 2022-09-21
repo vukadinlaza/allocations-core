@@ -68,7 +68,7 @@ export const getNameScanData = async (investorPassport: InvestorPassport) => {
   if (investorPassport.test) {
     return {
       passed: true,
-      hits: [],
+      hits: [] as string[],
     };
   }
 
