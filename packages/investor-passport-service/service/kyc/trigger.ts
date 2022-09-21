@@ -1,6 +1,7 @@
 import type { SNSEvent } from "aws-lambda";
 import {
   connectMongoose,
+  HttpError,
   LambdaEvent,
   parseRequest,
   send,
@@ -71,29 +72,34 @@ const kyc = async (
 
   if (force) return performKYC(passport, { filterKey, service, app });
 
-  if (
-    filterKey &&
-    (passport.phase === "self-accredited" || passport.phase === "review")
-  ) {
+  if (passport.phase === "self-accredited" || passport.phase === "review") {
     const kycResult = await KYCResult.findOne({ passport_id: id }).sort({
       _id: -1,
     });
-    await sendMessage({
-      id,
-      filterKey,
-      service,
-      app,
-      payload: {
-        id: passport._id,
-        result: kycResult,
-      },
-      event: "kyc-results",
-    });
+
+    if (filterKey) {
+      await sendMessage({
+        id,
+        filterKey,
+        service,
+        app,
+        payload: {
+          id: passport._id,
+          result: kycResult,
+        },
+        event: "kyc-results",
+      });
+    }
 
     return kycResult;
   }
 
-  if (passport.phase !== "kyc") return;
+  if (passport.phase !== "kyc") {
+    throw new HttpError(
+      `Unable to KYC InvestorPassport in phase ${passport.phase}`,
+      "400"
+    );
+  }
   return performKYC(passport, { filterKey, service, app });
 };
 

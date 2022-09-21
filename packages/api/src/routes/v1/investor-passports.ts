@@ -783,7 +783,7 @@ export default Router()
         throw new HttpError("Asset type is required", 400);
       }
 
-      const asset = await PassportAsset.findOne({ id, type });
+      const asset = await PassportAsset.findOne({ _id: id, type });
       if (!asset) {
         throw new HttpError("Not Found", 404);
       }
