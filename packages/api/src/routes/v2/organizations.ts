@@ -12,7 +12,6 @@ import {
   approveOpsHandoff,
   initializeOrganization,
 } from "../../services/organizations";
-import getUserById from "../../utils/getUserById";
 
 type InitV1OrgRequestBody = {
   readonly organization_id: string;
