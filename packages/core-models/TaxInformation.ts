@@ -251,7 +251,6 @@ const W8BENETaxFormSchema = new mongoose.Schema({
   },
   disregarded_entity: {
     type: String,
-    required: true,
   },
   chapter3_status: {
     type: String,
