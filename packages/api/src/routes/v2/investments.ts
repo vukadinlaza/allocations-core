@@ -249,11 +249,9 @@ export default Router()
 
   .get("/", async (req, res, next) => {
     try {
-      console.log('HERE')
       const investments = await Investment.find(req.query)
       .populate("deal")
         .populate("passport");
-        console.log(JSON.stringify(investments, null, 2))
       if (!investments) {
         throw new HttpError("Not Found", 404);
       }
