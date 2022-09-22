@@ -658,7 +658,12 @@ export default Router()
   .get("/:id/kyc", async (req, res, next) => {
     try {
       const { id } = req.params;
-      res.send(await triggerKYC(id, req.headers["x-api-token"] as string));
+      res.send(
+        await triggerKYC(
+          { passportId: id, force: req.query.force === "true" },
+          req.headers["x-api-token"] as string
+        )
+      );
     } catch (e: any) {
       next(e);
     }
@@ -778,7 +783,7 @@ export default Router()
         throw new HttpError("Asset type is required", 400);
       }
 
-      const asset = await PassportAsset.findOne({ id, type });
+      const asset = await PassportAsset.findOne({ passport_id: id, type });
       if (!asset) {
         throw new HttpError("Not Found", 404);
       }

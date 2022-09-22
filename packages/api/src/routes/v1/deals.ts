@@ -19,18 +19,19 @@ const fileName = basename(__filename, ".ts");
 const log = logger.child({ module: fileName });
 
 const getSetupCost = (deal: Deal) => {
+  const isMicro =
+    deal.type === "spv" &&
+    deal.asset_type === "Startup" &&
+    deal.target_raise_goal <= 99999 &&
+    !deal.side_letters;
+
+  if (isMicro) return 3500;
   if (deal.type === "fund") {
     return deal.number_of_investments >= 30 ? 15000 : 26000;
   } else if (deal.type === "acquisition") return 12000;
-  else if (deal.asset_type === "Real Estate") return 15000;
-  else if (
-    deal.asset_type === "Secondary" ||
-    deal.asset_type === "Instant" ||
-    deal.asset_type === "SPV into an SPV" ||
-    deal.asset_type === "SPV into a Fund"
-  )
-    return 10000;
-  else if (deal.asset_type === "Startup" || deal.type === "spv") return 8000;
+  else if (deal.asset_type !== "Startup" || deal.custom_investment_agreement)
+    return 14000;
+  else if (deal.asset_type === "Startup") return 8000;
   else return 10000;
 };
 
@@ -48,12 +49,20 @@ export default Router()
   .post("/", async (req, res, next) => {
     const { new_hvp = false, promo_code } = req.body;
     try {
-      const entity = await Entity.findOne({
-        organization_ids: req.body.deal.organization_id,
+      // adding options as the field 'organization_ids' does not exist on current schema
+      const entityV1 = await Entity.findOne(
+        {
+          organization_ids: req.body.deal.organization_id,
+        },
+        null,
+        { strictQuery: false }
+      );
+
+      const entityV2 = await Entity.findOne({
+        organization_id: req.body.deal.organization_id,
       });
 
-      // // Associated the selected org with atomizer
-      if (!entity) {
+      if (!entityV1 || !entityV2) {
         await Entity.findOneAndUpdate(
           { _id: new mongoose.Types.ObjectId(process.env.ATOMIZER_ID) },
           { $push: { organization_ids: req.body.deal.organization_id } }
@@ -81,7 +90,9 @@ export default Router()
           },
           ...req.body.deal,
           master_entity_id:
-            entity?._id || new mongoose.Types.ObjectId(process.env.ATOMIZER_ID),
+            entityV1?._id ||
+            entityV2?._id ||
+            new mongoose.Types.ObjectId(process.env.ATOMIZER_ID),
           setup_cost: getSetupCost(req.body.deal) + promo_code,
           reporting_adviser_fee: getAdviserFee(req.body.deal),
           phase: "new",

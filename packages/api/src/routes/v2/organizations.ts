@@ -235,4 +235,20 @@ export default Router()
     } catch (e: any) {
       next(e);
     }
+  })
+
+  .delete("/:id", async (req, res, next) => {
+    const { id } = req.params;
+
+    try {
+      const deletedOrg = await Organization.deleteOne({ _id: id });
+
+      if (!deletedOrg) {
+        throw new HttpError(`Organization with id ${id} not found`, 404);
+      }
+
+      res.send(deletedOrg);
+    } catch (e: any) {
+      next(e);
+    }
   });
