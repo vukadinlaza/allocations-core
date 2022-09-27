@@ -96,7 +96,8 @@ const createSPVPreOnboarding = (
 };
 
 const createFundPreOnboarding = (
-  hasBankingInfo: boolean
+  hasBankingInfo: boolean,
+  hasId: boolean
 ): {
   title: string;
   type: string;
@@ -104,6 +105,23 @@ const createFundPreOnboarding = (
   metadata?: any;
 }[] => {
   return [
+    ...(!hasId
+      ? [
+          {
+            title: "Upload ID or Passport",
+            type: "fm-document-upload",
+            metadata: {
+              tooltip_title: "ID/Passport Upload",
+              tooltip_content: `<ul>
+            <li>Ensure the ID/passport is laying flat on the surface</li>
+            <li>All corners are clearly visible</li>
+            <li>Allow at least 1" around all the edges</li>
+            <li>*If passport, include the top and bottom portions</li>
+            </ul>`,
+            },
+          },
+        ]
+      : []),
     {
       title: "Upload Fund Logo",
       type: "fm-document-upload",

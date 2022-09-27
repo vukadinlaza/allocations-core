@@ -229,7 +229,7 @@ schema.statics.createPreOnboarding = async function (
     }[];
   } = {
     spv: createSPVPreOnboarding(new_hvp, hasBankingInfo, hasId),
-    fund: createFundPreOnboarding(hasBankingInfo),
+    fund: createFundPreOnboarding(hasBankingInfo, hasId),
     acquisition: createSPVPreOnboarding(new_hvp, hasBankingInfo, hasId),
   };
 
