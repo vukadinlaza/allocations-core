@@ -27,6 +27,10 @@ const createSPVPreOnboarding = (
         ]
       : []),
     {
+      title: "Upload Company Deck",
+      type: "fm-document-upload",
+    },
+    {
       title: "Upload Term Sheet",
       type: "fm-document-upload",
       required: false,
@@ -34,6 +38,11 @@ const createSPVPreOnboarding = (
         tooltip_title: "Upload Term Sheet",
         tooltip_content: `<p>If you would like to proceed without uploading the Term Sheet, your deal setup will not be complete until we recieve the term sheet or instructions to proceeed without it. Please contact <a href="mailto:support@allocations.com" target="_blank" rel="noopener">support@allocations.com</a> for further information.</p>`,
       },
+    },
+    {
+      title: "Upload Company Logo (Optional)",
+      type: "fm-document-upload",
+      required: false,
     },
     {
       title: "Upload Portfolio Company Wire Instructions (Optional)",
@@ -122,6 +131,10 @@ const createFundPreOnboarding = (
           },
         ]
       : []),
+    {
+      title: "Upload Company Deck",
+      type: "fm-document-upload",
+    },
     {
       title: "Upload Fund Logo",
       type: "fm-document-upload",
