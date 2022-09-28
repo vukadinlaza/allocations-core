@@ -26,6 +26,16 @@
     node-fetch "2"
     pino "^8.4.0"
 
+"@allocations/core-models@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@allocations/core-models/-/core-models-0.0.11.tgz#57f82ab522de06b58ff6888c33e0949ed867de79"
+  integrity sha512-PJxa1/gWgnBMAZ6N2eLdD/bbLb6CFpw6ZkJdYf5N4k9QKtSqRvUz9r3akoPKPWzBquSpha5smDL/7MLnXIPQbA==
+  dependencies:
+    "@aws-sdk/client-s3" "^3.142.0"
+    "@aws-sdk/s3-request-presigner" "^3.142.0"
+    mongoose "^6.1.4"
+    node-fetch "2"
+
 "@allocations/core-models@^0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@allocations/core-models/-/core-models-0.0.4.tgz#337a3e38f6d6dffec2223abf946502a01b4c2090"
