@@ -15,6 +15,7 @@ export type FieldPlacement = {
   required?: boolean;
   displayType?: string;
   checkCharacter?: string;
+  typeface?: string;
 };
 
 const DOCSPRING_PAGE_X_MULTIPLIER = 4.09;
@@ -69,6 +70,7 @@ export const getFieldPlacement = async (
             required: "required" in field ? field.required : true,
             displayType: field.displayType || "text",
             checkCharacter: field.checkCharacter || "&#10004;",
+            typeface: field.typeface || "Helvetica",
             x:
               (textItem.transform[4] + leadingWidth) *
               DOCSPRING_PAGE_X_MULTIPLIER,
@@ -95,6 +97,7 @@ export const getFieldPlacement = async (
           checkCharacter: field.checkCharacter || "&#10004;",
           x: placement.x,
           y: placement.y,
+          typeface: field.typeface || "Helvetica",
           page: placement.page,
           name: field.name,
           type: field.type,
