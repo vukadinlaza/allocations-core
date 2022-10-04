@@ -54,6 +54,7 @@ export interface DocspringField extends MongooseDocument {
     | "&#10006;"
     | "&#10007;"
     | "&#10008;"; //just for booleans that have a check displaytype (could be an X or a check)
+  typeface?: string;
   default_placements?: {
     //default docspring file field coordinates
     page: number;
@@ -123,6 +124,7 @@ const DocspringFieldSchema = new mongoose.Schema({
       height: Number,
     },
   ],
+  typeface: String,
   value_setter: {
     type: {
       parameters: [String],
