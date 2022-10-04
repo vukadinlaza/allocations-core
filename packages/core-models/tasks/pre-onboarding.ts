@@ -27,6 +27,10 @@ const createSPVPreOnboarding = (
         ]
       : []),
     {
+      title: "Upload Company Deck",
+      type: "fm-document-upload",
+    },
+    {
       title: "Upload Term Sheet",
       type: "fm-document-upload",
       required: false,
@@ -34,6 +38,11 @@ const createSPVPreOnboarding = (
         tooltip_title: "Upload Term Sheet",
         tooltip_content: `<p>If you would like to proceed without uploading the Term Sheet, your deal setup will not be complete until we recieve the term sheet or instructions to proceeed without it. Please contact <a href="mailto:support@allocations.com" target="_blank" rel="noopener">support@allocations.com</a> for further information.</p>`,
       },
+    },
+    {
+      title: "Upload Company Logo (Optional)",
+      type: "fm-document-upload",
+      required: false,
     },
     {
       title: "Upload Portfolio Company Wire Instructions (Optional)",
@@ -96,7 +105,8 @@ const createSPVPreOnboarding = (
 };
 
 const createFundPreOnboarding = (
-  hasBankingInfo: boolean
+  hasBankingInfo: boolean,
+  hasId: boolean
 ): {
   title: string;
   type: string;
@@ -104,6 +114,27 @@ const createFundPreOnboarding = (
   metadata?: any;
 }[] => {
   return [
+    ...(!hasId
+      ? [
+          {
+            title: "Upload ID or Passport",
+            type: "fm-document-upload",
+            metadata: {
+              tooltip_title: "ID/Passport Upload",
+              tooltip_content: `<ul>
+            <li>Ensure the ID/passport is laying flat on the surface</li>
+            <li>All corners are clearly visible</li>
+            <li>Allow at least 1" around all the edges</li>
+            <li>*If passport, include the top and bottom portions</li>
+            </ul>`,
+            },
+          },
+        ]
+      : []),
+    {
+      title: "Upload Company Deck",
+      type: "fm-document-upload",
+    },
     {
       title: "Upload Fund Logo",
       type: "fm-document-upload",

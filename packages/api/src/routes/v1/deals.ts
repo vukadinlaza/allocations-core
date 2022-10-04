@@ -339,6 +339,56 @@ export default Router()
     }
   })
 
+  .post("/add-upload-id-task", async (req, res, next) => {
+    const { deal_id } = req.body;
+
+    try {
+      const uploadTask = await DealPhase.findOne({
+        deal_id,
+        name: "pre-onboarding",
+        "tasks.title": "Upload ID or Passport",
+      });
+      if (uploadTask) return res.send("Task already exists");
+
+      const phase = await DealPhase.findOneAndUpdate(
+        {
+          deal_id,
+          name: "pre-onboarding",
+        },
+        {
+          $push: {
+            //@ts-ignore
+            tasks: {
+              title: "Upload ID or Passport",
+              type: "fm-document-upload",
+              required: false,
+              metadata: {
+                //@ts-ignore
+                tooltip_title: "ID/Passport Upload",
+                tooltip_content: `<ul>
+                 <li>Ensure the ID/passport is laying flat on the surface</li>
+                 <li>All corners are clearly visible</li>
+                 <li>Allow at least 1" around all the edges</li>
+                 <li>*If passport, include the top and bottom portions</li>
+                 </ul>`,
+              },
+            },
+          },
+        },
+        {
+          new: true,
+        }
+      );
+
+      if (!phase) throw new HttpError("Unable to update phase");
+
+      res.send({ success: true });
+    } catch (e: any) {
+      log.error({ err: e }, e.message);
+      next(e);
+    }
+  })
+
   .get("/get-pre-signing-token/:id", async (req, res, next) => {
     try {
       const deal = await Deal.findById(req.params.id);
