@@ -5,7 +5,7 @@
   "production_url": "core.allocations.dev",
   "port": "7890",
   "staging_scheme": "internal",
-  "production_scheme": "internal",
+  "production_scheme": "internet-facing",
   "staging_ssl": "arn:aws:acm:us-east-1:046746691294:certificate/562bab10-14eb-4383-bba6-fe8516614d26",
   "production_ssl": "arn:aws:acm:us-east-1:046746691294:certificate/3e14c470-7367-48a4-a849-3c2fa284de12",
   "type": "api",
