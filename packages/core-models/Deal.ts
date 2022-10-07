@@ -270,7 +270,7 @@ schema.statics.initialize = async function (
   id: mongoose.Types.ObjectId,
   token: string
 ) {
-  const res = await fetch(`${process.env.SERVICE_URL!}/initialize`, {
+  const res = await fetch(`${process.env.DEAL_SERVICE_URL!}/initialize`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -45,7 +45,7 @@ export interface W9ETaxForm extends Document {
   city: string;
   state: string;
   postal_code: string;
-  tax_id: string;
+  tax_id: string | null;
 }
 
 export interface W8BENTaxForm extends Document {
@@ -143,10 +143,6 @@ const W9ETaxFormSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
-  ssn: {
-    type: String,
-    default: null,
-  },
   company_type: {
     type: String,
     enum: [
@@ -165,6 +161,22 @@ const W9ETaxFormSchema = new mongoose.Schema({
     required: function () {
       // @ts-ignore
       return this.company_type === "Single-Member LLC";
+    },
+  },
+  ssn: {
+    type: String,
+    default: null,
+    required: function (): boolean {
+      // @ts-ignore
+      return this.company_type === "Limited Liability Company";
+    },
+  },
+  tax_id: {
+    type: String,
+    default: null,
+    required: function (): boolean {
+      // @ts-ignore
+      return this.company_type === "Limited Liability Company";
     },
   },
   taxed_as: {

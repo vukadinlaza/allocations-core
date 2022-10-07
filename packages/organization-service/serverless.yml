@@ -38,6 +38,7 @@ provider:
     MONGODB_URI: ${self:custom.secrets.MONGODB_URI}
     DOCSPRING_TOKEN_ID: ${self:custom.secrets.ORGANIZATION_DOCSPRING_TOKEN_ID}
     DOCSPRING_TOKEN_SECRET: ${self:custom.secrets.ORGANIZATION_DOCSPRING_TOKEN_SECRET}
+    DOCSPRING_ENVIRONMENT: ${self:custom.secrets.DOCSPRING_ENVIRONMENT}
   apiGateway:
     resourcePolicy:
       - Effect: Allow
