@@ -6,6 +6,7 @@ import {
   Document,
   Deal,
 } from "@allocations/core-models";
+import fetch from "node-fetch";
 import { createInvestorTemplate } from "../../src/utils/docspring";
 import logger from "../../logger";
 
@@ -65,22 +66,25 @@ export const handler = async ({ Records }: S3Event) => {
     }
 
     //SLACK Notification for Ops
-    const zapBody = {    
-      fm_email: deal.manager?.email,
+    const zapBody = {
+      fm_email: deal.manager?.email, // The notification will show the deal manager, but also other managers or allocations admins can sign (just to keep in mind)
       organization: deal.organization_name,
       deal: deal.name || deal.portfolio_company_name,
-      ops_tools_deal_url: `https://ops.allocations.com/deals/${deal._id}`
-    }
+      ops_tools_deal_url: `https://ops.allocations.com/deals/${deal._id}`,
+    };
 
-    const zapierRes = await fetch(process.env.ZAPIER_FM_SUB_AGREEMENT_SIGNED_HOOK!, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(zapBody),
-    });
-  
-    if (!zapierRes.ok) logger.info({zapBody}, 'Slack Notification not sent')
+    const zapierRes = await fetch(
+      process.env.ZAPIER_FM_SUB_AGREEMENT_SIGNED_HOOK!,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(zapBody),
+      }
+    );
+
+    if (!zapierRes.ok) logger.info({ zapBody }, "Slack Notification not sent");
 
     await triggerCheck({
       id: deal._id.toString(),
