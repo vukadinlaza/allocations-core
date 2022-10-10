@@ -48,6 +48,7 @@ export interface Deal extends Document {
   memo: string;
   minimum_investment: number;
   nd_virtual_account_number: string;
+  notes: string;
   number_of_investments: number;
   offering_type: string;
   phase: string;
@@ -190,6 +191,7 @@ const schema = new mongoose.Schema<Deal, DealModel>(
       default: 10000,
     },
     nd_virtual_account_number: String,
+    notes: String,
     number_of_investments: Number,
     offering_type: { type: String, enum: ["506b", "506c"] },
     phase: {
