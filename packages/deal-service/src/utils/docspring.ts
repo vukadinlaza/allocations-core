@@ -6,9 +6,7 @@ import { getFieldPlacement } from "../../service/pagefinder";
 
 const DOCSPRING_API = "https://api.docspring.com";
 
-const TOKEN = Buffer.from(
-  `${process.env.DOCSPRING_TOKEN_ID}:${process.env.DOCSPRING_TOKEN_SECRET}`
-).toString("base64");
+const TOKEN = Buffer.from(process.env.DOCSPRING_TOKEN!).toString("base64");
 
 // might use something else
 export type Template = {
