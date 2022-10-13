@@ -32,5 +32,3 @@ export * from "./StripeTransaction";
 export * from "./StripePayout";
 
 export * from "./APIKey";
-
-export * from "./CryptoTransaction";

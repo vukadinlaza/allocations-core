@@ -17,7 +17,6 @@ import investmentDocuments from "./routes/v1/investment-documents";
 import investorPassports from "./routes/v1/investor-passports";
 import passportUsers from "./routes/v1/passport-users";
 import plaidRoutes from "./routes/v1/plaid";
-import cryptoRoutes from "./routes/v2/crypto";
 import organizationRoutesv2 from "./routes/v2/organizations";
 import organizationModerators from "./routes/v2/organization-moderators";
 import organizationAgreements from "./routes/v2/organization-agreements";
@@ -53,7 +52,6 @@ app.use("/api/v1/investor-passports", investorPassports);
 app.use("/api/v1/passport-users", passportUsers);
 app.use("/api/v1/plaid", plaidRoutes);
 
-app.use("/api/v2/crypto", cryptoRoutes);
 app.use("/api/v2/organizations", organizationRoutesv2);
 app.use("/api/v2/organization-fund-managers", organizationFundManagers);
 app.use("/api/v2/organization-agreements", organizationAgreements);
