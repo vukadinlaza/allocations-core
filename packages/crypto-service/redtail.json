@@ -1,0 +1,10 @@
+{
+  "phases": {
+    "pending": {
+      "CONFIRMED": "complete",
+      "FAILED": "failed"
+    },
+    "complete": {},
+    "failed": {}
+  }
+}

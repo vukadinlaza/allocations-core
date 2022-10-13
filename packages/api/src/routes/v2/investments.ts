@@ -229,7 +229,6 @@ export default Router()
           routing_number: account?.routing_number,
         });
       }
-
       const stripeAccount = await StripeAccount.findOne({
         phase: "live",
         deal_id: investment.deal_id,
@@ -238,6 +237,14 @@ export default Router()
         paymentMethods.push({
           type: "ach",
           title: "ACH",
+        });
+      }
+
+      const deal = await Deal.findById(investment.deal_id);
+      if (deal?.accept_crypto) {
+        paymentMethods.push({
+          type: "crypto",
+          title: "CRYPTO",
         });
       }
 
