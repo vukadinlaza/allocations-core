@@ -168,7 +168,7 @@ const W9ETaxFormSchema = new mongoose.Schema({
     default: null,
     required: function (): boolean {
       // @ts-ignore
-      return this.company_type === "Limited Liability Company";
+      return this.company_type === "Single-Member LLC";
     },
   },
   tax_id: {
