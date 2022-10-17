@@ -112,23 +112,11 @@ export interface W8BENETaxForm extends Document {
 }
 
 const W9TaxFormSchema: Schema = new mongoose.Schema({
-  address: {
-    type: String,
-    required: true,
-  },
-  city: {
-    type: String,
-    required: true,
-  },
   state: {
     type: String,
     required: true,
   },
   tax_id: {
-    type: String,
-    required: true,
-  },
-  postal_code: {
     type: String,
     required: true,
   },
@@ -163,19 +151,7 @@ const W9ETaxFormSchema = new mongoose.Schema({
       return this.company_type === "Single-Member LLC";
     },
   },
-  address: {
-    type: String,
-    required: true,
-  },
-  city: {
-    type: String,
-    required: true,
-  },
   state: {
-    type: String,
-    required: true,
-  },
-  postal_code: {
     type: String,
     required: true,
   },
@@ -364,7 +340,23 @@ export const TaxInformationSchema: Schema = new mongoose.Schema(
       type: mongoose.SchemaTypes.ObjectId,
       ref: "PassportAsset",
     },
-    tax_form: new mongoose.Schema({}, { discriminatorKey: "type" }),
+    tax_form: new mongoose.Schema(
+      {
+        address: {
+          type: String,
+          required: true,
+        },
+        city: {
+          type: String,
+          required: true,
+        },
+        postal_code: {
+          type: String,
+          required: true,
+        },
+      },
+      { discriminatorKey: "type" }
+    ),
     signature_packet: {
       type: signaturePacketSchema,
       select: false,
