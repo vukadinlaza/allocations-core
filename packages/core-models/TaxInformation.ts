@@ -163,6 +163,22 @@ const W9ETaxFormSchema = new mongoose.Schema({
       return this.company_type === "Single-Member LLC";
     },
   },
+  address: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  postal_code: {
+    type: String,
+    required: true,
+  },
   ssn: {
     type: String,
     default: null,
