@@ -11,6 +11,9 @@ import {
   OrganizationFundManager,
   TaxInformation,
   W9TaxForm,
+  W9ETaxForm,
+  W8BENTaxForm,
+  W8BENETaxForm,
 } from "@allocations/core-models";
 import {
   createMOUAgreement,
@@ -19,6 +22,17 @@ import {
   createTermsAgreement,
 } from "../../utils/docspring";
 import converter from "number-to-words";
+
+const findAddress = (taxInformation: TaxInformation): string => {
+  const { tax_form } = taxInformation;
+
+  if (taxInformation.type === "W-9" || taxInformation.type === "W-9-E") {
+    const form = tax_form as W9TaxForm | W9ETaxForm;
+    return `${form.address}, ${form.city}, ${form.state} ${form.postal_code}`;
+  }
+  const form = tax_form as W8BENTaxForm | W8BENETaxForm;
+  return `${form.address}, ${form.city}, ${form.region} ${form.postal_code} ${form.residence_country}`;
+};
 
 export const handler = async ({ Records }: SQSEvent) => {
   try {
@@ -86,25 +100,24 @@ export const handler = async ({ Records }: SQSEvent) => {
         organization.committed_number_of_deals
       ) {
         waitingForGeneration = true;
-        const bankingManager = await OrganizationFundManager.findOne({
+        const fundManager = await OrganizationFundManager.findOne({
           organization_id: organization._id,
-          role: "banking-manager",
+          role: "fund-manager",
         }).populate<{ passport: InvestorPassport }>("passport");
 
-        if (!bankingManager) continue;
+        if (!fundManager) continue;
 
         const taxInformation = await TaxInformation.findOne({
-          passport_id: bankingManager.passport_id,
+          passport_id: fundManager.passport_id,
         }).select("+signature_packet");
 
         if (!taxInformation) continue;
-        const { tax_form, signature_packet } = taxInformation;
+        const { signature_packet } = taxInformation;
 
-        const form = tax_form as W9TaxForm;
-
-        const address = `${form.address}, ${form.city}, ${form.state} ${form.postal_code}`;
+        const address = findAddress(taxInformation);
 
         const email = signature_packet?.signer_email || "";
+
         const number_of_deals_to_words = converter.toWords(
           organization.committed_number_of_deals
         );
