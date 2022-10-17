@@ -1,7 +1,6 @@
 const createSPVPreOnboarding = (
   new_hvp: boolean,
-  hasBankingInfo: boolean,
-  hasId: boolean
+  hasBankingInfo: boolean
 ): {
   title: string;
   type: string;
@@ -9,23 +8,6 @@ const createSPVPreOnboarding = (
   metadata?: any;
 }[] => {
   return [
-    ...(!hasId
-      ? [
-          {
-            title: "Upload ID or Passport",
-            type: "fm-document-upload",
-            metadata: {
-              tooltip_title: "ID/Passport Upload",
-              tooltip_content: `<ul>
-            <li>Ensure the ID/passport is laying flat on the surface</li>
-            <li>All corners are clearly visible</li>
-            <li>Allow at least 1" around all the edges</li>
-            <li>*If passport, include the top and bottom portions</li>
-            </ul>`,
-            },
-          },
-        ]
-      : []),
     {
       title: "Upload Company Deck",
       type: "fm-document-upload",
@@ -105,8 +87,7 @@ const createSPVPreOnboarding = (
 };
 
 const createFundPreOnboarding = (
-  hasBankingInfo: boolean,
-  hasId: boolean
+  hasBankingInfo: boolean
 ): {
   title: string;
   type: string;
@@ -114,23 +95,6 @@ const createFundPreOnboarding = (
   metadata?: any;
 }[] => {
   return [
-    ...(!hasId
-      ? [
-          {
-            title: "Upload ID or Passport",
-            type: "fm-document-upload",
-            metadata: {
-              tooltip_title: "ID/Passport Upload",
-              tooltip_content: `<ul>
-            <li>Ensure the ID/passport is laying flat on the surface</li>
-            <li>All corners are clearly visible</li>
-            <li>Allow at least 1" around all the edges</li>
-            <li>*If passport, include the top and bottom portions</li>
-            </ul>`,
-            },
-          },
-        ]
-      : []),
     {
       title: "Upload Company Deck",
       type: "fm-document-upload",

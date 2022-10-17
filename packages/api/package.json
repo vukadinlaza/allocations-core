@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "@allocations/api-common": "^0.2.0",
-    "@allocations/core-models": "^0.1.5",
+    "@allocations/core-models": "^0.1.6",
     "@aws-sdk/client-api-gateway": "^3.165.0",
     "@aws-sdk/client-s3": "^3.49.0",
     "@aws-sdk/s3-request-presigner": "^3.49.0",

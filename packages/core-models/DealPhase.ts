@@ -1,6 +1,5 @@
 import mongoose, { Document, Model } from "mongoose";
 import { Deal } from "./Deal";
-import { Document as DocumentModel } from "./Document";
 import { OrganizationAdmin } from "./OrganizationAdmin";
 import { createFundClosing, createSPVClosing } from "./tasks/closing";
 import { createFundOnboarding, createSPVOnboarding } from "./tasks/onboarding";
@@ -200,12 +199,6 @@ schema.statics.createPreOnboarding = async function (
 
   let hasBankingInfo = await checkBankingInformation(deal.user_id.toString());
 
-  const userIdentification = await DocumentModel.findOne({
-    user_id: deal.user_id,
-  });
-
-  let hasId = Boolean(userIdentification);
-
   const userHasLegacyDeal = allUserOrgDeals.some(
     (deal: mongoose.LeanDocument<Deal>) => {
       const dealKeys = Object.keys(deal);
@@ -213,9 +206,6 @@ schema.statics.createPreOnboarding = async function (
     }
   );
 
-  if (!hasId) {
-    hasId = userHasLegacyDeal;
-  }
   if (!hasBankingInfo) {
     hasBankingInfo = userHasLegacyDeal;
   }
@@ -228,9 +218,9 @@ schema.statics.createPreOnboarding = async function (
       metadata?: any;
     }[];
   } = {
-    spv: createSPVPreOnboarding(new_hvp, hasBankingInfo, hasId),
-    fund: createFundPreOnboarding(hasBankingInfo, hasId),
-    acquisition: createSPVPreOnboarding(new_hvp, hasBankingInfo, hasId),
+    spv: createSPVPreOnboarding(new_hvp, hasBankingInfo),
+    fund: createFundPreOnboarding(hasBankingInfo),
+    acquisition: createSPVPreOnboarding(new_hvp, hasBankingInfo),
   };
 
   return this.create({
