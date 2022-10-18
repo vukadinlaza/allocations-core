@@ -1,6 +1,5 @@
 const createSPVPreOnboarding = (
-  new_hvp: boolean,
-  hasBankingInfo: boolean
+  new_hvp: boolean
 ): {
   title: string;
   type: string;
@@ -43,15 +42,6 @@ const createSPVPreOnboarding = (
           },
         ]
       : []),
-    // Master Series generation task goes here
-    ...(!hasBankingInfo
-      ? [
-          {
-            title: "Bank Account Information",
-            type: "fm-info",
-          },
-        ]
-      : []),
     {
       title: "SS4 Form Sent for Signature",
       type: "process-street-tasks",
@@ -86,9 +76,7 @@ const createSPVPreOnboarding = (
   ];
 };
 
-const createFundPreOnboarding = (
-  hasBankingInfo: boolean
-): {
+const createFundPreOnboarding = (): {
   title: string;
   type: string;
   required?: boolean;
@@ -112,14 +100,6 @@ const createFundPreOnboarding = (
         task_name: "Entity Formed",
       },
     },
-    ...(!hasBankingInfo
-      ? [
-          {
-            title: "Bank Account Information",
-            type: "fm-info",
-          },
-        ]
-      : []),
     {
       title: "Confirm Deal Details",
       type: "process-street-tasks",
