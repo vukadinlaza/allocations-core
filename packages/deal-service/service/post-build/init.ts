@@ -69,7 +69,7 @@ export const handler = async ({ Records }: SQSEvent): Promise<void> => {
 
       const mungedDeal = deal as MungedDeal;
 
-      mungedDeal.entity = entity?.name || "Atomizer LLC";
+      mungedDeal.entity = entity?.name || "Allocations Funds LLC";
       mungedDeal.client_type = clientTypeMap[clientIdentifier][isHVP];
 
       await requestHook(mungedDeal, process.env.ZAPIER_CREATE_RUN_HOOK!);

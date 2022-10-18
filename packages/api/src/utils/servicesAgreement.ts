@@ -216,7 +216,7 @@ export const createServicesAgreement = async (
     manager_title: deal.manager.title,
     master_series: entity
       ? `${entity?.name} ${entity?.structure}`
-      : "Atomizer LLC",
+      : "Allocations Funds LLC",
     minimum_investment: `$${deal.minimum_investment}`,
     custom_reporting_adviser: deal.reporting_adviser,
     closing_date: formatDate(deal.closing_date),
@@ -254,7 +254,9 @@ export const createServicesAgreement = async (
         : undefined,
     manager_email: deal.manager.email,
     manager_title: deal.manager.title,
-    name: entity ? `${entity?.name} ${entity?.structure}` : "Atomizer LLC",
+    name: entity
+      ? `${entity?.name} ${entity?.structure}`
+      : "Allocations Funds LLC",
     representative:
       deal.manager.type === "entity"
         ? deal.manager.entity_representative
@@ -311,7 +313,7 @@ export const createServicesAgreement = async (
     manager_title: deal.manager.title,
     master_series: entity
       ? `${entity?.name} ${entity?.structure}`
-      : "Atomizer LLC",
+      : "Allocations Funds LLC",
     minimum_investment: `$${deal.minimum_investment}`,
     custom_reporting_adviser: deal.reporting_adviser,
     closing_date: formatDate(deal.closing_date),
@@ -413,7 +415,7 @@ export const createOrderForm = async (
     manager_email: deal.manager.email,
     master_series: entity
       ? `${entity?.name} ${entity?.structure}`
-      : "Atomizer LLC",
+      : "Allocations Funds LLC",
     minimum_investment: `$${deal.minimum_investment}`,
     custom_reporting_adviser: deal.reporting_adviser,
     closing_date: formatDate(deal.closing_date),

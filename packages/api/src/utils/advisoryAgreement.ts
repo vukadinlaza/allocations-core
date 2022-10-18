@@ -27,7 +27,9 @@ export const createAdvisoryAgreement = async (
       preview,
       data: {
         private_fund: `${deal.name}, a series of ${
-          entity ? `${entity?.name} ${entity?.structure}` : "Atomizer LLC"
+          entity
+            ? `${entity?.name} ${entity?.structure}`
+            : "Allocations Funds LLC"
         }`,
         effective_date: new Date().toISOString().split("T")[0],
         name: deal.manager.name,
