@@ -52,17 +52,17 @@ export interface W8BENTaxForm extends Document {
   type: "W-8-BEN";
   address: string;
   city: string;
-  region: string;
+  region: string | null;
   postal_code: string;
   residence_country: string;
   mailing_address: string;
   mailing_city: string;
-  mailing_region: string;
+  mailing_region: string | null;
   mailing_postal_code: string;
   mailing_country: string;
   date_of_birth: string;
-  tax_id: string;
-  foreign_tax_id: string;
+  tax_id: string | null;
+  foreign_tax_id: string | null;
 }
 
 export interface W8BENETaxForm extends Document {
@@ -99,16 +99,16 @@ export interface W8BENETaxForm extends Document {
     | "Account that is not a financial account";
   address: string;
   city: string;
-  region: string;
+  region: string | null;
   postal_code: string;
   residence_country: string;
   mailing_address: string;
   mailing_city: string;
-  mailing_region: string;
+  mailing_region: string | null;
   mailing_postal_code: string;
   mailing_country: string;
-  tax_id: string;
-  foreign_tax_id: string;
+  tax_id: string | null;
+  foreign_tax_id: string | null;
 }
 
 const W9TaxFormSchema: Schema = new mongoose.Schema({
@@ -188,7 +188,7 @@ const W8BENTaxFormSchema = new mongoose.Schema({
   },
   region: {
     type: String,
-    required: true,
+    default: null,
   },
   residence_country: {
     type: String,
@@ -204,7 +204,7 @@ const W8BENTaxFormSchema = new mongoose.Schema({
   },
   mailing_region: {
     type: String,
-    required: true,
+    default: null,
   },
   mailing_postal_code: {
     type: String,
@@ -216,14 +216,18 @@ const W8BENTaxFormSchema = new mongoose.Schema({
   },
   foreign_tax_id: {
     type: String,
-    required: true,
+    default: null,
+  },
+  tax_id: {
+    type: String,
+    default: null,
   },
 });
 
 const W8BENETaxFormSchema = new mongoose.Schema({
   region: {
     type: String,
-    required: true,
+    default: null,
   },
   residence_country: {
     type: String,
@@ -239,7 +243,7 @@ const W8BENETaxFormSchema = new mongoose.Schema({
   },
   mailing_region: {
     type: String,
-    required: true,
+    default: null,
   },
   mailing_postal_code: {
     type: String,
@@ -249,9 +253,13 @@ const W8BENETaxFormSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  tax_id: {
+    type: String,
+    default: null,
+  },
   foreign_tax_id: {
     type: String,
-    required: true,
+    default: null,
   },
   disregarded_entity: {
     type: String,
@@ -293,7 +301,6 @@ const W8BENETaxFormSchema = new mongoose.Schema({
       "Sponsored direct reporting NFFE",
       "Account that is not a financial account",
     ],
-    required: true,
   },
 });
 
