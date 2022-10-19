@@ -438,7 +438,7 @@ export const createOrderForm = async (
     grand_total: toDollarString(calculateGrandTotal(deal)),
     date: todaysDate(),
     entity_name: deal.manager.type === "entity" ? deal.manager.name : undefined,
-    // special_terms: convertSpecialTerms(deal),
+    special_terms: convertSpecialTerms(deal),
   };
 
   const { id, permanent_download_url, download_url } =
