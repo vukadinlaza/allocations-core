@@ -70,22 +70,25 @@ const toPercent = (amount: number) => {
   return `${wholeNum}%`;
 };
 
-const convertProductType = (assetType: string): string => {
-  interface StringMap {
-    [key: string]: string;
-  }
-
-  const assetTypeMap: StringMap = {
-    Startup: "Single Asset SPV",
-    Crypto: `${assetType} SPV`,
-    "Real Estate": `${assetType} SPV`,
-    Custom: `${assetType} SPV`,
-    Secondary: `${assetType} SPV`,
-    "Management Company": `SPV into a ${assetType}`,
-    default: assetType,
+const convertProductType = (type: string, assetType: string): string => {
+  const assetTypeMap: { [key: string]: { [key: string]: string } } = {
+    spv: {
+      Startup: "Single Asset SPV",
+      Crypto: `${assetType} SPV`,
+      "Real Estate": `${assetType} SPV`,
+      Custom: `${assetType} SPV`,
+      Secondary: `${assetType} SPV`,
+      "Management Company": `SPV into a ${assetType}`,
+      default: assetType,
+    },
+    fund: {
+      Startup: "Fund",
+      Crypto: "Fund",
+      "Real Estate": "Fund",
+    },
   };
 
-  return assetTypeMap[assetType] || assetTypeMap.default;
+  return assetTypeMap[type][assetType] || assetTypeMap["spv"].default;
 };
 
 const convertSpecialTerms = (deal: Deal) => {
@@ -226,7 +229,7 @@ export const createServicesAgreement = async (
     fees: `Management Fee ${toPercent(deal.management_fee)} (${
       deal.management_fee_frequency
     }) / Carry Fee ${toPercent(deal.carry_fee)}`,
-    product_type: convertProductType(deal.asset_type),
+    product_type: convertProductType("spv", deal.asset_type),
     product_type_fee: toDollarString(calculateProductTypeFee(deal)),
     product_total: toDollarString(calculateProductTypeFee(deal)),
     advisor_fee: toDollarString(calculateAdvisorFee(deal)),
@@ -425,7 +428,7 @@ export const createOrderForm = async (
     fees: `Management Fee ${toPercent(deal.management_fee)} (${
       deal.management_fee_frequency
     }) / Carry Fee ${toPercent(deal.carry_fee)}`,
-    product_type: convertProductType(deal.asset_type),
+    product_type: convertProductType(deal.type, deal.asset_type),
     product_type_fee: toDollarString(calculateProductTypeFee(deal)),
     product_total: toDollarString(calculateProductTypeFee(deal)),
     advisor_fee: toDollarString(calculateAdvisorFee(deal)),
