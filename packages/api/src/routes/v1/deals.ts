@@ -36,12 +36,33 @@ const getSetupCost = (deal: Deal) => {
 };
 
 const getAdviserFee = (deal: Deal) => {
+  const calculateAdviserFee = (deal: Deal): number => {
+    if (deal.target_raise_goal <= 100000) return 2000;
+    if (100001 <= deal.target_raise_goal && deal.target_raise_goal <= 250000)
+      return 4000;
+    if (250001 <= deal.target_raise_goal && deal.target_raise_goal <= 500000)
+      return 8000;
+    if (500001 <= deal.target_raise_goal && deal.target_raise_goal <= 1000000)
+      return 18000;
+    if (1000001 <= deal.target_raise_goal) return 50000;
+
+    return 0;
+  };
+
+  const isMicro =
+    deal.type === "spv" &&
+    deal.asset_type === "Startup" &&
+    deal.target_raise_goal <= 99999 &&
+    !deal.side_letters;
+
+  if (isMicro) return 1000;
+
   if (deal.type === "fund") {
     return deal.number_of_investments >= 30 ? 1500 : 2000;
   }
   return deal.reporting_adviser === "Sharding Advisers LLC" ||
     !deal.reporting_adviser
-    ? 2000
+    ? calculateAdviserFee(deal)
     : 0;
 };
 

@@ -399,6 +399,12 @@ export const createOrderForm = async (
   task: Task,
   preview?: boolean
 ) => {
+  const isMicro =
+    deal.type === "spv" &&
+    deal.asset_type === "Startup" &&
+    deal.target_raise_goal <= 99999 &&
+    !deal.side_letters;
+
   const templateId: string = preview
     ? process.env.ORDER_FORM_PREVIEW_TEMPLATE_ID!
     : process.env.ORDER_FORM_TEMPLATE_ID!;
@@ -431,9 +437,13 @@ export const createOrderForm = async (
     product_type: convertProductType(deal.type, deal.asset_type),
     product_type_fee: toDollarString(calculateProductTypeFee(deal)),
     product_total: toDollarString(calculateProductTypeFee(deal)),
-    advisor_fee: toDollarString(calculateAdvisorFee(deal)),
+    advisor_fee: isMicro
+      ? `$1,000 per asset`
+      : toDollarString(calculateAdvisorFee(deal)),
     advisor_count: deal.reporting_adviser === "Sharding Advisers LLC" ? 1 : 0,
-    advisor_fee_total: toDollarString(calculateAdvisorFee(deal)),
+    advisor_fee_total: isMicro
+      ? "TBD"
+      : toDollarString(calculateAdvisorFee(deal)),
     offering_type_fee:
       deal.offering_type === "506c" ? "$70 Per Investor/LP" : "included ($0)",
     offering_type_total:
