@@ -150,13 +150,6 @@ export default Router()
         (
           await Deal.aggregate([
             {
-              $match: {
-                phase: {
-                  $ne: "archived",
-                },
-              },
-            },
-            {
               $group: {
                 _id: "$phase",
                 count: {
