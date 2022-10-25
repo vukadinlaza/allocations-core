@@ -37,6 +37,7 @@ const getSetupCost = (deal: Deal) => {
 
 const getAdviserFee = (deal: Deal) => {
   const calculateAdviserFee = (deal: Deal): number => {
+    if (deal.type === "fund") return 2000;
     if (deal.target_raise_goal <= 100000) return 2000;
     if (100001 <= deal.target_raise_goal && deal.target_raise_goal <= 250000)
       return 4000;
