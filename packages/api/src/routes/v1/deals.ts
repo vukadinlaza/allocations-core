@@ -38,16 +38,18 @@ const getSetupCost = (deal: Deal) => {
 const getAdviserFee = (deal: Deal) => {
   const calculateAdviserFee = (deal: Deal): number => {
     if (deal.type === "fund") return 2000;
-    if (deal.target_raise_goal <= 100000) return 2000;
-    if (100001 <= deal.target_raise_goal && deal.target_raise_goal <= 250000)
-      return 4000;
-    if (250001 <= deal.target_raise_goal && deal.target_raise_goal <= 500000)
-      return 8000;
-    if (500001 <= deal.target_raise_goal && deal.target_raise_goal <= 1000000)
-      return 18000;
-    if (1000001 <= deal.target_raise_goal) return 50000;
+    if (deal.asset_type !== "Startup") {
+      if (deal.target_raise_goal <= 100000) return 2000;
+      if (100001 <= deal.target_raise_goal && deal.target_raise_goal <= 250000)
+        return 4000;
+      if (250001 <= deal.target_raise_goal && deal.target_raise_goal <= 500000)
+        return 8000;
+      if (500001 <= deal.target_raise_goal && deal.target_raise_goal <= 1000000)
+        return 18000;
+      if (1000001 <= deal.target_raise_goal) return 50000;
+    }
 
-    return 0;
+    return 2000;
   };
 
   const isMicro =
