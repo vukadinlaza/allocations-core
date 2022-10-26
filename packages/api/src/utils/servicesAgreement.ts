@@ -70,22 +70,25 @@ const toPercent = (amount: number) => {
   return `${wholeNum}%`;
 };
 
-const convertProductType = (assetType: string): string => {
-  interface StringMap {
-    [key: string]: string;
-  }
-
-  const assetTypeMap: StringMap = {
-    Startup: "Single Asset SPV",
-    Crypto: `${assetType} SPV`,
-    "Real Estate": `${assetType} SPV`,
-    Custom: `${assetType} SPV`,
-    Secondary: `${assetType} SPV`,
-    "Management Company": `SPV into a ${assetType}`,
-    default: assetType,
+const convertProductType = (type: string, assetType: string): string => {
+  const assetTypeMap: { [key: string]: { [key: string]: string } } = {
+    spv: {
+      Startup: "Single Asset SPV",
+      Crypto: `${assetType} SPV`,
+      "Real Estate": `${assetType} SPV`,
+      Custom: `${assetType} SPV`,
+      Secondary: `${assetType} SPV`,
+      "Management Company": `SPV into a ${assetType}`,
+      default: assetType,
+    },
+    fund: {
+      Startup: "Fund",
+      Crypto: "Fund",
+      "Real Estate": "Fund",
+    },
   };
 
-  return assetTypeMap[assetType] || assetTypeMap.default;
+  return assetTypeMap[type][assetType] || assetTypeMap["spv"].default;
 };
 
 const convertSpecialTerms = (deal: Deal) => {
@@ -216,7 +219,7 @@ export const createServicesAgreement = async (
     manager_title: deal.manager.title,
     master_series: entity
       ? `${entity?.name} ${entity?.structure}`
-      : "Atomizer LLC",
+      : "Allocations Funds LLC",
     minimum_investment: `$${deal.minimum_investment}`,
     custom_reporting_adviser: deal.reporting_adviser,
     closing_date: formatDate(deal.closing_date),
@@ -226,7 +229,7 @@ export const createServicesAgreement = async (
     fees: `Management Fee ${toPercent(deal.management_fee)} (${
       deal.management_fee_frequency
     }) / Carry Fee ${toPercent(deal.carry_fee)}`,
-    product_type: convertProductType(deal.asset_type),
+    product_type: convertProductType("spv", deal.asset_type),
     product_type_fee: toDollarString(calculateProductTypeFee(deal)),
     product_total: toDollarString(calculateProductTypeFee(deal)),
     advisor_fee: toDollarString(calculateAdvisorFee(deal)),
@@ -254,7 +257,9 @@ export const createServicesAgreement = async (
         : undefined,
     manager_email: deal.manager.email,
     manager_title: deal.manager.title,
-    name: entity ? `${entity?.name} ${entity?.structure}` : "Atomizer LLC",
+    name: entity
+      ? `${entity?.name} ${entity?.structure}`
+      : "Allocations Funds LLC",
     representative:
       deal.manager.type === "entity"
         ? deal.manager.entity_representative
@@ -311,7 +316,7 @@ export const createServicesAgreement = async (
     manager_title: deal.manager.title,
     master_series: entity
       ? `${entity?.name} ${entity?.structure}`
-      : "Atomizer LLC",
+      : "Allocations Funds LLC",
     minimum_investment: `$${deal.minimum_investment}`,
     custom_reporting_adviser: deal.reporting_adviser,
     closing_date: formatDate(deal.closing_date),
@@ -394,6 +399,12 @@ export const createOrderForm = async (
   task: Task,
   preview?: boolean
 ) => {
+  const isMicro =
+    deal.type === "spv" &&
+    deal.asset_type === "Startup" &&
+    deal.target_raise_goal <= 99999 &&
+    !deal.side_letters;
+
   const templateId: string = preview
     ? process.env.ORDER_FORM_PREVIEW_TEMPLATE_ID!
     : process.env.ORDER_FORM_TEMPLATE_ID!;
@@ -413,7 +424,7 @@ export const createOrderForm = async (
     manager_email: deal.manager.email,
     master_series: entity
       ? `${entity?.name} ${entity?.structure}`
-      : "Atomizer LLC",
+      : "Allocations Funds LLC",
     minimum_investment: `$${deal.minimum_investment}`,
     custom_reporting_adviser: deal.reporting_adviser,
     closing_date: formatDate(deal.closing_date),
@@ -423,12 +434,16 @@ export const createOrderForm = async (
     fees: `Management Fee ${toPercent(deal.management_fee)} (${
       deal.management_fee_frequency
     }) / Carry Fee ${toPercent(deal.carry_fee)}`,
-    product_type: convertProductType(deal.asset_type),
+    product_type: convertProductType(deal.type, deal.asset_type),
     product_type_fee: toDollarString(calculateProductTypeFee(deal)),
     product_total: toDollarString(calculateProductTypeFee(deal)),
-    advisor_fee: toDollarString(calculateAdvisorFee(deal)),
+    advisor_fee: isMicro
+      ? `$1,000 per asset`
+      : toDollarString(calculateAdvisorFee(deal)),
     advisor_count: deal.reporting_adviser === "Sharding Advisers LLC" ? 1 : 0,
-    advisor_fee_total: toDollarString(calculateAdvisorFee(deal)),
+    advisor_fee_total: isMicro
+      ? "TBD"
+      : toDollarString(calculateAdvisorFee(deal)),
     offering_type_fee:
       deal.offering_type === "506c" ? "$70 Per Investor/LP" : "included ($0)",
     offering_type_total:
@@ -436,7 +451,7 @@ export const createOrderForm = async (
     grand_total: toDollarString(calculateGrandTotal(deal)),
     date: todaysDate(),
     entity_name: deal.manager.type === "entity" ? deal.manager.name : undefined,
-    // special_terms: convertSpecialTerms(deal),
+    special_terms: convertSpecialTerms(deal),
   };
 
   const { id, permanent_download_url, download_url } =

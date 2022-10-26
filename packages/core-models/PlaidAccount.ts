@@ -10,6 +10,8 @@ export interface PlaidAccount extends Document {
   routing_number: string;
   next_cursor?: string;
 
+  notes: string;
+
   updated_at: Date;
   created_at: Date;
 }
@@ -48,6 +50,10 @@ const schema = new mongoose.Schema<PlaidAccount>(
     },
     next_cursor: {
       type: String,
+    },
+    notes: {
+      type: String,
+      default: "",
     },
   },
   {

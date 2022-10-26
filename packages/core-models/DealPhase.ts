@@ -1,14 +1,11 @@
 import mongoose, { Document, Model } from "mongoose";
 import { Deal } from "./Deal";
-import { Document as DocumentModel } from "./Document";
-import { OrganizationAdmin } from "./OrganizationAdmin";
 import { createFundClosing, createSPVClosing } from "./tasks/closing";
 import { createFundOnboarding, createSPVOnboarding } from "./tasks/onboarding";
 import {
   createFundPreOnboarding,
   createSPVPreOnboarding,
 } from "./tasks/pre-onboarding";
-import checkBankingInformation from "./utils/checkBankingInformation";
 
 export interface Task extends Document {
   title: string;
@@ -177,49 +174,6 @@ schema.statics.createPreOnboarding = async function (
 ) {
   const { _id: deal_id } = deal;
 
-  const allUserOrgDeals = (await OrganizationAdmin.aggregate([
-    {
-      $match: { user_id: new mongoose.Types.ObjectId(deal.user_id) },
-    },
-    {
-      $lookup: {
-        from: "deals",
-        localField: "organization_id",
-        foreignField: "organization_id",
-        as: "deal",
-      },
-    },
-    {
-      $unwind: {
-        path: "$deal",
-      },
-    },
-    // @ts-ignore
-    { $replaceWith: "$deal" },
-  ])) as Deal[];
-
-  let hasBankingInfo = await checkBankingInformation(deal.user_id.toString());
-
-  const userIdentification = await DocumentModel.findOne({
-    user_id: deal.user_id,
-  });
-
-  let hasId = Boolean(userIdentification);
-
-  const userHasLegacyDeal = allUserOrgDeals.some(
-    (deal: mongoose.LeanDocument<Deal>) => {
-      const dealKeys = Object.keys(deal);
-      return dealKeys.includes("legacy_deal");
-    }
-  );
-
-  if (!hasId) {
-    hasId = userHasLegacyDeal;
-  }
-  if (!hasBankingInfo) {
-    hasBankingInfo = userHasLegacyDeal;
-  }
-
   const productMap: {
     [key: string]: {
       title: string;
@@ -228,9 +182,9 @@ schema.statics.createPreOnboarding = async function (
       metadata?: any;
     }[];
   } = {
-    spv: createSPVPreOnboarding(new_hvp, hasBankingInfo, hasId),
-    fund: createFundPreOnboarding(hasBankingInfo, hasId),
-    acquisition: createSPVPreOnboarding(new_hvp, hasBankingInfo, hasId),
+    spv: createSPVPreOnboarding(new_hvp),
+    fund: createFundPreOnboarding(),
+    acquisition: createSPVPreOnboarding(new_hvp),
   };
 
   return this.create({

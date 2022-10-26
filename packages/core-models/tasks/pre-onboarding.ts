@@ -1,7 +1,5 @@
 const createSPVPreOnboarding = (
-  new_hvp: boolean,
-  hasBankingInfo: boolean,
-  hasId: boolean
+  new_hvp: boolean
 ): {
   title: string;
   type: string;
@@ -9,23 +7,6 @@ const createSPVPreOnboarding = (
   metadata?: any;
 }[] => {
   return [
-    ...(!hasId
-      ? [
-          {
-            title: "Upload ID or Passport",
-            type: "fm-document-upload",
-            metadata: {
-              tooltip_title: "ID/Passport Upload",
-              tooltip_content: `<ul>
-            <li>Ensure the ID/passport is laying flat on the surface</li>
-            <li>All corners are clearly visible</li>
-            <li>Allow at least 1" around all the edges</li>
-            <li>*If passport, include the top and bottom portions</li>
-            </ul>`,
-            },
-          },
-        ]
-      : []),
     {
       title: "Upload Company Deck",
       type: "fm-document-upload",
@@ -58,15 +39,6 @@ const createSPVPreOnboarding = (
               template_name: "01. Client Solutions",
               task_name: "Entity Formed",
             },
-          },
-        ]
-      : []),
-    // Master Series generation task goes here
-    ...(!hasBankingInfo
-      ? [
-          {
-            title: "Bank Account Information",
-            type: "fm-info",
           },
         ]
       : []),
@@ -104,33 +76,13 @@ const createSPVPreOnboarding = (
   ];
 };
 
-const createFundPreOnboarding = (
-  hasBankingInfo: boolean,
-  hasId: boolean
-): {
+const createFundPreOnboarding = (): {
   title: string;
   type: string;
   required?: boolean;
   metadata?: any;
 }[] => {
   return [
-    ...(!hasId
-      ? [
-          {
-            title: "Upload ID or Passport",
-            type: "fm-document-upload",
-            metadata: {
-              tooltip_title: "ID/Passport Upload",
-              tooltip_content: `<ul>
-            <li>Ensure the ID/passport is laying flat on the surface</li>
-            <li>All corners are clearly visible</li>
-            <li>Allow at least 1" around all the edges</li>
-            <li>*If passport, include the top and bottom portions</li>
-            </ul>`,
-            },
-          },
-        ]
-      : []),
     {
       title: "Upload Company Deck",
       type: "fm-document-upload",
@@ -148,14 +100,6 @@ const createFundPreOnboarding = (
         task_name: "Entity Formed",
       },
     },
-    ...(!hasBankingInfo
-      ? [
-          {
-            title: "Bank Account Information",
-            type: "fm-info",
-          },
-        ]
-      : []),
     {
       title: "Confirm Deal Details",
       type: "process-street-tasks",

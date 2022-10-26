@@ -52,17 +52,17 @@ export interface W8BENTaxForm extends Document {
   type: "W-8-BEN";
   address: string;
   city: string;
-  region: string;
+  region: string | null;
   postal_code: string;
   residence_country: string;
   mailing_address: string;
   mailing_city: string;
-  mailing_region: string;
+  mailing_region: string | null;
   mailing_postal_code: string;
   mailing_country: string;
   date_of_birth: string;
-  tax_id: string;
-  foreign_tax_id: string;
+  tax_id: string | null;
+  foreign_tax_id: string | null;
 }
 
 export interface W8BENETaxForm extends Document {
@@ -99,36 +99,24 @@ export interface W8BENETaxForm extends Document {
     | "Account that is not a financial account";
   address: string;
   city: string;
-  region: string;
+  region: string | null;
   postal_code: string;
   residence_country: string;
   mailing_address: string;
   mailing_city: string;
-  mailing_region: string;
+  mailing_region: string | null;
   mailing_postal_code: string;
   mailing_country: string;
-  tax_id: string;
-  foreign_tax_id: string;
+  tax_id: string | null;
+  foreign_tax_id: string | null;
 }
 
 const W9TaxFormSchema: Schema = new mongoose.Schema({
-  address: {
-    type: String,
-    required: true,
-  },
-  city: {
-    type: String,
-    required: true,
-  },
   state: {
     type: String,
     required: true,
   },
   tax_id: {
-    type: String,
-    required: true,
-  },
-  postal_code: {
     type: String,
     required: true,
   },
@@ -163,12 +151,16 @@ const W9ETaxFormSchema = new mongoose.Schema({
       return this.company_type === "Single-Member LLC";
     },
   },
+  state: {
+    type: String,
+    required: true,
+  },
   ssn: {
     type: String,
     default: null,
     required: function (): boolean {
       // @ts-ignore
-      return this.company_type === "Limited Liability Company";
+      return this.company_type === "Single-Member LLC";
     },
   },
   tax_id: {
@@ -196,7 +188,7 @@ const W8BENTaxFormSchema = new mongoose.Schema({
   },
   region: {
     type: String,
-    required: true,
+    default: null,
   },
   residence_country: {
     type: String,
@@ -212,7 +204,7 @@ const W8BENTaxFormSchema = new mongoose.Schema({
   },
   mailing_region: {
     type: String,
-    required: true,
+    default: null,
   },
   mailing_postal_code: {
     type: String,
@@ -224,14 +216,18 @@ const W8BENTaxFormSchema = new mongoose.Schema({
   },
   foreign_tax_id: {
     type: String,
-    required: true,
+    default: null,
+  },
+  tax_id: {
+    type: String,
+    default: null,
   },
 });
 
 const W8BENETaxFormSchema = new mongoose.Schema({
   region: {
     type: String,
-    required: true,
+    default: null,
   },
   residence_country: {
     type: String,
@@ -247,7 +243,7 @@ const W8BENETaxFormSchema = new mongoose.Schema({
   },
   mailing_region: {
     type: String,
-    required: true,
+    default: null,
   },
   mailing_postal_code: {
     type: String,
@@ -257,9 +253,13 @@ const W8BENETaxFormSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  tax_id: {
+    type: String,
+    default: null,
+  },
   foreign_tax_id: {
     type: String,
-    required: true,
+    default: null,
   },
   disregarded_entity: {
     type: String,
@@ -301,7 +301,6 @@ const W8BENETaxFormSchema = new mongoose.Schema({
       "Sponsored direct reporting NFFE",
       "Account that is not a financial account",
     ],
-    required: true,
   },
 });
 
@@ -348,7 +347,23 @@ export const TaxInformationSchema: Schema = new mongoose.Schema(
       type: mongoose.SchemaTypes.ObjectId,
       ref: "PassportAsset",
     },
-    tax_form: new mongoose.Schema({}, { discriminatorKey: "type" }),
+    tax_form: new mongoose.Schema(
+      {
+        address: {
+          type: String,
+          required: true,
+        },
+        city: {
+          type: String,
+          required: true,
+        },
+        postal_code: {
+          type: String,
+          required: true,
+        },
+      },
+      { discriminatorKey: "type" }
+    ),
     signature_packet: {
       type: signaturePacketSchema,
       select: false,

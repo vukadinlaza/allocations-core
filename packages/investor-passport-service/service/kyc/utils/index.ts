@@ -12,7 +12,7 @@ const getNameScan = async (investorPassport: InvestorPassport) => {
 
   const res = await fetch(
     `https://namescan.io/api/v3/${
-      investorPassport.type === "Entity" ? "organization-scans" : "person-scans"
+      investorPassport.type === "Entity" ? "organisation-scans" : "person-scans"
     }/emerald`,
     {
       method: "POST",

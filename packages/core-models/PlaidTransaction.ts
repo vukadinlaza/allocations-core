@@ -10,7 +10,8 @@ export interface PlaidTransaction extends Document {
   status: "Pending" | "Posted";
   date?: Date;
 
-  category: String;
+  notes: string;
+  category: string;
   investment_id?: mongoose.Types.ObjectId;
 
   updated_at: Date;
@@ -50,6 +51,10 @@ const schema = new mongoose.Schema<PlaidTransaction>(
       type: Date,
     },
 
+    notes: {
+      type: String,
+      default: "",
+    },
     category: {
       type: String,
     },
