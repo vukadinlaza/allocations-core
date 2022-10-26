@@ -199,6 +199,7 @@ const schema = new mongoose.Schema<Deal, DealModel>(
       enum: [
         "new",
         "build",
+        "post-build",
         "pre-onboarding",
         "onboarding",
         "closing",
