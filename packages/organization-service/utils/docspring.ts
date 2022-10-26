@@ -62,11 +62,19 @@ export const createServicesAgreement = (organization: Organization) => {
   });
 };
 
-export const createPOAAgreement = (organization: Organization) => {
+export const createPOAAgreement = (
+  organization: Organization & {
+    fund_manager: string;
+    title: string;
+    intro: string;
+  }
+) => {
+  organization.intro = `Any capitalized terms shall have the meaning ascribed to them in the Master Services Agreement and/or the respective Order Form by and between ${organization.name} (the “Company”), ${organization.fund_manager} (the "Individual") and Allocations, concluded on the date indicated below in the signature page.`;
+
   return createSubmission({
     organization,
     assetType: "power-of-attorney",
-    templateId: "tpl_gXk2AEDGkkT2CDQDQK",
+    templateId: "tpl_PCPFGFrm3Mrdr9dH5H",
   });
 };
 

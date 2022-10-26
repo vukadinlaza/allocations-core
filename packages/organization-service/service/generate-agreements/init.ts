@@ -1,6 +1,7 @@
 import type { SQSEvent } from "aws-lambda";
 import {
   connectMongoose,
+  HttpError,
   triggerTransition,
 } from "@allocations/service-common";
 import {
@@ -22,6 +23,7 @@ import {
   createTermsAgreement,
 } from "../../utils/docspring";
 import converter from "number-to-words";
+import { Types } from "mongoose";
 
 const findAddress = (taxInformation: TaxInformation): string => {
   const { tax_form } = taxInformation;
@@ -32,6 +34,22 @@ const findAddress = (taxInformation: TaxInformation): string => {
   }
   const form = tax_form as W8BENTaxForm | W8BENETaxForm;
   return `${form.address}, ${form.city}, ${form.region} ${form.postal_code} ${form.residence_country}`;
+};
+
+const findRepresentative = (
+  fm: Omit<
+    OrganizationFundManager & {
+      _id: Types.ObjectId;
+    },
+    "passport"
+  > & {
+    passport: InvestorPassport;
+  }
+) => {
+  const { passport } = fm;
+  if (passport.type === "Individual")
+    return { fund_manager: passport.name, title: "" };
+  else return { fund_manager: passport.representative, title: passport.title };
 };
 
 export const handler = async ({ Records }: SQSEvent) => {
@@ -46,6 +64,8 @@ export const handler = async ({ Records }: SQSEvent) => {
         organization_id: organization._id,
         role: "fund-manager",
       }).populate<{ passport: InvestorPassport }>("passport");
+
+      if (!fundManager) throw new HttpError("Fund Manager Required", "500");
 
       const organizationObject = organization.toObject();
 
@@ -84,13 +104,18 @@ export const handler = async ({ Records }: SQSEvent) => {
       if (!servicesAgreement) {
         waitingForGeneration = true;
         //@ts-ignore
-        await createServicesAgreement(fundManager ? orgWithFM : organization);
+        await createServicesAgreement(orgWithFM);
       }
 
       if (!poa) {
         waitingForGeneration = true;
+        const rep = findRepresentative(fundManager);
+        const orgWithFM = {
+          ...organizationObject,
+          ...rep,
+        };
         //@ts-ignore
-        await createPOAAgreement(fundManager ? orgWithFM : organization);
+        await createPOAAgreement(orgWithFM);
       }
 
       if (
