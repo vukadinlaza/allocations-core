@@ -123,6 +123,7 @@ const schema = new mongoose.Schema<Deal, DealModel>(
         "Management Company",
         "Custom",
         "Instant",
+        "Micro",
       ],
     },
     carry_fee: Number,

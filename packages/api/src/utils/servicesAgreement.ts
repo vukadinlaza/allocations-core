@@ -79,6 +79,7 @@ const convertProductType = (type: string, assetType: string): string => {
       Custom: `${assetType} SPV`,
       Secondary: `${assetType} SPV`,
       "Management Company": `SPV into a ${assetType}`,
+      Micro: "Micro SPV",
       default: assetType,
     },
     fund: {
