@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { Investment, InvestorPassport } from "@allocations/core-models";
+import {
+  Investment,
+  InvestorPassport,
+  PassportUser,
+} from "@allocations/core-models";
 import { S3Client } from "@aws-sdk/client-s3";
 import { resign, resyncWithAirtable, update } from "../../utils/investments";
 import { HttpError } from "@allocations/api-common";
@@ -20,8 +24,7 @@ export default Router()
   .post("/", async (req, res, next) => {
     try {
       const { submission_data, ...rest } = req.body;
-      const passport = await InvestorPassport.create({
-        phase: "new",
+      const passportBody = {
         type:
           rest.investor_type?.toLowerCase() === "entity"
             ? "Entity"
@@ -32,9 +35,28 @@ export default Router()
         country: rest.investor_country,
         us_state: rest.investor_state,
         accreditation_type: rest.accredited_investor_type,
-      });
+      };
 
-      await initializePassport(passport, req.headers["x-api-token"] as string);
+      let passportUser = await PassportUser.findOne({
+        user_id: rest.user_id,
+      }).populate<{ passport: InvestorPassport }>("passport");
+
+      let passport = passportUser?.passport || null;
+      if (!passport) {
+        passport = await InvestorPassport.create({
+          ...passportBody,
+          phase: "new",
+        });
+        await initializePassport(
+          passport,
+          req.headers["x-api-token"] as string
+        );
+        await PassportUser.create({
+          passport_id: passport._id,
+          user_id: rest.user_id,
+          role: "admin",
+        });
+      }
 
       const investment = await Investment.create({
         ...rest,
