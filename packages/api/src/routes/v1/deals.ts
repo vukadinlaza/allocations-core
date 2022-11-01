@@ -15,59 +15,13 @@ import {
   getDocspringEnvironment,
 } from "../../utils/docspring";
 import { ObjectId } from "mongodb";
+import {
+  getAdviserFee,
+  getSetupCost,
+  investorFeeMap,
+} from "../../utils/pricing";
 const fileName = basename(__filename, ".ts");
 const log = logger.child({ module: fileName });
-
-const getSetupCost = (deal: Deal) => {
-  const isMicro =
-    deal.type === "spv" &&
-    deal.asset_type === "Startup" &&
-    deal.target_raise_goal <= 99999 &&
-    !deal.side_letters;
-
-  if (isMicro) return 3500;
-  if (deal.type === "fund") {
-    return deal.number_of_investments >= 30 ? 15000 : 26000;
-  } else if (deal.type === "acquisition") return 12000;
-  else if (deal.asset_type !== "Startup" || deal.custom_investment_agreement)
-    return 14000;
-  else if (deal.asset_type === "Startup") return 8000;
-  else return 10000;
-};
-
-const getAdviserFee = (deal: Deal) => {
-  const calculateAdviserFee = (deal: Deal): number => {
-    if (deal.type === "fund") return 2000;
-    if (deal.asset_type !== "Startup") {
-      if (deal.target_raise_goal <= 100000) return 2000;
-      if (100001 <= deal.target_raise_goal && deal.target_raise_goal <= 250000)
-        return 4000;
-      if (250001 <= deal.target_raise_goal && deal.target_raise_goal <= 500000)
-        return 8000;
-      if (500001 <= deal.target_raise_goal && deal.target_raise_goal <= 1000000)
-        return 18000;
-      if (1000001 <= deal.target_raise_goal) return 50000;
-    }
-
-    return 2000;
-  };
-
-  const isMicro =
-    deal.type === "spv" &&
-    deal.asset_type === "Startup" &&
-    deal.target_raise_goal <= 99999 &&
-    !deal.side_letters;
-
-  if (isMicro) return 1000;
-
-  if (deal.type === "fund") {
-    return deal.number_of_investments >= 30 ? 1500 : 2000;
-  }
-  return deal.reporting_adviser === "Sharding Advisers LLC" ||
-    !deal.reporting_adviser
-    ? calculateAdviserFee(deal)
-    : 0;
-};
 
 export default Router()
   .post("/", async (req, res, next) => {
@@ -104,7 +58,9 @@ export default Router()
                 total: "TBD",
               },
               {
-                term: "Over 35 Investors",
+                term:
+                  investorFeeMap[req.body.deal.asset_type as string] ||
+                  investorFeeMap["default"],
                 fee: "$100 each",
                 quantity: "TBD",
                 total: "TBD",
