@@ -1,17 +1,14 @@
 import { Router } from "express";
-import { Investment} from "@allocations/core-models";
+import { Investment, InvestorPassport } from "@allocations/core-models";
 import { S3Client } from "@aws-sdk/client-s3";
-import {
-  initialize,
-  resign,
-  resyncWithAirtable,
-  update,
-} from "../../utils/investments";
+import { resign, resyncWithAirtable, update } from "../../utils/investments";
 import { HttpError } from "@allocations/api-common";
 import _ from "lodash";
 import { addLinkToDocuments, getFromBuild } from "../../utils/helpers";
 import { Deal } from "@allocations/core-models";
 import mongoose from "mongoose";
+import { initializePassport } from "../../services/passports";
+import { initializeInvestment } from "../../services/investmentsV2";
 
 interface GeneralObject {
   [key: string]: any;
@@ -23,15 +20,37 @@ export default Router()
   .post("/", async (req, res, next) => {
     try {
       const { submission_data, ...rest } = req.body;
+      const passport = await InvestorPassport.create({
+        phase: "new",
+        type:
+          rest.investor_type?.toLowerCase() === "entity"
+            ? "Entity"
+            : "Individual",
+        title: rest.title || null,
+        name: rest.investor_entity_name || rest.investor_name,
+        representative: rest.investor_name,
+        country: rest.investor_country,
+        us_state: rest.investor_state,
+        accreditation_type: rest.accredited_investor_type,
+      });
+
+      await initializePassport(passport, req.headers["x-api-token"] as string);
+
       const investment = await Investment.create({
         ...rest,
-        ...submission_data,
+        passport_id: passport._id,
+        metadata: {
+          submission_data,
+        },
         phase: "new",
       });
 
       res.send(investment);
 
-      await initialize(investment, req.headers["x-api-token"] as string);
+      await initializeInvestment(
+        investment,
+        req.headers["x-api-token"] as string
+      );
     } catch (e) {
       next(e);
     }
