@@ -39,14 +39,16 @@ export default Router()
 
       let passportUser = await PassportUser.findOne({
         user_id: rest.user_id,
-      }).populate<{ passport: InvestorPassport }>("passport");
+      }).populate<{ passport_id: InvestorPassport }>("passport_id");
 
-      let passport = passportUser?.passport || null;
+      let passport = passportUser?.passport_id || null;
+
       if (!passport) {
         passport = await InvestorPassport.create({
           ...passportBody,
           phase: "new",
         });
+
         await initializePassport(
           passport,
           req.headers["x-api-token"] as string
