@@ -66,7 +66,6 @@ export default Router()
         metadata: {
           submission_data,
         },
-        phase: "new",
       });
 
       res.send(investment);
