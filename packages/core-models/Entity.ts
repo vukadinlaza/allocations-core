@@ -4,6 +4,7 @@ export interface Entity extends Document {
   name: string;
   phase: string;
   organization_id: mongoose.Types.ObjectId;
+  organization_ids: mongoose.Types.ObjectId[];
   structure: "LLC" | "LP";
   manager_passport_id: mongoose.Types.ObjectId;
   member_passport_id: mongoose.Types.ObjectId;
@@ -35,6 +36,13 @@ const schema = new mongoose.Schema<Entity>(
       ],
       default: "verify-entity",
       required: true,
+    },
+    organization_ids: {
+      type: [
+        {
+          type: mongoose.SchemaTypes.ObjectId,
+        },
+      ],
     },
     organization_id: {
       type: mongoose.SchemaTypes.ObjectId,
@@ -81,6 +89,7 @@ const schema = new mongoose.Schema<Entity>(
         return ret;
       },
     },
+    strict: false,
   }
 );
 

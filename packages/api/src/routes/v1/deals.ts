@@ -27,20 +27,15 @@ export default Router()
   .post("/", async (req, res, next) => {
     const { new_hvp = false, promo_code } = req.body;
     try {
-      // adding options as the field 'organization_ids' does not exist on current schema
-      const entityV1 = await Entity.findOne(
-        {
-          organization_ids: req.body.deal.organization_id,
-        },
-        null,
-        { strictQuery: false }
-      );
+      const entityV1 = await Entity.findOne({
+        organization_ids: req.body.deal.organization_id,
+      });
 
       const entityV2 = await Entity.findOne({
         organization_id: req.body.deal.organization_id,
       });
 
-      if (!entityV1 || !entityV2) {
+      if (!entityV1 && !entityV2) {
         await Entity.findOneAndUpdate(
           { _id: new mongoose.Types.ObjectId(process.env.ATOMIZER_ID) },
           { $push: { organization_ids: req.body.deal.organization_id } }
