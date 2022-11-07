@@ -453,6 +453,7 @@ export const createOrderForm = async (
     date: todaysDate(),
     entity_name: deal.manager.type === "entity" ? deal.manager.name : undefined,
     special_terms: convertSpecialTerms(deal),
+    special_notes: deal.metadata?.get("special_notes") || "",
   };
 
   const { id, permanent_download_url, download_url } =
