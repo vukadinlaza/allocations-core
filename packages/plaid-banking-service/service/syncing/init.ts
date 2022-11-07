@@ -3,8 +3,9 @@ import {
   connectMongoose,
   triggerTransition,
 } from "@allocations/service-common";
-import { PlaidAccount, PlaidTransaction } from "@allocations/core-models";
+import { Deal, PlaidAccount, PlaidTransaction } from "@allocations/core-models";
 import { Configuration, PlaidEnvironments, PlaidApi } from "plaid";
+import { createAirtableTransaction } from "../../utils/banking";
 
 const configuration = new Configuration({
   basePath: PlaidEnvironments[process.env.PLAID_ENVIRONMENT!],
@@ -25,8 +26,12 @@ export const handler = async ({ Records }: SQSEvent) => {
     try {
       const { Message } = JSON.parse(record.body);
       const { _id } = JSON.parse(Message);
-      const account = await PlaidAccount.findById(_id).select("+access_token");
+      const account = await PlaidAccount.findById(_id)
+        .select("+access_token")
+        .populate<{ deal_id: Deal }>({ path: "deal_id", justOne: true });
       if (!account) continue;
+      const deal = account.deal_id;
+      console.log(account, "ACCOUNT");
 
       const { data } = await client.transactionsSync({
         access_token: account.access_token,
@@ -35,7 +40,8 @@ export const handler = async ({ Records }: SQSEvent) => {
 
       await Promise.all(
         data.added.map(async (transaction) => {
-          await PlaidTransaction.create({
+          console.log(transaction, "TRANSACTION");
+          const plaidTransaction = await PlaidTransaction.create({
             plaid_account: account._id,
             plaid_transaction_id: transaction.transaction_id,
             name: transaction.name,
@@ -43,6 +49,14 @@ export const handler = async ({ Records }: SQSEvent) => {
             type: transaction.amount < 0 ? "Credit" : "Debit",
             status: transaction.pending ? "Pending" : "Posted",
             date: transaction.datetime || transaction.date,
+          });
+
+          const transactionObject = plaidTransaction.toObject();
+
+          //@ts-ignore
+          await createAirtableTransaction({
+            ...transactionObject,
+            organization_name: deal.organization_name,
           });
         })
       );
