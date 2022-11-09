@@ -45,6 +45,7 @@ export default Router()
       const { deal, phases } = await Deal.createWithPhases(
         {
           metadata: {
+            show_progress: false,
             special_terms: [
               {
                 term: "Bluesky Fees",
