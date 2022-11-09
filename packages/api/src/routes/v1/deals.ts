@@ -47,7 +47,6 @@ export default Router()
           metadata: {
             show_progress: false,
             show_deal_crypto_disclaimer: false,
-
             special_terms: [
               {
                 term: "Bluesky Fees",
