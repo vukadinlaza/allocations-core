@@ -77,17 +77,6 @@ export default Router()
         new_hvp
       );
 
-      await Document.findOneAndUpdate(
-        {
-          organization_id: deal.organization_id,
-          "metadata.deal_id": { $exists: false },
-          title: { $regex: "Memorandum Of Understanding" },
-        },
-        {
-          "metadata.deal_id": deal._id,
-        }
-      );
-
       res.send({ deal, phases });
 
       await Deal.initialize(deal._id, req.headers["x-api-token"] as string);
