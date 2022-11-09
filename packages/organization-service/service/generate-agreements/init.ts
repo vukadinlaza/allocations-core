@@ -69,9 +69,11 @@ export const handler = async ({ Records }: SQSEvent) => {
 
       const organizationObject = organization.toObject();
 
+      const rep = findRepresentative(fundManager);
+
       const orgWithFM = {
         ...organizationObject,
-        fund_manager: fundManager?.passport.name,
+        ...rep,
       };
 
       const [terms, servicesAgreement, poa, mou, existingMOU] =
@@ -109,11 +111,6 @@ export const handler = async ({ Records }: SQSEvent) => {
 
       if (!poa) {
         waitingForGeneration = true;
-        const rep = findRepresentative(fundManager);
-        const orgWithFM = {
-          ...organizationObject,
-          ...rep,
-        };
         //@ts-ignore
         await createPOAAgreement(orgWithFM);
       }
@@ -147,11 +144,9 @@ export const handler = async ({ Records }: SQSEvent) => {
           organization.committed_number_of_deals
         );
 
-        organizationObject.committed_number_of_deals = `(${organizationObject.committed_number_of_deals})`;
-
         //@ts-ignore
         await createMOUAgreement({
-          ...organizationObject,
+          ...orgWithFM,
           address,
           email,
           number_of_deals_to_words,
