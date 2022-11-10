@@ -41,23 +41,33 @@ export const handler = async ({ Records }: SQSEvent) => {
       await Promise.all(
         data.added.map(async (transaction) => {
           console.log(transaction, "TRANSACTION");
-          const plaidTransaction = await PlaidTransaction.create({
+
+          const existingTransaction = await PlaidTransaction.findOne({
             plaid_account: account._id,
             plaid_transaction_id: transaction.transaction_id,
-            name: transaction.name,
-            amount: transaction.amount * -1,
-            type: transaction.amount < 0 ? "Credit" : "Debit",
-            status: transaction.pending ? "Pending" : "Posted",
-            date: transaction.datetime || transaction.date,
           });
 
-          const transactionObject = plaidTransaction.toObject();
+          console.log(existingTransaction, "EXISTING TRANSACTION");
 
-          //@ts-ignore
-          await createAirtableTransaction({
-            ...transactionObject,
-            organization_name: deal.organization_name,
-          });
+          if (!existingTransaction) {
+            const plaidTransaction = await PlaidTransaction.create({
+              plaid_account: account._id,
+              plaid_transaction_id: transaction.transaction_id,
+              name: transaction.name,
+              amount: transaction.amount * -1,
+              type: transaction.amount < 0 ? "Credit" : "Debit",
+              status: transaction.pending ? "Pending" : "Posted",
+              date: transaction.datetime || transaction.date,
+            });
+
+            const transactionObject = plaidTransaction.toObject();
+
+            //@ts-ignore
+            await createAirtableTransaction({
+              ...transactionObject,
+              organization_name: deal.organization_name,
+            });
+          }
         })
       );
 
