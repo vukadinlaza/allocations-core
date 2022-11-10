@@ -274,6 +274,7 @@ schema.statics.initialize = async function (
   id: mongoose.Types.ObjectId,
   token: string
 ) {
+  console.log(token, "TOKEN");
   const res = await fetch(`${process.env.DEAL_SERVICE_URL!}/initialize`, {
     method: "POST",
     headers: {
@@ -282,6 +283,8 @@ schema.statics.initialize = async function (
     },
     body: JSON.stringify({ id }),
   });
+
+  console.log(res, "RES");
 
   if (!res.ok) throw new Error(`Unable to initialize deal: ${id}`);
 
