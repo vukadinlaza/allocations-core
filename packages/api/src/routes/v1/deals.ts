@@ -20,6 +20,7 @@ import {
   getSetupCost,
   investorFeeMap,
 } from "../../utils/pricing";
+import { findNonAllocationsV1Entity } from "../../utils/entities";
 const fileName = basename(__filename, ".ts");
 const log = logger.child({ module: fileName });
 
@@ -27,9 +28,9 @@ export default Router()
   .post("/", async (req, res, next) => {
     const { new_hvp = false, promo_code } = req.body;
     try {
-      const entityV1 = await Entity.findOne({
-        organization_ids: req.body.deal.organization_id,
-      });
+      const entityV1 = await findNonAllocationsV1Entity(
+        req.body.deal.organization_id
+      );
 
       const entityV2 = await Entity.findOne({
         organization_id: req.body.deal.organization_id,
@@ -67,8 +68,8 @@ export default Router()
           },
           ...req.body.deal,
           master_entity_id:
-            entityV1?._id ||
             entityV2?._id ||
+            entityV1?._id ||
             new mongoose.Types.ObjectId(process.env.ATOMIZER_ID),
           setup_cost: getSetupCost(req.body.deal) + promo_code,
           reporting_adviser_fee: getAdviserFee(req.body.deal),
