@@ -1,4 +1,4 @@
-import { PlaidAccount, PlaidTransaction } from "@allocations/core-models";
+import { Deal, PlaidAccount, PlaidTransaction } from "@allocations/core-models";
 import moment from "moment";
 import { Types } from "mongoose";
 
@@ -19,7 +19,12 @@ const TransactionsTable =
 const getBase = async () => Airtable.base(process.env.BANKING_AIRTABLE_BASE);
 
 export const createAirtableAccount = async (accountId: Types.ObjectId) => {
-  const account = await PlaidAccount.findById(accountId);
+  const account = await PlaidAccount.findById(accountId).populate<{
+    deal_id: Deal;
+  }>({
+    path: "deal_id",
+    justOne: true,
+  });
   if (!account) return null;
 
   const base = await getBase();
@@ -28,6 +33,9 @@ export const createAirtableAccount = async (accountId: Types.ObjectId) => {
     {
       fields: {
         "*Name": account.account_name,
+        "*Account Number": account.account_number,
+        "*Routing Number": account.routing_number,
+        "*Organization": account.deal_id.organization_name,
       },
     },
   ]);
