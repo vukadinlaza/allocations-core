@@ -63,6 +63,11 @@ export interface W8BENTaxForm extends Document {
   date_of_birth: string;
   tax_id: string | null;
   foreign_tax_id: string | null;
+  treaty_country: string | null;
+  treaty_article: string | null;
+  treaty_withholding: string | null;
+  treaty_income: string | null;
+  treaty_conditions: string | null;
 }
 
 export interface W8BENETaxForm extends Document {
@@ -219,6 +224,26 @@ const W8BENTaxFormSchema = new mongoose.Schema({
     default: null,
   },
   tax_id: {
+    type: String,
+    default: null,
+  },
+  treaty_country: {
+    type: String,
+    default: null,
+  },
+  treaty_article: {
+    type: String,
+    default: null,
+  },
+  treaty_withholding: {
+    type: String,
+    default: null,
+  },
+  treaty_income: {
+    type: String,
+    default: null,
+  },
+  treaty_conditions: {
     type: String,
     default: null,
   },
