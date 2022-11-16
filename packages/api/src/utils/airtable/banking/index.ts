@@ -1,6 +1,10 @@
+import { logger } from "@allocations/api-common";
 import { Deal, PlaidAccount, PlaidTransaction } from "@allocations/core-models";
 import moment from "moment";
 import { Types } from "mongoose";
+import { basename } from "path";
+const fileName = basename(__filename, ".ts");
+const log = logger.child({ module: fileName });
 
 //@ts-nocheck
 const Airtable = require("airtable");
@@ -26,9 +30,12 @@ export const createAirtableAccount = async (accountId: Types.ObjectId) => {
     justOne: true,
   });
   if (!account) return null;
+  log.info("ACCOUNT", account);
 
   const base = await getBase();
+  log.info("BASE", base);
   const accounts = await base.table(AccountsTable);
+  log.info("ACCOUNTS", accounts);
   return accounts.create([
     {
       fields: {
