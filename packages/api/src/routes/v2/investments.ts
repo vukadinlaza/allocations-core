@@ -2,6 +2,7 @@ import { Router } from "express";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import {
+  CryptoOption,
   Deal,
   Document,
   Investment,
@@ -241,6 +242,17 @@ export default Router()
         });
       }
 
+      const cryptoOption = await CryptoOption.findOne({
+        deal_id: investment.deal_id,
+      });
+
+      if (cryptoOption) {
+        paymentMethods.push({
+          type: "crypto",
+          title: "Crypto",
+        });
+      }
+
       res.send(paymentMethods);
     } catch (e) {
       next(e);
@@ -259,5 +271,4 @@ export default Router()
     } catch (e) {
       next(e);
     }
-  })
-
+  });
