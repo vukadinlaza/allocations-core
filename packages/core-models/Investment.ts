@@ -67,6 +67,46 @@ const schema = new mongoose.Schema(
     management_fee_frequency: {
       type: String,
     },
+    usdc: {
+      type: Number,
+      default: null,
+    },
+    etherscan_receipt: {
+      type: String,
+      default: null,
+    },
+    blue_sky_fees: {
+      type: Number,
+      default: null,
+    },
+    side_letter: {
+      type: String,
+      enum: ["Requested", "Sent", "Received"],
+      default: "",
+    },
+    termination: {
+      type: String,
+      enum: ["Requested", "Sent", "Received"],
+      default: "",
+    },
+    refund: {
+      type: String,
+      enum: ["Requested", "Sent", "Received"],
+      default: "",
+    },
+    resign: {
+      type: String,
+      enum: ["Requested", "Sent", "Received"],
+      default: "",
+    },
+    operation_notes: {
+      type: String,
+      default: null,
+    },
+    kyc_namescan_complete: { // wating for rachels answer
+      type: Date,
+      default: null,
+    },
     metadata: Map,
   },
   {

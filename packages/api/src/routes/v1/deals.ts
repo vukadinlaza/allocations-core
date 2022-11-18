@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { Deal, DealPhase, Document } from "@allocations/core-models";
+import {
+  Deal,
+  DealPhase,
+  Document,
+  Investment,
+} from "@allocations/core-models";
 import {
   userAcknowledgedComplete,
   inviteInvestorsTaskComplete,
@@ -153,6 +158,99 @@ export default Router()
       res.send(deal);
     } catch (e: any) {
       log.error({ err: e }, e.message);
+      next(e);
+    }
+  })
+
+  .get("/deal-tracker/:id", async (req, res, next) => {
+    try {
+      const investments = await Investment.aggregate([
+        {
+          $match: { deal_id: new ObjectId(req.params.id) },
+        },
+        {
+          $lookup: {
+            from: "plaidaccounts",
+            localField: "deal_id",
+            foreignField: "deal_id",
+            as: "bank_account_name",
+          },
+        },
+        {
+          $set: {
+            bank_account_name: {
+              $arrayElemAt: ["$bank_account_name.account_name", 0],
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "plaidtransactions",
+            localField: "_id",
+            foreignField: "investment_id",
+            as: "plaid_transaction",
+          },
+        },
+        {
+          $unwind: {
+            path: "$plaid_transaction",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            usd: { $sum: "$plaid_transaction.amount" },
+            doc: { $first: "$$ROOT" },
+          },
+        },
+        {
+          $replaceRoot: {
+            newRoot: { $mergeObjects: [{ usd: "$usd" }, "$doc"] },
+          },
+        },
+        {
+          $unset: "plaid_transaction",
+        },
+        {
+          $lookup: {
+            from: "deals",
+            localField: "deal_id",
+            foreignField: "_id",
+            as: "deal",
+          },
+        },
+        { $unwind: "$deal" },
+        {
+          $lookup: {
+            from: "investorpassports",
+            localField: "passport_id",
+            foreignField: "_id",
+            as: "passport",
+          },
+        },
+        { $unwind: "$passport" },
+        {
+          $lookup: {
+            from: "passportusers",
+            localField: "passport_id",
+            foreignField: "passport_id",
+            as: "passport_user",
+          },
+        },
+        {
+          $set: {
+            user_id: {
+              $arrayElemAt: ["$passport_user.user_id", 0],
+            },
+          },
+        },
+        {
+          $unset: "passport_user",
+        },
+      ]);
+      res.send(investments);
+    } catch (e) {
       next(e);
     }
   })
