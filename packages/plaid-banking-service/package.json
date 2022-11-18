@@ -23,7 +23,8 @@
     "aws-sdk": "^2.998.0",
     "mongodb": "^4.8.1",
     "node-fetch": "^2.6.1",
-    "plaid": "^10.8.0"
+    "plaid": "^10.8.0",
+    "airtable": "^0.8.1"
   },
   "devDependencies": {
     "@allocations/serverless-allocations-redtail": "^3.0.0",

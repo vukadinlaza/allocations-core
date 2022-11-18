@@ -17,6 +17,7 @@ import {
   initializePlaidAccount,
   reconcilePlaidTransaction,
 } from "../../services/plaid";
+import { createAirtableAccount } from "../../utils/airtable/banking";
 
 const configuration = new Configuration({
   basePath: PlaidEnvironments[process.env.PLAID_ENVIRONMENT!],
@@ -78,6 +79,7 @@ export default Router()
 
       await Promise.all([
         initializePlaidAccount(account, req.headers["x-api-token"] as string),
+        createAirtableAccount(account._id),
         DealPhase.findOneAndUpdate(
           {
             deal_id: req.body.deal_id,

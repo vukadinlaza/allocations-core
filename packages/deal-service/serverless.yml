@@ -59,6 +59,7 @@ provider:
         Condition:
           StringEquals:
             aws:SourceVpc: vpc-0d05ab0d45d1ddbd5
+
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -102,6 +103,7 @@ functions:
 
   processStreetTask:
     handler: service/process-street-task.handler
+    vpc: ~
     events:
       - http:
           path: process-street-task
@@ -109,6 +111,7 @@ functions:
 
   processStreetChecklist:
     handler: service/process-street-checklist.handler
+    vpc: ~
     events:
       - http:
           path: process-street-checklist
@@ -130,6 +133,7 @@ functions:
 
   processStreetRun:
     handler: service/post-build/process-street-run.handler
+    vpc: ~
     events:
       - http:
           path: process-street-run
@@ -189,6 +193,7 @@ functions:
 
   inviteInvestorsTaskComplete:
     handler: service/onboarding/invite-investors-task-complete.handler
+    vpc: ~
     events:
       - http:
           path: invite-investors-task-complete
@@ -210,6 +215,7 @@ functions:
 
   userAcknowledgedComplete:
     handler: service/post-closing/user-acknowledged-complete.handler
+    vpc: ~
     events:
       - http:
           path: user-acknowledged-complete

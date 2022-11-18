@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { Deal, DealPhase, Document } from "@allocations/core-models";
+import {
+  Deal,
+  DealPhase,
+  Document,
+  Investment,
+} from "@allocations/core-models";
 import {
   userAcknowledgedComplete,
   inviteInvestorsTaskComplete,
@@ -20,6 +25,7 @@ import {
   getSetupCost,
   investorFeeMap,
 } from "../../utils/pricing";
+import { findNonAllocationsV1Entity } from "../../utils/entities";
 const fileName = basename(__filename, ".ts");
 const log = logger.child({ module: fileName });
 
@@ -27,20 +33,15 @@ export default Router()
   .post("/", async (req, res, next) => {
     const { new_hvp = false, promo_code } = req.body;
     try {
-      // adding options as the field 'organization_ids' does not exist on current schema
-      const entityV1 = await Entity.findOne(
-        {
-          organization_ids: req.body.deal.organization_id,
-        },
-        null,
-        { strictQuery: false }
+      const entityV1 = await findNonAllocationsV1Entity(
+        req.body.deal.organization_id
       );
 
       const entityV2 = await Entity.findOne({
         organization_id: req.body.deal.organization_id,
       });
 
-      if (!entityV1 || !entityV2) {
+      if (!entityV1 && !entityV2) {
         await Entity.findOneAndUpdate(
           { _id: new mongoose.Types.ObjectId(process.env.ATOMIZER_ID) },
           { $push: { organization_ids: req.body.deal.organization_id } }
@@ -50,6 +51,8 @@ export default Router()
       const { deal, phases } = await Deal.createWithPhases(
         {
           metadata: {
+            show_progress: false,
+            show_deal_crypto_disclaimer: false,
             special_terms: [
               {
                 term: "Bluesky Fees",
@@ -70,25 +73,14 @@ export default Router()
           },
           ...req.body.deal,
           master_entity_id:
-            entityV1?._id ||
             entityV2?._id ||
+            entityV1?._id ||
             new mongoose.Types.ObjectId(process.env.ATOMIZER_ID),
           setup_cost: getSetupCost(req.body.deal) + promo_code,
           reporting_adviser_fee: getAdviserFee(req.body.deal),
           phase: "new",
         },
         new_hvp
-      );
-
-      await Document.findOneAndUpdate(
-        {
-          organization_id: deal.organization_id,
-          "metadata.deal_id": { $exists: false },
-          title: { $regex: "Memorandum Of Understanding" },
-        },
-        {
-          "metadata.deal_id": deal._id,
-        }
       );
 
       res.send({ deal, phases });
@@ -166,6 +158,99 @@ export default Router()
       res.send(deal);
     } catch (e: any) {
       log.error({ err: e }, e.message);
+      next(e);
+    }
+  })
+
+  .get("/deal-tracker/:id", async (req, res, next) => {
+    try {
+      const investments = await Investment.aggregate([
+        {
+          $match: { deal_id: new ObjectId(req.params.id) },
+        },
+        {
+          $lookup: {
+            from: "plaidaccounts",
+            localField: "deal_id",
+            foreignField: "deal_id",
+            as: "bank_account_name",
+          },
+        },
+        {
+          $set: {
+            bank_account_name: {
+              $arrayElemAt: ["$bank_account_name.account_name", 0],
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "plaidtransactions",
+            localField: "_id",
+            foreignField: "investment_id",
+            as: "plaid_transaction",
+          },
+        },
+        {
+          $unwind: {
+            path: "$plaid_transaction",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            usd: { $sum: "$plaid_transaction.amount" },
+            doc: { $first: "$$ROOT" },
+          },
+        },
+        {
+          $replaceRoot: {
+            newRoot: { $mergeObjects: [{ usd: "$usd" }, "$doc"] },
+          },
+        },
+        {
+          $unset: "plaid_transaction",
+        },
+        {
+          $lookup: {
+            from: "deals",
+            localField: "deal_id",
+            foreignField: "_id",
+            as: "deal",
+          },
+        },
+        { $unwind: "$deal" },
+        {
+          $lookup: {
+            from: "investorpassports",
+            localField: "passport_id",
+            foreignField: "_id",
+            as: "passport",
+          },
+        },
+        { $unwind: "$passport" },
+        {
+          $lookup: {
+            from: "passportusers",
+            localField: "passport_id",
+            foreignField: "passport_id",
+            as: "passport_user",
+          },
+        },
+        {
+          $set: {
+            user_id: {
+              $arrayElemAt: ["$passport_user.user_id", 0],
+            },
+          },
+        },
+        {
+          $unset: "passport_user",
+        },
+      ]);
+      res.send(investments);
+    } catch (e) {
       next(e);
     }
   })

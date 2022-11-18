@@ -83,8 +83,11 @@ export const createMOUAgreement = (
     address: string;
     email: string;
     number_of_deals_to_words: string;
+    company_commitment: string;
   }
 ) => {
+  organization.company_commitment = `A minimum of ${organization.number_of_deals_to_words} (${organization.committed_number_of_deals}) SPVs, as detailed in each applicable Services Agreement.`;
+
   return createSubmission({
     organization,
     assetType: "memorandum-of-understanding",

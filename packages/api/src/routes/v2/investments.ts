@@ -250,7 +250,7 @@ export default Router()
   .get("/", async (req, res, next) => {
     try {
       const investments = await Investment.find(req.query)
-      .populate("deal")
+        .populate("deal")
         .populate("passport");
       if (!investments) {
         throw new HttpError("Not Found", 404);
@@ -259,4 +259,5 @@ export default Router()
     } catch (e) {
       next(e);
     }
-  });
+  })
+

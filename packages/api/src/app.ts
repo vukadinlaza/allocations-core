@@ -29,6 +29,8 @@ import dealAgreementsRoutes from "./routes/v2/deal-agreements";
 import dealAssetsRoutes from "./routes/v2/deal-assets";
 import entityRoutesV2 from "./routes/v2/entities";
 import apiKeys from "./routes/v2/api-keys";
+import dealPhaseRoutes from "./routes/v2/deal-phases";
+import { cryptoRoutes } from "./routes/v1/crypto";
 
 const app = express();
 
@@ -66,8 +68,10 @@ app.use("/api/v2/investment-agreements", investmentAgreements);
 app.use("/api/v2/stripe", stripe);
 app.use("/api/v2/deal-agreements", dealAgreementsRoutes);
 app.use("/api/v2/deal-assets", dealAssetsRoutes);
+app.use("/api/v2/deal-phases", dealPhaseRoutes);
 
 app.use("/api/v2/api-keys", apiKeys);
+app.use("/api/v1/crypto-payments", cryptoRoutes);
 
 app.use(errorMiddleware());
 
