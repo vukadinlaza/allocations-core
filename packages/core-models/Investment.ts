@@ -13,6 +13,13 @@ export interface Investment extends Document {
   management_fee_flat: number | null;
   custom_management_fee: string | null;
   management_fee_frequency: string;
+  blue_sky_fees: number | null;
+  side_letter?: string | null;
+  termination?: string | null;
+  refund?: string | null;
+  resign?: string | null;
+  operation_notes?: string | null;
+  kyc_namescan_complete?: Date | null;
   metadata: Map<string, any>;
 }
 
@@ -69,41 +76,45 @@ const schema = new mongoose.Schema(
     },
     usdc: {
       type: Number,
+      required: false,
       default: null,
     },
     etherscan_receipt: {
       type: String,
+      required: false,
       default: null,
     },
     blue_sky_fees: {
       type: Number,
+      required: false,
       default: null,
     },
     side_letter: {
       type: String,
       enum: ["Requested", "Sent", "Received"],
-      default: "",
+      required: false,
     },
     termination: {
       type: String,
       enum: ["Requested", "Sent", "Received"],
-      default: "",
+      required: false,
     },
     refund: {
       type: String,
       enum: ["Requested", "Sent", "Received"],
-      default: "",
+      required: false,
     },
     resign: {
       type: String,
       enum: ["Requested", "Sent", "Received"],
-      default: "",
+      required: false,
     },
     operation_notes: {
       type: String,
       default: null,
     },
-    kyc_namescan_complete: { // wating for rachels answer
+    kyc_namescan_complete: {
+      // wating for rachels answer
       type: Date,
       default: null,
     },
