@@ -1,0 +1,72 @@
+{
+  "data": {
+    "addresses": {
+      "ethereum": "0x3ed6861170df87e6692e48ba45fba8e0946e6c85",
+      "usdc": "0x3ed6861170df87e6692e48ba45fba8e0946e6c85",
+      "dai": "0x3ed6861170df87e6692e48ba45fba8e0946e6c85",
+      "bitcoincash": "qr05ug4mn4sgz7v32ksr44ncfankgutmmgmd6sxcx9",
+      "dogecoin": "D6C91KEL8mJqDnn2FprjJbUJtbM6SJ3q3m",
+      "litecoin": "MWNPjeyMoweH5v1RC17aao6aWu1eAwWNQK",
+      "bitcoin": "38abwgfiDiZf8U6ewmANqfBepbFrKATsUm"
+    },
+    "cancel_url": "https://charge/canceled/page",
+    "code": "RELJ9VLW",
+    "created_at": "2022-01-29T02:52:07Z",
+    "description": "Cara Investing In Fake Deal",
+    "exchange_rates": {
+      "ETH-USD": "2525.18",
+      "BTC-USD": "37511.175",
+      "LTC-USD": "108.78",
+      "DOGE-USD": "0.14155",
+      "BCH-USD": "293.44",
+      "USDC-USD": "1.0",
+      "DAI-USD": "0.9998905"
+    },
+    "expires_at": "2022-01-29T03:52:07Z",
+    "fees_settled": true,
+    "hosted_url": "https://commerce.coinbase.com/charges/RELJ9VLW",
+    "id": "da11f296-084a-48af-bbf4-de68a0730720",
+    "local_exchange_rates": {
+      "ETH-USD": "2525.18",
+      "BTC-USD": "37511.175",
+      "LTC-USD": "108.78",
+      "DOGE-USD": "0.14155",
+      "BCH-USD": "293.44",
+      "USDC-USD": "1.0",
+      "DAI-USD": "0.9998905"
+    },
+    "metadata": {
+      "investor_id": "61f1cfac547b58a39bfcfc55",
+      "investor_name": "Cara Ponzini",
+      "transaction_id": "61f1cfac547b58a39bfcfc58"
+    },
+    "name": "Fake Deal",
+    "payment_threshold": {
+      "overpayment_absolute_threshold": { "amount": "5.00", "currency": "USD" },
+      "overpayment_relative_threshold": "0.005",
+      "underpayment_absolute_threshold": {
+        "amount": "5.00",
+        "currency": "USD"
+      },
+      "underpayment_relative_threshold": "0.005"
+    },
+    "payments": [],
+    "pricing": {
+      "local": { "amount": "10.00", "currency": "USD" },
+      "ethereum": { "amount": "0.003960000", "currency": "ETH" },
+      "usdc": { "amount": "10.000000", "currency": "USDC" },
+      "dai": { "amount": "10.001095120000000000", "currency": "DAI" },
+      "bitcoincash": { "amount": "0.03407852", "currency": "BCH" },
+      "dogecoin": { "amount": "70.64641469", "currency": "DOGE" },
+      "litecoin": { "amount": "0.09192866", "currency": "LTC" },
+      "bitcoin": { "amount": "0.00026659", "currency": "BTC" }
+    },
+    "pricing_type": "fixed_price",
+    "pwcb_only": false,
+    "redirect_url": "https://charge/completed/page",
+    "resource": "charge",
+    "support_email": "cara.ponzini@allocations.com",
+    "timeline": [{ "status": "NEW", "time": "2022-01-29T02:52:07Z" }],
+    "utxo": false
+  }
+}
