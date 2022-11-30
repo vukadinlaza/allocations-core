@@ -21,33 +21,36 @@ export interface Migration extends Document {
   user_id: Types.ObjectId;
 }
 
-const MigrationSchema = new Schema({
-  migration_from: { type: String, required: true },
-  requested_completion_date: { type: Date, required: true },
-  start_date: { type: Date, required: true },
-  number_of_deals: { type: Number, required: true },
-  first_name: { type: String, default: null },
-  last_name: { type: String, default: null },
-  spv_list: { type: String, default: null },
-  spv_manager_name: { type: String, default: null },
-  has_master_entity: { type: Boolean, default: null },
-  has_onboarding_deals: { type: Boolean, default: null },
-  assure_products: { type: String, default: null },
-  has_spvs_into_spvs: { type: Boolean, default: null },
-  has_follow_on_spvs: { type: Boolean, default: null },
-  has_multi_asset_spvs: { type: Boolean, default: null },
-  committed_number_of_deals: { type: Number, default: null },
-  notes: { type: String, default: null },
-  organization_id: {
-    type: mongoose.SchemaTypes.ObjectId,
-    ref: "Organization",
-    default: null,
+const MigrationSchema = new Schema(
+  {
+    migration_from: { type: String, required: true },
+    requested_completion_date: { type: Date, required: true },
+    start_date: { type: Date, required: true },
+    number_of_deals: { type: Number, required: true },
+    first_name: { type: String, default: null },
+    last_name: { type: String, default: null },
+    spv_list: { type: String, default: null },
+    spv_manager_name: { type: String, default: null },
+    has_master_entity: { type: Boolean, default: null },
+    has_onboarding_deals: { type: Boolean, default: null },
+    assure_products: { type: String, default: null },
+    has_spvs_into_spvs: { type: Boolean, default: null },
+    has_follow_on_spvs: { type: Boolean, default: null },
+    has_multi_asset_spvs: { type: Boolean, default: null },
+    committed_number_of_deals: { type: Number, default: null },
+    notes: { type: String, default: null },
+    organization_id: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Organization",
+      default: null,
+    },
+    user_id: {
+      type: mongoose.SchemaTypes.ObjectId,
+      required: true,
+    },
   },
-  user_id: {
-    type: mongoose.SchemaTypes.ObjectId,
-    required: true,
-  },
-});
+  { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
+);
 
 MigrationSchema.virtual("organization", {
   ref: "Organization",
