@@ -80,7 +80,7 @@ MigrationTasksSchema.statics.createWithTasks = async function (migration_id) {
     },
     {
       order: 3,
-      type: "redirect",
+      type: "upload",
       name: "Upload Files",
       disabled: false,
       complete: false,

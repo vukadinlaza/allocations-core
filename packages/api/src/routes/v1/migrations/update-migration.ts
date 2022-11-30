@@ -1,3 +1,4 @@
+import { HttpError } from "@allocations/api-common";
 import { Migration } from "@allocations/core-models";
 import { Request, RequestHandler } from "express";
 
@@ -12,7 +13,13 @@ export const updateMigration: RequestHandler = async (
       { $set: req.body },
       { new: true }
     );
-    console.log({ migration });
+
+    if (!migration)
+      throw new HttpError(
+        `Migration with id ${(req.params as { id: string }).id} not found`,
+        404
+      );
+
     res.send({ migration });
   } catch (e) {
     next(e);
