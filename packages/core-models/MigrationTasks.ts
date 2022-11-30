@@ -59,23 +59,23 @@ MigrationTasksSchema.statics.createWithTasks = async function (migration_id) {
   const tasks: Task[] = [
     {
       order: 0,
+      type: "fm_signature",
+      name: "Sign Service Agreement",
+      disabled: true,
+      complete: false,
+    },
+    {
+      order: 1,
       type: "fm_task",
       name: "Create Organization",
       disabled: false,
       complete: false,
     },
     {
-      order: 1,
+      order: 2,
       type: "fm_task",
       name: "Complete Onboarding Form",
       disabled: false,
-      complete: false,
-    },
-    {
-      order: 2,
-      type: "fm_signature",
-      name: "Sign Service Agreement",
-      disabled: true,
       complete: false,
     },
     {
