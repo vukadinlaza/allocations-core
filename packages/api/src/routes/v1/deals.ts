@@ -229,7 +229,7 @@ export default Router()
             as: "passport",
           },
         },
-        { $unwind: "$passport" },
+        { $unwind: { path: "$passport", preserveNullAndEmptyArrays: true } },
         {
           $lookup: {
             from: "passportusers",
@@ -247,6 +247,53 @@ export default Router()
         },
         {
           $unset: "passport_user",
+        },
+        {
+          $lookup: {
+            from: "cryptotransactions",
+            localField: "_id",
+            foreignField: "investment_id",
+            as: "crypto_transaction",
+          },
+        },
+        {
+          $unwind: {
+            path: "$crypto_transaction",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            usdc: { $sum: "$crypto_transaction.transaction_amount" },
+            etherscan_receipt: {
+              $accumulator: {
+                accumulateArgs: ["$crypto_transaction.metadata.coinbase_transaction_hash"],
+                init: function () {
+                  return [];
+                },
+                accumulate: function (ids: string[], id: string) {
+                  return ids.concat(id);
+                },
+                merge: function (ids1: string[], ids2: string[]) {
+                  return ids1.concat(ids2);
+                },
+                finalize: function (ids: string[]) {
+                  return ids.filter( (element ) => element != null).join(',') || null ;
+                },
+                lang: "js",
+              },
+            },
+            doc: { $first: "$$ROOT" },
+          },
+        },
+        {
+          $replaceRoot: {
+            newRoot: { $mergeObjects: [{ usdc: "$usdc", etherscan_receipt: "$etherscan_receipt" }, "$doc"] },
+          },
+        },
+        {
+          $unset: "crypto_transaction",
         },
       ]);
       res.send(investments);

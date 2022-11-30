@@ -31,6 +31,7 @@ import entityRoutesV2 from "./routes/v2/entities";
 import apiKeys from "./routes/v2/api-keys";
 import dealPhaseRoutes from "./routes/v2/deal-phases";
 import { cryptoRoutes } from "./routes/v1/crypto";
+import migrationsRoutes from "./routes/v1/migrations";
 
 const app = express();
 
@@ -72,6 +73,8 @@ app.use("/api/v2/deal-phases", dealPhaseRoutes);
 
 app.use("/api/v2/api-keys", apiKeys);
 app.use("/api/v1/crypto-payments", cryptoRoutes);
+
+app.use("/api/v1/migrations", migrationsRoutes);
 
 app.use(errorMiddleware());
 

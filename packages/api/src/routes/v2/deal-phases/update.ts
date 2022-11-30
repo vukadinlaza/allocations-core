@@ -28,7 +28,6 @@ export const update: RequestHandler = async (
     "closing",
     "post-closing",
     "closed",
-    "archived",
   ];
 
   try {
@@ -41,7 +40,7 @@ export const update: RequestHandler = async (
     const startingIndex = phaseArray.indexOf(deal.phase);
     const endingIndex = phaseArray.indexOf(updatedPhase);
 
-    if (startingIndex - endingIndex > 0)
+    if (startingIndex - endingIndex > 0 || deal.phase === "archived")
       return res.send({ acknowledged: false });
 
     const phasesToComplete = phaseArray.slice(startingIndex, endingIndex);

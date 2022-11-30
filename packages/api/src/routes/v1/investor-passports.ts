@@ -799,4 +799,20 @@ export default Router()
     } catch (e: any) {
       next(e);
     }
+  })
+  .post("/check-onboarding-status/:id", async (req, res, next) => {
+    try {
+      const matchingPassport = await InvestorPassport.findById(req.params.id);
+      if (!matchingPassport)
+        throw new HttpError(`Passport with id ${req.params.id} not found`, 404);
+
+      res.send({ acknowledged: true });
+
+      await checkPassportOnboardingStatus(
+        matchingPassport,
+        req.headers["x-api-token"] as string
+      );
+    } catch (e: any) {
+      next(e);
+    }
   });

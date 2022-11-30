@@ -74,16 +74,6 @@ const schema = new mongoose.Schema(
     management_fee_frequency: {
       type: String,
     },
-    usdc: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-    etherscan_receipt: {
-      type: String,
-      required: false,
-      default: null,
-    },
     blue_sky_fees: {
       type: Number,
       required: false,

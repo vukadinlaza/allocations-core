@@ -36,3 +36,7 @@ export * from "./APIKey";
 export * from "./CryptoOption";
 export * from "./CryptoTransaction";
 export * from "./WalletWithdrawal";
+
+export * from "./Migration";
+export * from "./MigrationUpload";
+export * from "./MigrationTasks";
