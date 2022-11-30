@@ -12,6 +12,7 @@ export const updateTaskById: RequestHandler = async (
   next
 ) => {
   try {
+    // completes the task from the request
     const updated = await MigrationTasks.findOneAndUpdate(
       { "tasks._id": (req.params as { id: string }).id },
       { "tasks.$.complete": req.body.complete },
@@ -24,7 +25,16 @@ export const updateTaskById: RequestHandler = async (
         404
       );
 
-    res.send(updated);
+    // enables the next incomplete task
+    const secondUpdate = await MigrationTasks.findOneAndUpdate(
+      { _id: updated._id, "tasks.complete": false },
+      { "tasks.$.disabled": false },
+      {
+        new: true,
+      }
+    );
+
+    res.send(secondUpdate);
   } catch (e: any) {
     next(e);
   }
