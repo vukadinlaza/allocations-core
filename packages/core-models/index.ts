@@ -23,6 +23,7 @@ export * from "./SubscriptionTemplate";
 export * from "./Investment";
 export * from "./InvestmentDocument";
 export * from "./InvestmentAgreement";
+export * from "./InvestmentLead";
 
 export * from "./PlaidAccount";
 export * from "./PlaidTransaction";

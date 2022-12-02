@@ -31,6 +31,7 @@ import entityRoutesV2 from "./routes/v2/entities";
 import apiKeys from "./routes/v2/api-keys";
 import dealPhaseRoutes from "./routes/v2/deal-phases";
 import { cryptoRoutes } from "./routes/v1/crypto";
+import { investmentLeadRoutes } from "./routes/v1/investment-lead";
 import migrationsRoutes from "./routes/v1/migrations";
 
 const app = express();
@@ -52,6 +53,7 @@ app.use("/api/v1/subscription-agreements", subscriptionAgreements);
 app.use("/api/v1/investments", investments);
 app.use("/api/v1/investment-documents", investmentDocuments);
 app.use("/api/v1/investor-passports", investorPassports);
+app.use("/api/v1/investment-lead", investmentLeadRoutes);
 app.use("/api/v1/passport-users", passportUsers);
 app.use("/api/v1/plaid", plaidRoutes);
 
