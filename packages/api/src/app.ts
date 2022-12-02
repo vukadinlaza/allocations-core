@@ -33,11 +33,12 @@ import dealPhaseRoutes from "./routes/v2/deal-phases";
 import { cryptoRoutes } from "./routes/v1/crypto";
 import { investmentLeadRoutes } from "./routes/v1/investment-lead";
 import migrationsRoutes from "./routes/v1/migrations";
+import { healthCheckRoute } from "./routes/healthCheck";
 
 const app = express();
 
 app.use(loggerMiddleware);
-
+app.use("/health", healthCheckRoute);
 app.use(checkToken());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
