@@ -1,4 +1,5 @@
 import { SNSEvent } from "aws-lambda";
+import fetch from "node-fetch";
 
 export const handler = async ({ Records }: SNSEvent): Promise<void> => {
   for (const record of Records) {
