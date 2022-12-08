@@ -72,7 +72,6 @@ export default Router()
                 total: "TBD",
               },
             ],
-            ...(req.body.deal.metadata || {}),
           },
           ...req.body.deal,
           master_entity_id:
