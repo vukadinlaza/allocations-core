@@ -60,7 +60,7 @@ MigrationTasksSchema.statics.createWithTasks = async function (migration_id) {
     {
       order: 0,
       type: "fm_signature",
-      name: "Sign Service Agreement",
+      name: "Sign Data Storage Service Agreement",
       disabled: false,
       complete: false,
     },
