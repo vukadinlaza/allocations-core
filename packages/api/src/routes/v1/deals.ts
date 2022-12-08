@@ -53,6 +53,14 @@ export default Router()
 
       const { deal, phases } = await Deal.createWithPhases(
         {
+          ...req.body.deal,
+          master_entity_id:
+            entityV2?._id ||
+            entityV1?._id ||
+            new mongoose.Types.ObjectId(process.env.ATOMIZER_ID),
+          setup_cost: getSetupCost(req.body.deal) + promo_code,
+          reporting_adviser_fee: getAdviserFee(req.body.deal),
+          phase: "new",
           metadata: {
             show_progress: false,
             show_deal_crypto_disclaimer: false,
@@ -73,14 +81,6 @@ export default Router()
               },
             ],
           },
-          ...req.body.deal,
-          master_entity_id:
-            entityV2?._id ||
-            entityV1?._id ||
-            new mongoose.Types.ObjectId(process.env.ATOMIZER_ID),
-          setup_cost: getSetupCost(req.body.deal) + promo_code,
-          reporting_adviser_fee: getAdviserFee(req.body.deal),
-          phase: "new",
         },
         new_hvp
       );
