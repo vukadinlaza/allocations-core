@@ -333,8 +333,11 @@ export const createServicesAgreement = async (
     }) / Carry Fee ${toPercent(deal.carry_fee)}`,
     advisor_fee: toDollarString(calculateAdvisorFee(deal)),
     advisor_fee_total: toDollarString(calculateAdvisorFee(deal)),
-    offering_type_fee:
-      deal.offering_type === "506c" ? "$70 Per Investor/LP" : "included ($0)",
+    offering_type_fee: calculateOfferingTypeFee(deal)
+      ? toDollarStringWithCents(calculateOfferingTypeFee(deal))
+      : deal.offering_type === "506c"
+      ? "$70 Per Investor/LP"
+      : "included ($0)",
     offering_type_total:
       deal.offering_type === "506c" ? "TBD" : "included ($0)",
     regular_distributions: deal.regular_distributions
@@ -445,15 +448,25 @@ export const createOrderForm = async (
     advisor_fee_total: isMicro
       ? "TBD"
       : toDollarString(calculateAdvisorFee(deal)),
-    offering_type_fee:
-      deal.offering_type === "506c" ? "$70 Per Investor/LP" : "included ($0)",
-    offering_type_total:
-      deal.offering_type === "506c" ? "TBD" : "included ($0)",
+    offering_type_fee: calculateOfferingTypeFee(deal)
+      ? toDollarString(calculateOfferingTypeFee(deal))
+      : deal.offering_type === "506c"
+      ? "$70 Per Investor/LP"
+      : "included ($0)",
+    offering_type_total: calculateOfferingTypeFee(deal)
+      ? toDollarString(calculateOfferingTypeFee(deal))
+      : deal.offering_type === "506c"
+      ? "TBD"
+      : "included ($0)",
     grand_total: toDollarString(calculateGrandTotal(deal)),
     date: todaysDate(),
     entity_name: deal.manager.type === "entity" ? deal.manager.name : undefined,
     special_terms: convertSpecialTerms(deal),
     special_notes: deal.metadata?.get("special_notes") || "",
+    master_entity_structure:
+      deal.type === "spv"
+        ? "Master Series Limited Liability Company Name"
+        : "Master Series Limited Partner Name",
   };
 
   const { id, permanent_download_url, download_url } =

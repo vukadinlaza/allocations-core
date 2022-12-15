@@ -4,6 +4,8 @@ import {
   DealPhase,
   Document,
   Investment,
+  PlaidAccount,
+  PlaidTransaction,
 } from "@allocations/core-models";
 import {
   userAcknowledgedComplete,
@@ -26,6 +28,7 @@ import {
   investorFeeMap,
 } from "../../utils/pricing";
 import { findNonAllocationsV1Entity } from "../../utils/entities";
+import fetch from "node-fetch";
 const fileName = basename(__filename, ".ts");
 const log = logger.child({ module: fileName });
 
@@ -50,6 +53,14 @@ export default Router()
 
       const { deal, phases } = await Deal.createWithPhases(
         {
+          ...req.body.deal,
+          master_entity_id:
+            entityV2?._id ||
+            entityV1?._id ||
+            new mongoose.Types.ObjectId(process.env.ATOMIZER_ID),
+          setup_cost: getSetupCost(req.body.deal) + promo_code,
+          reporting_adviser_fee: getAdviserFee(req.body.deal),
+          phase: "new",
           metadata: {
             show_progress: false,
             show_deal_crypto_disclaimer: false,
@@ -69,16 +80,7 @@ export default Router()
                 total: "TBD",
               },
             ],
-            ...(req.body.deal.metadata || {}),
           },
-          ...req.body.deal,
-          master_entity_id:
-            entityV2?._id ||
-            entityV1?._id ||
-            new mongoose.Types.ObjectId(process.env.ATOMIZER_ID),
-          setup_cost: getSetupCost(req.body.deal) + promo_code,
-          reporting_adviser_fee: getAdviserFee(req.body.deal),
-          phase: "new",
         },
         new_hvp
       );
@@ -164,6 +166,46 @@ export default Router()
 
   .get("/deal-tracker/:id", async (req, res, next) => {
     try {
+      const response = await fetch(
+        `${process.env.INVEST_API!}/api/v1/investments?metadata.deal_id=${
+          req.params.id
+        }`,
+        {
+          method: "GET",
+          headers: {
+            "X-API-TOKEN": req.headers["x-api-token"] as string,
+          },
+        }
+      );
+
+      const v1Investments = await response.json();
+
+      console.log(v1Investments);
+
+      const mungedInvestments = await Promise.all(
+        v1Investments.map(async (inv: any) => {
+          const plaidTransactions: PlaidTransaction[] =
+            await PlaidTransaction.find({
+              investment_id: inv._id,
+            });
+
+          let bank_account_name: string | undefined;
+          if (plaidTransactions[0]) {
+            const plaidAccount = await PlaidAccount.findById(
+              plaidTransactions[0].plaid_account
+            );
+            bank_account_name = plaidAccount?.account_name;
+          }
+
+          const usd = plaidTransactions.reduce(
+            (acc, curr) => (acc += curr.amount),
+            0
+          );
+
+          return { ...inv, usd, bank_account_name };
+        })
+      );
+
       const investments = await Investment.aggregate([
         {
           $match: { deal_id: new ObjectId(req.params.id) },
@@ -268,7 +310,9 @@ export default Router()
             usdc: { $sum: "$crypto_transaction.transaction_amount" },
             etherscan_receipt: {
               $accumulator: {
-                accumulateArgs: ["$crypto_transaction.metadata.coinbase_transaction_hash"],
+                accumulateArgs: [
+                  "$crypto_transaction.metadata.coinbase_transaction_hash",
+                ],
                 init: function () {
                   return [];
                 },
@@ -279,7 +323,9 @@ export default Router()
                   return ids1.concat(ids2);
                 },
                 finalize: function (ids: string[]) {
-                  return ids.filter( (element ) => element != null).join(',') || null ;
+                  return (
+                    ids.filter((element) => element != null).join(",") || null
+                  );
                 },
                 lang: "js",
               },
@@ -289,14 +335,32 @@ export default Router()
         },
         {
           $replaceRoot: {
-            newRoot: { $mergeObjects: [{ usdc: "$usdc", etherscan_receipt: "$etherscan_receipt" }, "$doc"] },
+            newRoot: {
+              $mergeObjects: [
+                { usdc: "$usdc", etherscan_receipt: "$etherscan_receipt" },
+                "$doc",
+              ],
+            },
           },
         },
         {
           $unset: "crypto_transaction",
         },
       ]);
-      res.send(investments);
+
+      const map: { [key: string]: boolean } = {};
+      const investmentsWithoutDuplicates = [
+        ...investments,
+        ...mungedInvestments,
+      ].reduce((acc, curr) => {
+        if (map[curr._id]) {
+          return acc;
+        }
+        map[curr._id] = true;
+        return [...acc, curr];
+      }, []);
+
+      res.send(investmentsWithoutDuplicates);
     } catch (e) {
       next(e);
     }

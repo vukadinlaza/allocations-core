@@ -36,7 +36,7 @@ const schema = new mongoose.Schema(
     },
     user_id: {
       type: Schema.Types.ObjectId,
-      defatult: null,
+      default: null,
     },
     passport_id: {
       type: Schema.Types.ObjectId,
