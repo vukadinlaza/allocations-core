@@ -29,6 +29,10 @@ import {
 } from "../../utils/pricing";
 import { findNonAllocationsV1Entity } from "../../utils/entities";
 import fetch from "node-fetch";
+import {
+  createDealRecord,
+  findDealRecord,
+} from "../../utils/airtable/deal-tracker";
 const fileName = basename(__filename, ".ts");
 const log = logger.child({ module: fileName });
 
@@ -581,6 +585,27 @@ export default Router()
         );
         res.send(data_request);
       }
+    } catch (e: any) {
+      log.error({ err: e }, e.message);
+      next(e);
+    }
+  })
+
+  .get("/:id/airtable", async (req, res, next) => {
+    try {
+      const deals = await findDealRecord(req.params.id);
+      console.log(deals);
+      res.send(deals);
+    } catch (e: any) {
+      log.error({ err: e }, e.message);
+      next(e);
+    }
+  })
+
+  .post("/airtable-sync", async (req, res, next) => {
+    try {
+      const response = await createDealRecord(req.body);
+      res.send(response);
     } catch (e: any) {
       log.error({ err: e }, e.message);
       next(e);
