@@ -24,6 +24,13 @@ import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 const fileName = basename(__filename, ".ts");
 const log = logger.child({ module: fileName });
+// @ts-ignore
+import DocSpring from "docspring";
+const config = new DocSpring.Configuration();
+config.apiTokenId = process.env.DOCSPRING_TOKEN_ID;
+config.apiTokenSecret = process.env.DOCSPRING_TOKEN_SECRET;
+
+let docspring = new DocSpring.Client(config);
 
 const client = new S3Client({ region: "us-east-1" });
 
@@ -414,6 +421,50 @@ export default Router()
       });
 
       res.send({ link: await getSignedUrl(client, command) });
+    } catch (e: any) {
+      log.error({ err: e }, e.message);
+      next(e);
+    }
+  })
+
+  .get("/:deal_id/documents/retool", async (_req, res, next) => {
+    try {
+      const docspringRes = await new Promise((resolve, reject) => {
+        docspring.generatePDF(
+          "tpl_sZaF6DnQdyH55Dkyd7",
+          {
+            editable: false,
+            data: {
+              message: "HEY",
+            },
+            data_requests: [
+              {
+                email: "asdsa@dasd.com",
+                auth_type: "email_link",
+                auth_session_started_at: new Date(),
+                fields: ["signature"],
+              },
+            ],
+            // metadata: {
+            //   user_id: 123,
+            // },
+            wait: true,
+          },
+          (error: any, response: unknown) => {
+            if (error) reject(error);
+            else resolve(response);
+          }
+        );
+      });
+      docspring.createDataRequestToken(
+        // @ts-ignore
+        docspringRes.submission.data_requests[0].id,
+        // @ts-ignore
+        function (error, token) {
+          if (error) throw error;
+          res.send(token);
+        }
+      );
     } catch (e: any) {
       log.error({ err: e }, e.message);
       next(e);
