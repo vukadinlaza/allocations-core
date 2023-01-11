@@ -75,9 +75,8 @@ export default Router()
 
   .get("/", async (req, res, next) => {
     try {
-      console.log(req.query, "QUERY");
       const keys = await APIKey.find(req.query);
-      console.log(keys, "KEYS");
+
       res.send(keys);
     } catch (e) {
       next(e);

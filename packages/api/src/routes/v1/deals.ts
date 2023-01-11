@@ -180,8 +180,6 @@ export default Router()
 
       const v1Investments = await response.json();
 
-      console.log(v1Investments);
-
       const mungedInvestments = await Promise.all(
         v1Investments.map(async (inv: any) => {
           const plaidTransactions: PlaidTransaction[] =

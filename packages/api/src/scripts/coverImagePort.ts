@@ -18,8 +18,6 @@ const coverImagePort = async () => {
 
     const allDeals = await legacyDeals.find().toArray();
 
-    console.log(allDeals.length, "DEALS");
-
     await Promise.all(
       allDeals.map(async (deal: any) => {
         let logo = null;
