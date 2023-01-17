@@ -161,6 +161,7 @@ export default Router()
 
   .get("/:id", async (req, res, next) => {
     try {
+      console.log(req.params.id, "ID");
       const investment = await Investment.findById(req.params.id)
         .populate("passport")
         .populate("deal");

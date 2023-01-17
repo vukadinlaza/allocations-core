@@ -19,7 +19,6 @@ export const getCryptoTransactionsByQuery: RequestHandler = async (
   try {
     const { query } = req;
     let foundTransactions: CryptoTransaction[] = [];
-    console.log(JSON.stringify(query));
 
     if (query.deal_id) {
       foundTransactions = await CryptoTransaction.find({
@@ -27,9 +26,6 @@ export const getCryptoTransactionsByQuery: RequestHandler = async (
           $eq: query.deal_id.toString(),
         },
       });
-      console.log(
-        `found ${foundTransactions.length} transactions with deal_id ${query.deal_id}`
-      );
     } else if (query.user_id) {
       foundTransactions = await CryptoTransaction.find({
         user_id: query.user_id.toString(),
