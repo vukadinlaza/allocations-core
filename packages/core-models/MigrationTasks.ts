@@ -88,7 +88,7 @@ MigrationTasksSchema.statics.createWithTasks = async function (migration_id) {
     {
       order: 4,
       type: "redirect",
-      name: "Schedule Free Data Migration",
+      name: "Schedule Data Migration",
       disabled: true,
       complete: false,
     },
