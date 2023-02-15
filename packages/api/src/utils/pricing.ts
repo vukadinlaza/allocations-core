@@ -2,7 +2,7 @@ import { Deal } from "@allocations/core-models";
 
 export const getSetupCost = (deal: Deal) => {
   if (deal.type === "fund") {
-    return deal.number_of_investments >= 30 ? 15000 : 26000;
+    return 15000;
   } else if (deal.type === "acquisition") return 12000;
   else if (deal.asset_type === "Micro") return 3500;
   else if (deal.asset_type !== "Startup" || deal.custom_investment_agreement)
