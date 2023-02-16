@@ -449,7 +449,7 @@ export const createOrderForm = async (
       ? "TBD"
       : toDollarString(calculateAdvisorFee(deal)),
     offering_type_fee: calculateOfferingTypeFee(deal)
-      ? toDollarString(calculateOfferingTypeFee(deal))
+      ? "included ($0)"
       : deal.offering_type === "506c"
       ? "$70 Per Investor/LP"
       : "included ($0)",
