@@ -268,7 +268,7 @@ export const createServicesAgreement = async (
     custom_reporting_adviser: deal.reporting_adviser,
     closing_date: formatDate(deal.closing_date),
     offering_type: deal.offering_type,
-    offering_type_fee: toDollarStringWithCents(calculateOfferingTypeFee(deal)),
+    offering_type_fee: "included ($0)",
     advisor_fee: toDollarStringWithCents(calculateAdvisorFee(deal)),
     advisor_count: deal.reporting_adviser === "Sharding Advisers LLC" ? 1 : 0,
     gp_setup_cost: "$1,000.00",
@@ -454,7 +454,7 @@ export const createOrderForm = async (
       ? "$70 Per Investor/LP"
       : "included ($0)",
     offering_type_total: calculateOfferingTypeFee(deal)
-      ? toDollarString(calculateOfferingTypeFee(deal))
+      ? "included ($0)"
       : deal.offering_type === "506c"
       ? "TBD"
       : "included ($0)",
