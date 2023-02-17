@@ -126,8 +126,11 @@ const calculateGPSetupFee = (deal: Deal) => {
 };
 
 const calculateOfferingTypeFee = (deal: Deal) => {
-  console.log(deal.type);
-  return 0;
+  return deal.offering_type === "506c" &&
+    deal.type === "fund" &&
+    deal.number_of_investments < 30
+    ? 5000
+    : 0;
 };
 
 const calculateAdvisorFee = (deal: Deal) => {
@@ -162,7 +165,6 @@ const calculateGrandTotal = (deal: Deal) => {
     calculateProductTypeFee(deal) +
     calculateAdvisorFee(deal) +
     calculateGPSetupFee(deal) +
-    calculateOfferingTypeFee(deal) +
     calculateSpecialTerms(deal)
   );
 };
