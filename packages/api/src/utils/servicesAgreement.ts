@@ -126,6 +126,7 @@ const calculateGPSetupFee = (deal: Deal) => {
 };
 
 const calculateOfferingTypeFee = (deal: Deal) => {
+  console.log(deal.type);
   return 0;
 };
 
